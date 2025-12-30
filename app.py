@@ -20,6 +20,8 @@ from flask_cors import CORS
 import google.generativeai as genai
 
 app = Flask(__name__)
+app.config["TEMPLATES_AUTO_RELOAD"] = True
+app.jinja_env.auto_reload = True
 CORS(app)
 
 # In-memory store for forum posts

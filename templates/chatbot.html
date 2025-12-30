@@ -3,18 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diabetes Chatbot</title>
+    <title>Diabetes Chatbot v2</title>
     <style>
     body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         margin: 0;
-        padding: 20px;
         background: linear-gradient(135deg, #4a90e2, #50e3c2);
-        display: flex;
-        justify-content: center;
-        align-items: center;
         min-height: 100vh;
         color: #333;
+    }
+    .navbar {
+        background-color: #1d4ed8;
+        color: #ffffff;
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+    .navbar-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 16px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .navbar-title {
+        font-size: 1.75rem;
+        font-weight: 800;
+    }
+    .navbar-links {
+        list-style: none;
+        display: flex;
+        gap: 1.5rem;
+        margin: 0;
+        padding: 0;
+        font-size: 1.05rem;
+        font-weight: 600;
+    }
+    .navbar-links a {
+        color: #e5e7eb;
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+    .navbar-links a:hover {
+        color: #bfdbfe;
     }
     .chat-container {
         background-color: #ffffffcc;
@@ -130,7 +163,24 @@
 </style>
 
 </head>
-<body>
+<body class="min-h-screen flex flex-col">
+
+    <header class="navbar">
+        <div class="navbar-inner">
+          <h1 class="navbar-title">🩺 Diabetes Care</h1>
+          <nav>
+            <ul class="navbar-links">
+              <li><a href="/index">Prediction</a></li>
+              <li><a href="/life">Lifestyle Check</a></li>
+              <li><a href="/chatbot">Chatbot</a></li>
+              <li><a href="/explore">Explore Data</a></li>
+              <li><a href="/forum">Forum</a></li>
+            </ul>
+          </nav>
+        </div>
+    </header>
+
+    <main style="flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px;">
     <div class="chat-container">
         <div class="chat-header">
             Diabetes Expert Chatbot
@@ -145,6 +195,7 @@
             <button onclick="sendMessage()">Send</button>
         </div>
     </div>
+    </main>
 
     <script>
         async function sendMessage() {
