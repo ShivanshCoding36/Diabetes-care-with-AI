@@ -18,21 +18,27 @@
   </style>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200 flex flex-col font-sans">
-
-  <header class="bg-blue-700 text-white shadow-lg sticky top-0 z-50">
+    <header class="bg-blue-700 text-white shadow-lg sticky top-0 z-50">
     <div class="container mx-auto flex justify-between items-center py-4 px-6">
-      <h1 class="text-4xl font-extrabold tracking-wide text-white text-3d">🩺 Diabetes Care</h1>
-      <nav>
-        <ul class="flex space-x-6 text-lg font-semibold">
-          <li><a href="/index" class="hover:text-blue-300 transition">Prediction</a></li>
-          <li><a href="/life" class="hover:text-blue-300 transition">Lifestyle Check</a></li>
-          <li><a href="/chatbot" class="hover:text-blue-300 transition">Chatbot</a></li>
-          <li><a href="/explore" class="hover:text-blue-300 transition">Explore Data</a></li>
-          <li><a href="/forum" class="hover:text-blue-300 transition">Forum</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+
+    <!-- clickable logo -->
+    <a href="/" class="flex items-center gap-3 cursor-pointer no-underline">
+      <h1 class="text-4xl font-extrabold text-3d hover:scale-[1.03] transition-transform duration-300">
+        🩺 Diabetes Care
+      </h1>
+    </a>
+    <nav>
+      <ul class="flex space-x-6 text-lg font-semibold">
+        <li><a href="/index" class="hover:text-blue-300 transition">Prediction</a></li>
+        <li><a href="/life" class="hover:text-blue-300 transition">Lifestyle Check</a></li>
+        <li><a href="/chatbot" class="hover:text-blue-300 transition">Chatbot</a></li>
+        <li><a href="/explore" class="hover:text-blue-300 transition">Explore Data</a></li>
+        <li><a href="/forum" class="hover:text-blue-300 transition">Forum</a></li>
+      </ul>
+    </nav>
+
+  </div>
+</header>
 
   <main class="flex-grow flex items-center justify-center p-8">
     <section class="bg-white bg-opacity-90 backdrop-blur-md rounded-3xl shadow-2xl max-w-lg w-full p-12 space-y-10">
