@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ current_language }}"></html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diabetes Chatbot v2</title>
+    <title>{{ _('Diabetes Chatbot') }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
     body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -82,24 +83,13 @@
         scrollbar-width: thin;
         scrollbar-color: #007bff #e1e1e1;
     }
-    .chat-messages::-webkit-scrollbar {
-        width: 8px;
-    }
-    .chat-messages::-webkit-scrollbar-thumb {
-        background-color: #007bff;
-        border-radius: 20px;
-    }
     .message {
         margin-bottom: 14px;
         display: flex;
         animation: fadeIn 0.3s ease forwards;
     }
-    .message.user {
-        justify-content: flex-end;
-    }
-    .message.bot {
-        justify-content: flex-start;
-    }
+    .message.user { justify-content: flex-end; }
+    .message.bot { justify-content: flex-start; }
     .message-bubble {
         max-width: 70%;
         padding: 14px 20px;
@@ -108,7 +98,6 @@
         word-wrap: break-word;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         font-size: 1rem;
-        transition: background-color 0.3s ease;
     }
     .message.user .message-bubble {
         background: linear-gradient(135deg, #4caf50, #81c784);
@@ -120,103 +109,9 @@
         color: #374151;
         border-bottom-left-radius: 4px;
         max-width: 92%;
-        border: none;
-        box-shadow: none;
         padding: 4px 16px;
         font-size: 15px;
         line-height: 1.75;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-    }
-    .message-bubble h3 {
-        margin: 24px 0 12px 0;
-        font-weight: 600;
-        font-size: 16px;
-        color: #111827;
-        border: none;
-        padding: 0;
-    }
-    .message-bubble h3:first-child { margin-top: 8px; }
-    .message-bubble h4 {
-        margin: 20px 0 8px 0;
-        font-weight: 600;
-        font-size: 15px;
-        color: #1f2937;
-    }
-    .message-bubble p {
-        margin: 16px 0;
-        line-height: 1.75;
-        color: #374151;
-    }
-    .message-bubble p:first-child { margin-top: 8px; }
-    .message-bubble strong {
-        font-weight: 600;
-        color: #111827;
-    }
-    .message-bubble ul, .message-bubble ol {
-        margin: 16px 0;
-        padding-left: 24px;
-    }
-    .message-bubble li {
-        margin: 10px 0;
-        line-height: 1.7;
-        color: #374151;
-        padding-left: 4px;
-    }
-    .message-bubble ul > li {
-        list-style-type: disc;
-    }
-    .message-bubble ul > li::marker {
-        color: #9ca3af;
-    }
-    .message-bubble ol > li {
-        list-style-type: decimal;
-    }
-    .message-bubble ol > li::marker {
-        color: #6b7280;
-        font-weight: 500;
-    }
-    .message-bubble .summary-box {
-        background: #f9fafb;
-        padding: 16px 20px;
-        border-radius: 8px;
-        margin: 20px 0;
-        border: 1px solid #e5e7eb;
-    }
-    .message-bubble .summary-box strong {
-        color: #111827;
-    }
-    .message-bubble code {
-        background: #f3f4f6;
-        padding: 2px 6px;
-        border-radius: 4px;
-        font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
-        font-size: 13px;
-        color: #1f2937;
-    }
-    .message-bubble pre {
-        background: #f9fafb;
-        padding: 16px;
-        border-radius: 8px;
-        overflow-x: auto;
-        margin: 16px 0;
-        border: 1px solid #e5e7eb;
-    }
-    .message-bubble em {
-        font-style: italic;
-        color: #4b5563;
-    }
-    .message-bubble blockquote {
-        border-left: 3px solid #d1d5db;
-        margin: 16px 0;
-        padding: 4px 16px;
-        color: #4b5563;
-    }
-    .message-bubble a {
-        color: #2563eb;
-        text-decoration: none;
-    }
-    .message-bubble a:hover {
-        text-decoration: underline;
     }
     .chat-input {
         display: flex;
@@ -231,11 +126,6 @@
         border-radius: 25px;
         font-size: 1rem;
         outline: none;
-        transition: border-color 0.3s ease;
-    }
-    .chat-input input[type="text"]:focus {
-        border-color: #0056b3;
-        box-shadow: 0 0 8px #0056b3aa;
     }
     .chat-input button {
         margin-left: 12px;
@@ -247,238 +137,150 @@
         cursor: pointer;
         font-size: 1rem;
         font-weight: 600;
-        transition: background-color 0.3s ease;
-        box-shadow: 0 4px 12px rgba(0, 123, 255, 0.5);
-    }
-    .chat-input button:hover {
-        background-color: #0056b3;
-        box-shadow: 0 6px 16px rgba(0, 86, 179, 0.7);
     }
     @keyframes fadeIn {
         from {opacity: 0; transform: translateY(10px);}
         to {opacity: 1; transform: translateY(0);}
     }
+    .lang-dropdown { max-height: 0; overflow: hidden; transition: max-height 0.2s ease-out; }
+    .lang-dropdown.show { max-height: 300px; }
 </style>
-
 </head>
 <body class="min-h-screen flex flex-col">
-
     <header class="navbar">
         <div class="navbar-inner">
-          <h1 class="navbar-title">🩺 Diabetes Care</h1>
-          <nav>
+          <h1 class="navbar-title">🩺 {{ _('Diabetes Care') }}</h1>
+          <nav class="flex items-center gap-4">
             <ul class="navbar-links">
-              <li><a href="/index">Prediction</a></li>
-              <li><a href="/life">Lifestyle Check</a></li>
-              <li><a href="/chatbot">Chatbot</a></li>
-              <li><a href="/explore">Explore Data</a></li>
-              <li><a href="/forum">Forum</a></li>
+              <li><a href="/index">{{ _('Prediction') }}</a></li>
+              <li><a href="/life">{{ _('Lifestyle Check') }}</a></li>
+              <li><a href="/chatbot">{{ _('Chatbot') }}</a></li>
+              <li><a href="/explore">{{ _('Explore Data') }}</a></li>
+              <li><a href="/forum">{{ _('Forum') }}</a></li>
             </ul>
+            <!-- Language Selector -->
+            <div class="relative ml-4">
+              <button id="lang-btn" class="flex items-center space-x-1 px-3 py-1 rounded hover:bg-blue-600 transition text-sm text-white">
+                <span>🌐</span>
+                <span>{{ languages.get(current_language, 'English') }}</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </button>
+              <div id="lang-dropdown" class="lang-dropdown absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg z-50">
+                {% for code, name in languages.items() %}
+                <button onclick="setLanguage('{{ code }}')" 
+                        class="block w-full text-left px-4 py-2 text-gray-800 hover:bg-blue-100 text-sm {% if code == current_language %}bg-blue-50 font-semibold{% endif %}">
+                  {{ name }}
+                </button>
+                {% endfor %}
+              </div>
+            </div>
           </nav>
         </div>
     </header>
 
     <main style="flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px;">
-<body>
-    {% include 'navbar.html' %}
-    <div class="chat-container">
-        <div class="chat-header">
-            Diabetes Expert Chatbot
-        </div>
-        <div class="chat-messages" id="chat-messages" role="log" aria-live="polite" aria-label="Chat conversation">
-            <div class="message bot">
-                <div class="message-bubble">Hello! I'm here to help you understand diabetes and answer your questions. How can I assist you today?</div>
+        <div class="chat-container">
+            <div class="chat-header">
+                {{ _('Diabetes Expert Chatbot') }}
+            </div>
+            <div class="chat-messages" id="chat-messages" role="log" aria-live="polite">
+                <div class="message bot">
+                    <div class="message-bubble">{{ _("Hello! I'm here to help you understand diabetes and answer your questions. How can I assist you today?") }}</div>
+                </div>
+            </div>
+            <div id="sr-status" role="status" aria-live="polite" aria-atomic="true" class="sr-only"></div>
+            <div class="chat-input">
+                <label for="user-input" class="sr-only">{{ _('Type your message') }}</label>
+                <input type="text" id="user-input" placeholder="{{ _('Type your message...') }}">
+                <button onclick="sendMessage()">{{ _('Send') }}</button>
             </div>
         </div>
-        <!-- Screen reader status announcements -->
-        <div id="sr-status" role="status" aria-live="polite" aria-atomic="true" class="sr-only" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;"></div>
-        <div class="chat-input">
-            <label for="user-input" class="sr-only" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;">Type your message</label>
-            <input type="text" id="user-input" placeholder="Type your message..." aria-describedby="sr-status">
-            <button onclick="sendMessage()" aria-label="Send message">Send</button>
-        </div>
-    </div>
     </main>
 
     <script>
+        const THINKING_TEXT = "{{ _('Thinking...') }}";
+        const ERROR_TEXT = "{{ _('Sorry, I could not get a response. Please try again.') }}";
+        const SENDING_TEXT = "{{ _('Sending message, please wait...') }}";
+
         async function sendMessage() {
             const userInput = document.getElementById('user-input');
             const chatMessages = document.getElementById('chat-messages');
             const message = userInput.value.trim();
 
-            if (message === '') {
-                return;
-            }
+            if (message === '') return;
 
-            // Display user message
             const userMessageDiv = document.createElement('div');
             userMessageDiv.classList.add('message', 'user');
             userMessageDiv.innerHTML = `<div class="message-bubble">${message}</div>`;
             chatMessages.appendChild(userMessageDiv);
-
-            // Clear input
             userInput.value = '';
-
-            // Scroll to bottom
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
-            // Show a "typing" indicator or a temporary message
             const thinkingMessageDiv = document.createElement('div');
             thinkingMessageDiv.classList.add('message', 'bot');
-            thinkingMessageDiv.innerHTML = `<div class="message-bubble">Thinking...</div>`;
+            thinkingMessageDiv.innerHTML = `<div class="message-bubble">${THINKING_TEXT}</div>`;
             chatMessages.appendChild(thinkingMessageDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
-
-            // Announce to screen readers
-            announceToScreenReader('Sending message, please wait...');
 
             try {
                 const response = await fetch('/generate', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ message: message })
                 });
 
-                // Remove the "thinking" message
                 chatMessages.removeChild(thinkingMessageDiv);
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
                 const data = await response.json();
-
-                // Display bot response with markdown formatting
                 const botMessageDiv = document.createElement('div');
                 botMessageDiv.classList.add('message', 'bot');
-                const formattedReply = formatMarkdown(data.reply);
-                botMessageDiv.innerHTML = `<div class="message-bubble">${formattedReply}</div>`;
+                botMessageDiv.innerHTML = `<div class="message-bubble">${formatMarkdown(data.reply)}</div>`;
                 chatMessages.appendChild(botMessageDiv);
-
-                // Announce response to screen readers
-                announceToScreenReader('Bot replied: ' + data.reply.substring(0, 200) + (data.reply.length > 200 ? '...' : ''));
-
             } catch (error) {
                 console.error('Error:', error);
-                // Remove the "thinking" message and display an error
                 chatMessages.removeChild(thinkingMessageDiv);
                 const errorMessageDiv = document.createElement('div');
                 errorMessageDiv.classList.add('message', 'bot');
-                errorMessageDiv.innerHTML = `<div class="message-bubble">Sorry, I couldn't get a response. Please try again.</div>`;
+                errorMessageDiv.innerHTML = `<div class="message-bubble">${ERROR_TEXT}</div>`;
                 chatMessages.appendChild(errorMessageDiv);
-
-                // Announce error to screen readers
-                announceToScreenReader('Error: Could not get a response. Please try again.');
             } finally {
-                // Scroll to bottom after response
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             }
         }
 
-        // Send message on Enter key press
         document.getElementById('user-input').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
+            if (e.key === 'Enter') sendMessage();
         });
 
-        // Initial scroll to bottom in case of pre-existing messages
-        document.addEventListener('DOMContentLoaded', () => {
-            const chatMessages = document.getElementById('chat-messages');
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        });
-
-        // Function to announce messages to screen readers
-        function announceToScreenReader(message) {
-            const srStatus = document.getElementById('sr-status');
-            srStatus.textContent = '';
-            // Small delay to ensure the change is detected
-            setTimeout(() => {
-                srStatus.textContent = message;
-            }, 100);
-        }
-
-        // Clean markdown parser for chat responses
         function formatMarkdown(text) {
             if (!text) return '';
-            
-            let html = text;
-            
-            // Escape HTML
-            html = html.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-            
-            // Remove emoji icons from headers
-            html = html.replace(/[🔹⚙️📊📝✅⚠️🔴🎯💡●•]/g, '');
-            
-            // Headers with ### 
+            let html = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
             html = html.replace(/###\s*(.+?)(?=\n|$)/g, '\n<h3>$1</h3>\n');
-            
-            // Bold **text**
             html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-            
-            // Italic *text*
-            html = html.replace(/(?<![*\w])\*([^*\n]+)\*(?![*\w])/g, '<em>$1</em>');
-            
-            // Process lines for lists
-            const lines = html.split('\n');
-            let result = [];
-            let inOl = false;
-            let inUl = false;
-            
-            for (let line of lines) {
-                line = line.trim();
-                if (!line) continue;
-                
-                // Numbered list: 1. item
-                const olMatch = line.match(/^(\d+)[\.\)]\s+(.+)$/);
-                // Bullet list: * item or - item
-                const ulMatch = line.match(/^\*\s+(.+)$/) || line.match(/^-\s+(.+)$/);
-                
-                if (olMatch) {
-                    if (!inOl) {
-                        if (inUl) { result.push('</ul>'); inUl = false; }
-                        result.push('<ol>');
-                        inOl = true;
-                    }
-                    result.push('<li>' + olMatch[2] + '</li>');
-                } else if (ulMatch) {
-                    if (!inUl) {
-                        if (inOl) { result.push('</ol>'); inOl = false; }
-                        result.push('<ul>');
-                        inUl = true;
-                    }
-                    result.push('<li>' + ulMatch[1] + '</li>');
-                } else {
-                    if (inOl) { result.push('</ol>'); inOl = false; }
-                    if (inUl) { result.push('</ul>'); inUl = false; }
-                    result.push(line);
-                }
-            }
-            if (inOl) result.push('</ol>');
-            if (inUl) result.push('</ul>');
-            
-            html = result.join('\n');
-            
-            // In Summary box
-            html = html.replace(/In [Ss]ummary[,:]\s*(.+?)(?=<h|$)/gs, '<div class="summary-box"><strong>In Summary:</strong> $1</div>');
-            
-            // Paragraphs
-            html = html.replace(/\n\n+/g, '</p><p>');
-            html = html.replace(/\n/g, ' ');
-            
-            // Wrap
-            if (!html.startsWith('<')) {
-                html = '<p>' + html + '</p>';
-            }
-            
-            // Cleanup
-            html = html.replace(/<p>\s*<(h[34]|ul|ol|div)/g, '<$1');
-            html = html.replace(/<\/(h[34]|ul|ol|div)>\s*<\/p>/g, '</$1>');
-            html = html.replace(/<p>\s*<\/p>/g, '');
-            
             return html;
+        }
+
+        // Language selector
+        document.getElementById('lang-btn').addEventListener('click', function(e) {
+            e.stopPropagation();
+            document.getElementById('lang-dropdown').classList.toggle('show');
+        });
+        document.addEventListener('click', function() {
+            document.getElementById('lang-dropdown').classList.remove('show');
+        });
+        function setLanguage(langCode) {
+            fetch('/api/set-language', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ language: langCode })
+            })
+            .then(response => response.json())
+            .then(data => { if (data.success) window.location.reload(); })
+            .catch(err => console.error('Language switch failed:', err));
         }
     </script>
 </body>

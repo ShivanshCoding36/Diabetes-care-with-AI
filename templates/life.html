@@ -1,29 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ current_language }}">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Personalized Lifestyle Plan</title>
+  <title>{{ _('Personalized Lifestyle Plan') }}</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
       background-image: radial-gradient(#dbeafe 1px, transparent 1px);
       background-size: 20px 20px;
     }
-    #result.show {
-      animation: fadeIn 0.7s ease forwards;
-    }
+    #result.show { animation: fadeIn 0.7s ease forwards; }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    .category-card {
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    .category-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-    }
+    .category-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .category-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
     .loading-spinner {
       border: 3px solid #f3f3f3;
       border-top: 3px solid #3b82f6;
@@ -33,85 +26,78 @@
       animation: spin 1s linear infinite;
       display: inline-block;
     }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .lang-dropdown { max-height: 0; overflow: hidden; transition: max-height 0.2s ease-out; }
+    .lang-dropdown.show { max-height: 300px; }
   </style>
 </head>
 <body class="bg-gradient-to-br from-blue-100 to-purple-100 min-h-screen flex flex-col">
   
-  <header class="navbar">
-    <div class="navbar-inner">
-      <h1 class="navbar-title">🩺 Diabetes Care</h1>
-      <nav>
-        <ul class="navbar-links">
-          <li><a href="/index">Prediction</a></li>
-          <li><a href="/life">Lifestyle Check</a></li>
-          <li><a href="/chatbot">Chatbot</a></li>
-          <li><a href="/explore">Explore Data</a></li>
-          <li><a href="/forum">Forum</a></li>
+  <header class="bg-blue-700 text-white shadow-lg sticky top-0 z-50">
+    <div class="container mx-auto flex justify-between items-center py-4 px-6">
+      <h1 class="text-2xl font-extrabold">🩺 {{ _('Diabetes Care') }}</h1>
+      <nav class="flex items-center gap-4">
+        <ul class="flex space-x-4 text-base font-semibold">
+          <li><a href="/index" class="hover:text-blue-300">{{ _('Prediction') }}</a></li>
+          <li><a href="/life" class="hover:text-blue-300">{{ _('Lifestyle Check') }}</a></li>
+          <li><a href="/chatbot" class="hover:text-blue-300">{{ _('Chatbot') }}</a></li>
+          <li><a href="/explore" class="hover:text-blue-300">{{ _('Explore Data') }}</a></li>
+          <li><a href="/forum" class="hover:text-blue-300">{{ _('Forum') }}</a></li>
         </ul>
+        <!-- Language Selector -->
+        <div class="relative ml-4">
+          <button id="lang-btn" class="flex items-center space-x-1 px-3 py-1 rounded hover:bg-blue-600 transition text-sm">
+            <span>🌐</span>
+            <span>{{ languages.get(current_language, 'English') }}</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div id="lang-dropdown" class="lang-dropdown absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg z-50">
+            {% for code, name in languages.items() %}
+            <button onclick="setLanguage('{{ code }}')" 
+                    class="block w-full text-left px-4 py-2 text-gray-800 hover:bg-blue-100 text-sm {% if code == current_language %}bg-blue-50 font-semibold{% endif %}">
+              {{ name }}
+            </button>
+            {% endfor %}
+          </div>
+        </div>
       </nav>
     </div>
   </header>
 
   <main class="flex-grow flex items-center justify-center p-6">
     <div class="max-w-2xl w-full bg-white/30 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-white/20">
-      <h2 class="text-3xl font-extrabold mb-6 text-center text-blue-800 tracking-wide">🌿 Personalized Lifestyle Plan</h2>
+      <h2 class="text-3xl font-extrabold mb-6 text-center text-blue-800 tracking-wide">🌿 {{ _('Personalized Lifestyle Plan') }}</h2>
 
       <form id="planForm" class="space-y-5">
         <div>
-          <label for="age" class="block font-semibold mb-1 text-gray-700">Age</label>
-          <input
-            type="number"
-            id="age"
-            name="age"
-            min="1"
-            max="120"
-            placeholder="Enter your age"
-            class="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
-            required
-          />
+          <label for="age" class="block font-semibold mb-1 text-gray-700">{{ _('Age') }}</label>
+          <input type="number" id="age" name="age" min="1" max="120" placeholder="{{ _('Enter your age') }}"
+            class="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm" required />
         </div>
 
         <div>
-          <label for="bmi" class="block font-semibold mb-1 text-gray-700">BMI (Body Mass Index)</label>
-          <input
-            type="number"
-            step="0.1"
-            id="bmi"
-            name="bmi"
-            min="10"
-            max="50"
-            placeholder="Enter your BMI"
-            class="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
-            required
-          />
-          <p class="text-xs text-gray-500 mt-1">Not sure? BMI = weight(kg) / height(m)²</p>
+          <label for="bmi" class="block font-semibold mb-1 text-gray-700">{{ _('BMI (Body Mass Index)') }}</label>
+          <input type="number" step="0.1" id="bmi" name="bmi" min="10" max="50" placeholder="{{ _('Enter your BMI') }}"
+            class="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm" required />
+          <p class="text-xs text-gray-500 mt-1">{{ _('Not sure? BMI = weight(kg) / height(m)²') }}</p>
         </div>
 
         <div>
-          <label for="activity" class="block font-semibold mb-1 text-gray-700">Physical Activity Level</label>
-          <select
-            id="activity"
-            name="activity"
-            class="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
-            required
-          >
-            <option value="" disabled selected>Select activity level</option>
-            <option value="low">Low (Sedentary)</option>
-            <option value="moderate">Moderate (3-5 days/week)</option>
-            <option value="high">High (Daily or intense exercise)</option>
+          <label for="activity" class="block font-semibold mb-1 text-gray-700">{{ _('Physical Activity Level') }}</label>
+          <select id="activity" name="activity"
+            class="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm" required>
+            <option value="" disabled selected>{{ _('Select activity level') }}</option>
+            <option value="low">{{ _('Low (Sedentary)') }}</option>
+            <option value="moderate">{{ _('Moderate (3-5 days/week)') }}</option>
+            <option value="high">{{ _('High (Daily or intense exercise)') }}</option>
           </select>
         </div>
 
-        <button
-          type="submit"
-          id="submitBtn"
-          class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold py-2.5 rounded-xl shadow-lg hover:scale-105 transition-transform duration-200 flex items-center justify-center gap-2"
-        >
-          <span id="btnText">🔍 Generate Plan</span>
+        <button type="submit" id="submitBtn"
+          class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold py-2.5 rounded-xl shadow-lg hover:scale-105 transition-transform duration-200 flex items-center justify-center gap-2">
+          <span id="btnText">🔍 {{ _('Generate Plan') }}</span>
           <span id="btnSpinner" class="loading-spinner hidden"></span>
         </button>
       </form>
@@ -127,33 +113,22 @@
     const btnText = document.getElementById('btnText');
     const btnSpinner = document.getElementById('btnSpinner');
 
-    const categoryIcons = {
-      diet: '🍽️',
-      exercise: '🏃',
-      stress: '🧘',
-      sleep: '😴',
-      monitoring: '📊'
-    };
+    const GENERATING_TEXT = "{{ _('Generating...') }}";
+    const GENERATE_TEXT = "🔍 {{ _('Generate Plan') }}";
+    const ERROR_TEXT = "{{ _('Something went wrong. Please try again.') }}";
 
+    const categoryIcons = { diet: '🍽️', exercise: '🏃', stress: '🧘', sleep: '😴', monitoring: '📊' };
     const categoryTitles = {
-      diet: 'Diet & Nutrition',
-      exercise: 'Exercise & Activity',
-      stress: 'Stress Management',
-      sleep: 'Sleep & Recovery',
-      monitoring: 'Health Monitoring'
-    };
-
-    const categoryColors = {
-      diet: 'from-green-400 to-green-600',
-      exercise: 'from-orange-400 to-orange-600',
-      stress: 'from-purple-400 to-purple-600',
-      sleep: 'from-indigo-400 to-indigo-600',
-      monitoring: 'from-red-400 to-red-600'
+      diet: "{{ _('Diet & Nutrition') }}",
+      exercise: "{{ _('Exercise & Activity') }}",
+      stress: "{{ _('Stress Management') }}",
+      sleep: "{{ _('Sleep & Recovery') }}",
+      monitoring: "{{ _('Health Monitoring') }}"
     };
 
     function setLoading(loading) {
       submitBtn.disabled = loading;
-      btnText.textContent = loading ? 'Generating...' : '🔍 Generate Plan';
+      btnText.textContent = loading ? GENERATING_TEXT : GENERATE_TEXT;
       btnSpinner.classList.toggle('hidden', !loading);
       submitBtn.classList.toggle('opacity-75', loading);
     }
@@ -163,16 +138,16 @@
       
       let profileHtml = `
         <div class="mb-6 p-4 bg-blue-50 rounded-xl border border-blue-200">
-          <h3 class="text-lg font-semibold text-blue-800 mb-2">📋 Your Profile</h3>
+          <h3 class="text-lg font-semibold text-blue-800 mb-2">📋 {{ _('Your Profile') }}</h3>
           <div class="grid grid-cols-3 gap-4 text-sm">
-            <div><span class="text-gray-600">Age:</span> <strong>${profile.age}</strong> (${profile.age_group})</div>
-            <div><span class="text-gray-600">BMI:</span> <strong>${profile.bmi}</strong> (${profile.bmi_category})</div>
-            <div><span class="text-gray-600">Activity:</span> <strong class="capitalize">${profile.activity}</strong></div>
+            <div><span class="text-gray-600">{{ _('Age') }}:</span> <strong>${profile.age}</strong> (${profile.age_group})</div>
+            <div><span class="text-gray-600">{{ _('BMI') }}:</span> <strong>${profile.bmi}</strong> (${profile.bmi_category})</div>
+            <div><span class="text-gray-600">{{ _('Activity') }}:</span> <strong class="capitalize">${profile.activity}</strong></div>
           </div>
         </div>
       `;
 
-      let planHtml = '<h3 class="text-2xl font-semibold mb-4 text-blue-700">🧠 Your Custom Lifestyle Plan</h3>';
+      let planHtml = '<h3 class="text-2xl font-semibold mb-4 text-blue-700">🧠 {{ _("Your Custom Lifestyle Plan") }}</h3>';
       planHtml += '<div class="grid gap-4">';
 
       for (const [category, tips] of Object.entries(plan)) {
@@ -192,9 +167,8 @@
       }
 
       planHtml += '</div>';
-      
       if (source === 'ai') {
-        planHtml += '<p class="text-xs text-gray-500 mt-4 text-center">✨ Personalized with AI</p>';
+        planHtml += '<p class="text-xs text-gray-500 mt-4 text-center">✨ {{ _("Personalized with AI") }}</p>';
       }
 
       resultDiv.innerHTML = profileHtml + planHtml;
@@ -203,11 +177,7 @@
     }
 
     function renderError(message) {
-      resultDiv.innerHTML = `
-        <div class="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700">
-          <strong>Error:</strong> ${message}
-        </div>
-      `;
+      resultDiv.innerHTML = `<div class="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700"><strong>{{ _('Error') }}:</strong> ${message}</div>`;
       resultDiv.classList.remove('hidden');
       resultDiv.classList.add('show');
     }
@@ -216,11 +186,7 @@
       e.preventDefault();
       setLoading(true);
 
-      const formData = {
-        age: form.age.value,
-        bmi: form.bmi.value,
-        activity: form.activity.value
-      };
+      const formData = { age: form.age.value, bmi: form.bmi.value, activity: form.activity.value };
 
       try {
         const response = await fetch('/api/lifestyle-plan', {
@@ -230,19 +196,34 @@
         });
 
         const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.error || 'Failed to generate plan');
-        }
-
+        if (!response.ok) throw new Error(data.error || 'Failed to generate plan');
         renderPlan(data);
       } catch (error) {
         console.error('Error:', error);
-        renderError(error.message || 'Something went wrong. Please try again.');
+        renderError(error.message || ERROR_TEXT);
       } finally {
         setLoading(false);
       }
     });
+
+    // Language selector
+    document.getElementById('lang-btn').addEventListener('click', function(e) {
+      e.stopPropagation();
+      document.getElementById('lang-dropdown').classList.toggle('show');
+    });
+    document.addEventListener('click', function() {
+      document.getElementById('lang-dropdown').classList.remove('show');
+    });
+    function setLanguage(langCode) {
+      fetch('/api/set-language', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ language: langCode })
+      })
+      .then(response => response.json())
+      .then(data => { if (data.success) window.location.reload(); })
+      .catch(err => console.error('Language switch failed:', err));
+    }
   </script>
 </body>
 </html>

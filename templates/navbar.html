@@ -4,22 +4,77 @@
     color: #fff;
     text-shadow: 1px 1px 0 rgba(0,0,0,0.15), 2px 2px 0 rgba(0,0,0,0.08);
   }
+  .lang-dropdown {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+  }
+  .lang-dropdown.show {
+    max-height: 300px;
+  }
 </style>
 <script src="https://cdn.tailwindcss.com"></script>
 <header class="bg-blue-700 text-white shadow-lg fixed top-0 left-0 right-0 z-50">
   <div class="container mx-auto flex justify-between items-center py-4 px-6">
-    <h1 class="text-3xl sm:text-4xl font-extrabold tracking-wide text-white dc-text-3d">🩺 Diabetes Care</h1>
-    <nav>
+    <h1 class="text-3xl sm:text-4xl font-extrabold tracking-wide text-white dc-text-3d">🩺 {{ _('Diabetes Care') }}</h1>
+    <nav class="flex items-center gap-4">
       <ul class="flex space-x-4 sm:space-x-6 text-base sm:text-lg font-semibold">
-        <li><a href="/" class="hover:text-blue-300 transition">Home</a></li>
-        <li><a href="/index" class="hover:text-blue-300 transition">Prediction</a></li>
-        <li><a href="/life" class="hover:text-blue-300 transition">Lifestyle Check</a></li>
-        <li><a href="/chatbot" class="hover:text-blue-300 transition">Chatbot</a></li>
-        <li><a href="/explore" class="hover:text-blue-300 transition">Explore Data</a></li>
-        <li><a href="/forum" class="hover:text-blue-300 transition">Forum</a></li>
+        <li><a href="/" class="hover:text-blue-300 transition">{{ _('Home') }}</a></li>
+        <li><a href="/index" class="hover:text-blue-300 transition">{{ _('Prediction') }}</a></li>
+        <li><a href="/life" class="hover:text-blue-300 transition">{{ _('Lifestyle Check') }}</a></li>
+        <li><a href="/chatbot" class="hover:text-blue-300 transition">{{ _('Chatbot') }}</a></li>
+        <li><a href="/explore" class="hover:text-blue-300 transition">{{ _('Explore Data') }}</a></li>
+        <li><a href="/forum" class="hover:text-blue-300 transition">{{ _('Forum') }}</a></li>
       </ul>
+      <!-- Language Selector -->
+      <div class="relative ml-4">
+        <button id="lang-btn" class="flex items-center space-x-1 px-3 py-1 rounded hover:bg-blue-600 transition text-sm" aria-label="{{ _('Select language') }}">
+          <span>🌐</span>
+          <span id="current-lang">{{ languages.get(current_language, 'English') }}</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </button>
+        <div id="lang-dropdown" class="lang-dropdown absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg z-50">
+          {% for code, name in languages.items() %}
+          <button onclick="setLanguage('{{ code }}')" 
+                  class="block w-full text-left px-4 py-2 text-gray-800 hover:bg-blue-100 text-sm {% if code == current_language %}bg-blue-50 font-semibold{% endif %}">
+            {{ name }}
+          </button>
+          {% endfor %}
+        </div>
+      </div>
     </nav>
   </div>
 </header>
 <!-- Spacer equal to header height to prevent content being overlapped -->
 <div class="h-20" aria-hidden="true"></div>
+
+<script>
+  // Toggle language dropdown
+  document.getElementById('lang-btn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    document.getElementById('lang-dropdown').classList.toggle('show');
+  });
+  
+  // Close dropdown when clicking outside
+  document.addEventListener('click', function() {
+    document.getElementById('lang-dropdown').classList.remove('show');
+  });
+  
+  // Set language via API
+  function setLanguage(langCode) {
+    fetch('/api/set-language', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ language: langCode })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        window.location.reload();
+      }
+    })
+    .catch(err => console.error('Language switch failed:', err));
+  }
+</script>

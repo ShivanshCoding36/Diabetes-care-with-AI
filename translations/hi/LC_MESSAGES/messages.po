@@ -1,0 +1,536 @@
+# Hindi translations for Diabetes Care.
+# Copyright (C) 2026 Diabetes Care
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Diabetes Care 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-01-03 00:33+0530\n"
+"PO-Revision-Date: 2026-01-03 00:30+0530\n"
+"Last-Translator: \n"
+"Language: hi\n"
+"Language-Team: hi\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: app.py:196
+msgid "Model not available."
+msgstr "मॉडल उपलब्ध नहीं है।"
+
+#: app.py:200
+msgid "Diabetic"
+msgstr "मधुमेह"
+
+#: app.py:200
+msgid "Not Diabetic"
+msgstr "मधुमेह नहीं"
+
+#: app.py:202
+#, python-format
+msgid "Prediction: %(result)s"
+msgstr "भविष्यवाणी: %(result)s"
+
+#: app.py:205
+msgid "Error during prediction."
+msgstr "भविष्यवाणी के दौरान त्रुटि।"
+
+#: templates/chatbot.html:6
+msgid "Diabetes Chatbot"
+msgstr "मधुमेह चैटबॉट"
+
+#: templates/chatbot.html:152 templates/explore.html:69 templates/forum.html:29
+#: templates/home.html:69 templates/home.html:115 templates/index.html:25
+#: templates/life.html:38 templates/navbar.html:19
+msgid "Diabetes Care"
+msgstr "मधुमेह देखभाल"
+
+#: templates/chatbot.html:155 templates/explore.html:74 templates/forum.html:32
+#: templates/home.html:75 templates/home.html:122 templates/index.html:30
+#: templates/life.html:41 templates/navbar.html:23
+msgid "Prediction"
+msgstr "भविष्यवाणी"
+
+#: templates/chatbot.html:156 templates/explore.html:75 templates/forum.html:33
+#: templates/home.html:76 templates/index.html:31 templates/life.html:42
+#: templates/navbar.html:24
+msgid "Lifestyle Check"
+msgstr "जीवनशैली जांच"
+
+#: templates/chatbot.html:157 templates/explore.html:76 templates/forum.html:34
+#: templates/home.html:77 templates/home.html:124 templates/index.html:32
+#: templates/index.html:145 templates/life.html:43 templates/navbar.html:25
+msgid "Chatbot"
+msgstr "चैटबॉट"
+
+#: templates/chatbot.html:158 templates/explore.html:77 templates/forum.html:35
+#: templates/home.html:78 templates/index.html:33 templates/life.html:44
+#: templates/navbar.html:26
+msgid "Explore Data"
+msgstr "डेटा देखें"
+
+#: templates/chatbot.html:159 templates/explore.html:78 templates/forum.html:36
+#: templates/home.html:79 templates/home.html:126 templates/index.html:34
+#: templates/life.html:45 templates/navbar.html:27
+msgid "Forum"
+msgstr "फोरम"
+
+#: templates/chatbot.html:186
+msgid "Diabetes Expert Chatbot"
+msgstr "मधुमेह विशेषज्ञ चैटबॉट"
+
+#: templates/chatbot.html:190
+msgid ""
+"Hello! I'm here to help you understand diabetes and answer your "
+"questions. How can I assist you today?"
+msgstr ""
+"नमस्ते! मैं आपको मधुमेह को समझने और आपके सवालों का जवाब देने में मदद करने"
+" के लिए यहां हूं। आज मैं आपकी कैसे मदद कर सकता हूं?"
+
+#: templates/chatbot.html:195
+msgid "Type your message"
+msgstr "अपना संदेश लिखें"
+
+#: templates/chatbot.html:196
+msgid "Type your message..."
+msgstr "अपना संदेश लिखें..."
+
+#: templates/chatbot.html:197
+msgid "Send"
+msgstr "भेजें"
+
+#: templates/chatbot.html:203
+msgid "Thinking..."
+msgstr "सोच रहा हूं..."
+
+#: templates/chatbot.html:204
+msgid "Sorry, I could not get a response. Please try again."
+msgstr "क्षमा करें, मुझे जवाब नहीं मिला। कृपया पुनः प्रयास करें।"
+
+#: templates/chatbot.html:205
+msgid "Sending message, please wait..."
+msgstr "संदेश भेज रहा हूं, कृपया प्रतीक्षा करें..."
+
+#: templates/explore.html:6
+msgid "Data Explorer"
+msgstr "डेटा एक्सप्लोरर"
+
+#: templates/explore.html:6 templates/index.html:6 templates/index.html:65
+msgid "Diabetes Prediction"
+msgstr "मधुमेह भविष्यवाणी"
+
+#: templates/explore.html:70
+msgid "Diabetes Data Explorer"
+msgstr "मधुमेह डेटा एक्सप्लोरर"
+
+#: templates/explore.html:109 templates/explore.html:110
+#: templates/explore.html:111
+msgid "Correlation Heatmap"
+msgstr "सहसंबंध हीटमैप"
+
+#: templates/explore.html:114
+msgid "Histogram of Glucose"
+msgstr "ग्लूकोज का हिस्टोग्राम"
+
+#: templates/explore.html:115
+msgid "Histogram: Glucose"
+msgstr "हिस्टोग्राम: ग्लूकोज"
+
+#: templates/explore.html:119
+msgid "Histogram of BMI"
+msgstr "बीएमआई का हिस्टोग्राम"
+
+#: templates/explore.html:120
+msgid "Histogram: BMI"
+msgstr "हिस्टोग्राम: बीएमआई"
+
+#: templates/explore.html:124
+msgid "Back to Home"
+msgstr "होम पर वापस जाएं"
+
+#: templates/explore.html:128
+msgid "Diabetes Prediction Project"
+msgstr "मधुमेह भविष्यवाणी परियोजना"
+
+#: templates/forum.html:6 templates/forum.html:60
+msgid "Diabetes Care Forum"
+msgstr "मधुमेह देखभाल फोरम"
+
+#: templates/forum.html:39 templates/forum.html:45
+msgid "Notifications"
+msgstr "सूचनाएं"
+
+#: templates/forum.html:41
+msgid "unread notifications"
+msgstr "अपठित सूचनाएं"
+
+#: templates/forum.html:43
+msgid "Notifications panel"
+msgstr "सूचना पैनल"
+
+#: templates/forum.html:47
+msgid "Mark all notifications as read"
+msgstr "सभी सूचनाओं को पढ़ा हुआ चिह्नित करें"
+
+#: templates/forum.html:47
+msgid "Mark all read"
+msgstr "सभी को पढ़ा हुआ चिह्नित करें"
+
+#: templates/forum.html:48
+msgid "Open notification settings"
+msgstr "सूचना सेटिंग्स खोलें"
+
+#: templates/forum.html:51
+msgid "No notifications yet"
+msgstr "अभी तक कोई सूचना नहीं"
+
+#: templates/forum.html:61
+msgid "Share experiences, ask questions, and support the community."
+msgstr "अनुभव साझा करें, प्रश्न पूछें और समुदाय का समर्थन करें।"
+
+#: templates/forum.html:66
+msgid "Share Your Story or Ask a Question"
+msgstr "अपनी कहानी साझा करें या प्रश्न पूछें"
+
+#: templates/forum.html:68
+msgid "Type your story or question here... Use @username to mention someone"
+msgstr "अपनी कहानी या प्रश्न यहां लिखें... किसी को उल्लेख करने के लिए @उपयोगकर्तानाम का उपयोग करें"
+
+#: templates/forum.html:70
+msgid "Post"
+msgstr "पोस्ट करें"
+
+#: templates/forum.html:76
+msgid "Search & Filter Posts"
+msgstr "पोस्ट खोजें और फ़िल्टर करें"
+
+#: templates/forum.html:79
+msgid "Search posts by keyword..."
+msgstr "कीवर्ड द्वारा पोस्ट खोजें..."
+
+#: templates/forum.html:84
+msgid "From Date"
+msgstr "तारीख से"
+
+#: templates/forum.html:85
+msgid "To Date"
+msgstr "तारीख तक"
+
+#: templates/forum.html:88
+msgid "Clear Filters"
+msgstr "फ़िल्टर साफ़ करें"
+
+#: templates/forum.html:93
+msgid "Loading posts..."
+msgstr "पोस्ट लोड हो रहे हैं..."
+
+#: templates/forum.html:94
+msgid "Forum posts"
+msgstr "फोरम पोस्ट"
+
+#: templates/forum.html:97
+msgid "No posts yet — be the first to share!"
+msgstr "अभी तक कोई पोस्ट नहीं — पहले साझा करने वाले बनें!"
+
+#: templates/forum.html:98
+msgid "No posts found matching your search."
+msgstr "आपकी खोज से मेल खाने वाली कोई पोस्ट नहीं मिली।"
+
+#: templates/forum.html:98
+msgid "Clear filters and show all posts"
+msgstr "फ़िल्टर साफ़ करें और सभी पोस्ट दिखाएं"
+
+#: templates/forum.html:100
+msgid "Previous"
+msgstr "पिछला"
+
+#: templates/forum.html:101
+msgid "Page"
+msgstr "पृष्ठ"
+
+#: templates/forum.html:101
+msgid "of"
+msgstr "का"
+
+#: templates/forum.html:102
+msgid "Next"
+msgstr "अगला"
+
+#: templates/forum.html:105
+msgid "Diabetes Care Forum. Empowering lives, one post at a time."
+msgstr "मधुमेह देखभाल फोरम। एक पोस्ट से जीवन को सशक्त बनाना।"
+
+#: templates/forum.html:114
+msgid "Notification Settings"
+msgstr "सूचना सेटिंग्स"
+
+#: templates/forum.html:118 templates/life.html:141
+msgid "Your Profile"
+msgstr "आपकी प्रोफ़ाइल"
+
+#: templates/forum.html:120
+msgid "Username"
+msgstr "उपयोगकर्ता नाम"
+
+#: templates/forum.html:120
+msgid "Enter username"
+msgstr "उपयोगकर्ता नाम दर्ज करें"
+
+#: templates/forum.html:121
+msgid "Email (for notifications)"
+msgstr "ईमेल (सूचनाओं के लिए)"
+
+#: templates/forum.html:121
+msgid "your@email.com"
+msgstr "आपका@ईमेल.com"
+
+#: templates/forum.html:125
+msgid "Email Notifications"
+msgstr "ईमेल सूचनाएं"
+
+#: templates/forum.html:126
+msgid "Replies to my posts"
+msgstr "मेरी पोस्ट पर जवाब"
+
+#: templates/forum.html:126
+msgid "Get notified when someone replies"
+msgstr "जब कोई जवाब दे तो सूचना प्राप्त करें"
+
+#: templates/forum.html:127
+msgid "Mentions (@username)"
+msgstr "उल्लेख (@उपयोगकर्तानाम)"
+
+#: templates/forum.html:127
+msgid "Get notified when you're mentioned"
+msgstr "जब आपका उल्लेख हो तो सूचना प्राप्त करें"
+
+#: templates/forum.html:128
+msgid "Subscribed threads"
+msgstr "सब्सक्राइब किए गए थ्रेड"
+
+#: templates/forum.html:128
+msgid "Updates on threads you follow"
+msgstr "आपके द्वारा फॉलो किए गए थ्रेड पर अपडेट"
+
+#: templates/forum.html:130
+msgid "Save Settings"
+msgstr "सेटिंग्स सहेजें"
+
+#: templates/home.html:6
+msgid "Diabetes Care Home"
+msgstr "मधुमेह देखभाल होम"
+
+#: templates/home.html:74 templates/navbar.html:22
+msgid "Home"
+msgstr "होम"
+
+#: templates/home.html:109
+msgid "Doctor illustration"
+msgstr "डॉक्टर चित्रण"
+
+#: templates/home.html:115
+msgid "Welcome to"
+msgstr "स्वागत है"
+
+#: templates/home.html:118
+msgid ""
+"Your one-stop solution for prediction, lifestyle advice, AI-powered "
+"chatbot, and real-time health data insights."
+msgstr ""
+"भविष्यवाणी, जीवनशैली सलाह, AI-संचालित चैटबॉट और रीयल-टाइम स्वास्थ्य डेटा "
+"अंतर्दृष्टि के लिए आपका एकमात्र समाधान।"
+
+#: templates/home.html:123
+msgid "Lifestyle"
+msgstr "जीवनशैली"
+
+#: templates/home.html:125
+msgid "Explore"
+msgstr "देखें"
+
+#: templates/home.html:140
+msgid "Passionate about healthcare and AI."
+msgstr "स्वास्थ्य सेवा और AI के प्रति उत्साही।"
+
+#: templates/home.html:141
+msgid "Building smart solutions for meaningful impact."
+msgstr "सार्थक प्रभाव के लिए स्मार्ट समाधान बना रहे हैं।"
+
+#: templates/home.html:146
+msgid "Connect with me"
+msgstr "मुझसे जुड़ें"
+
+#: templates/home.html:159
+msgid "Diabetes Care Platform"
+msgstr "मधुमेह देखभाल प्लेटफॉर्म"
+
+#: templates/index.html:71
+msgid "Pregnancies"
+msgstr "गर्भधारण"
+
+#: templates/index.html:72
+msgid "e.g., 2"
+msgstr "उदा., 2"
+
+#: templates/index.html:77
+msgid "Glucose Level"
+msgstr "ग्लूकोज स्तर"
+
+#: templates/index.html:78
+msgid "e.g., 130"
+msgstr "उदा., 130"
+
+#: templates/index.html:83
+msgid "Blood Pressure"
+msgstr "रक्तचाप"
+
+#: templates/index.html:84
+msgid "e.g., 70"
+msgstr "उदा., 70"
+
+#: templates/index.html:89
+msgid "Skin Thickness"
+msgstr "त्वचा की मोटाई"
+
+#: templates/index.html:90
+msgid "e.g., 32"
+msgstr "उदा., 32"
+
+#: templates/index.html:95
+msgid "Insulin Level"
+msgstr "इंसुलिन स्तर"
+
+#: templates/index.html:96
+msgid "e.g., 85"
+msgstr "उदा., 85"
+
+#: templates/index.html:101 templates/life.html:144
+msgid "BMI"
+msgstr "बीएमआई"
+
+#: templates/index.html:102
+msgid "e.g., 28.5"
+msgstr "उदा., 28.5"
+
+#: templates/index.html:107
+msgid "Diabetes Pedigree Function"
+msgstr "मधुमेह वंशावली फ़ंक्शन"
+
+#: templates/index.html:108
+msgid "e.g., 0.45"
+msgstr "उदा., 0.45"
+
+#: templates/index.html:113 templates/life.html:75 templates/life.html:143
+msgid "Age"
+msgstr "आयु"
+
+#: templates/index.html:114
+msgid "e.g., 35"
+msgstr "उदा., 35"
+
+#: templates/index.html:124
+msgid "Predict"
+msgstr "भविष्यवाणी करें"
+
+#: templates/index.html:135
+msgid "Explore Dataset"
+msgstr "डेटासेट देखें"
+
+#: templates/index.html:139
+msgid "CHECK YOUR LIFESTYLE"
+msgstr "अपनी जीवनशैली जांचें"
+
+#: templates/life.html:6 templates/life.html:71
+msgid "Personalized Lifestyle Plan"
+msgstr "व्यक्तिगत जीवनशैली योजना"
+
+#: templates/life.html:76
+msgid "Enter your age"
+msgstr "अपनी आयु दर्ज करें"
+
+#: templates/life.html:81
+msgid "BMI (Body Mass Index)"
+msgstr "बीएमआई (बॉडी मास इंडेक्स)"
+
+#: templates/life.html:82
+msgid "Enter your BMI"
+msgstr "अपना बीएमआई दर्ज करें"
+
+#: templates/life.html:84
+msgid "Not sure? BMI = weight(kg) / height(m)²"
+msgstr "निश्चित नहीं? बीएमआई = वजन(किग्रा) / ऊंचाई(मी)²"
+
+#: templates/life.html:88
+msgid "Physical Activity Level"
+msgstr "शारीरिक गतिविधि स्तर"
+
+#: templates/life.html:91
+msgid "Select activity level"
+msgstr "गतिविधि स्तर चुनें"
+
+#: templates/life.html:92
+msgid "Low (Sedentary)"
+msgstr "कम (गतिहीन)"
+
+#: templates/life.html:93
+msgid "Moderate (3-5 days/week)"
+msgstr "मध्यम (3-5 दिन/सप्ताह)"
+
+#: templates/life.html:94
+msgid "High (Daily or intense exercise)"
+msgstr "उच्च (दैनिक या तीव्र व्यायाम)"
+
+#: templates/life.html:100 templates/life.html:117
+msgid "Generate Plan"
+msgstr "योजना बनाएं"
+
+#: templates/life.html:116
+msgid "Generating..."
+msgstr "बना रहा हूं..."
+
+#: templates/life.html:118
+msgid "Something went wrong. Please try again."
+msgstr "कुछ गलत हो गया। कृपया पुनः प्रयास करें।"
+
+#: templates/life.html:122
+msgid "Diet & Nutrition"
+msgstr "आहार और पोषण"
+
+#: templates/life.html:123
+msgid "Exercise & Activity"
+msgstr "व्यायाम और गतिविधि"
+
+#: templates/life.html:124
+msgid "Stress Management"
+msgstr "तनाव प्रबंधन"
+
+#: templates/life.html:125
+msgid "Sleep & Recovery"
+msgstr "नींद और रिकवरी"
+
+#: templates/life.html:126
+msgid "Health Monitoring"
+msgstr "स्वास्थ्य निगरानी"
+
+#: templates/life.html:145
+msgid "Activity"
+msgstr "गतिविधि"
+
+#: templates/life.html:150
+msgid "Your Custom Lifestyle Plan"
+msgstr "आपकी कस्टम जीवनशैली योजना"
+
+#: templates/life.html:171
+msgid "Personalized with AI"
+msgstr "AI के साथ व्यक्तिगत"
+
+#: templates/life.html:180
+msgid "Error"
+msgstr "त्रुटि"
+
+#: templates/navbar.html:31
+msgid "Select language"
+msgstr "भाषा चुनें"
+

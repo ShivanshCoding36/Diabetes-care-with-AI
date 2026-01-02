@@ -1,0 +1,532 @@
+# Chinese (Simplified) translations for Diabetes Care.
+# Copyright (C) 2026 Diabetes Care
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Diabetes Care 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-01-03 00:33+0530\n"
+"PO-Revision-Date: 2026-01-03 00:30+0530\n"
+"Last-Translator: \n"
+"Language: zh\n"
+"Language-Team: zh\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: app.py:196
+msgid "Model not available."
+msgstr "模型不可用。"
+
+#: app.py:200
+msgid "Diabetic"
+msgstr "糖尿病"
+
+#: app.py:200
+msgid "Not Diabetic"
+msgstr "非糖尿病"
+
+#: app.py:202
+#, python-format
+msgid "Prediction: %(result)s"
+msgstr "预测结果：%(result)s"
+
+#: app.py:205
+msgid "Error during prediction."
+msgstr "预测过程中出错。"
+
+#: templates/chatbot.html:6
+msgid "Diabetes Chatbot"
+msgstr "糖尿病聊天机器人"
+
+#: templates/chatbot.html:152 templates/explore.html:69 templates/forum.html:29
+#: templates/home.html:69 templates/home.html:115 templates/index.html:25
+#: templates/life.html:38 templates/navbar.html:19
+msgid "Diabetes Care"
+msgstr "糖尿病护理"
+
+#: templates/chatbot.html:155 templates/explore.html:74 templates/forum.html:32
+#: templates/home.html:75 templates/home.html:122 templates/index.html:30
+#: templates/life.html:41 templates/navbar.html:23
+msgid "Prediction"
+msgstr "预测"
+
+#: templates/chatbot.html:156 templates/explore.html:75 templates/forum.html:33
+#: templates/home.html:76 templates/index.html:31 templates/life.html:42
+#: templates/navbar.html:24
+msgid "Lifestyle Check"
+msgstr "生活方式检查"
+
+#: templates/chatbot.html:157 templates/explore.html:76 templates/forum.html:34
+#: templates/home.html:77 templates/home.html:124 templates/index.html:32
+#: templates/index.html:145 templates/life.html:43 templates/navbar.html:25
+msgid "Chatbot"
+msgstr "聊天机器人"
+
+#: templates/chatbot.html:158 templates/explore.html:77 templates/forum.html:35
+#: templates/home.html:78 templates/index.html:33 templates/life.html:44
+#: templates/navbar.html:26
+msgid "Explore Data"
+msgstr "探索数据"
+
+#: templates/chatbot.html:159 templates/explore.html:78 templates/forum.html:36
+#: templates/home.html:79 templates/home.html:126 templates/index.html:34
+#: templates/life.html:45 templates/navbar.html:27
+msgid "Forum"
+msgstr "论坛"
+
+#: templates/chatbot.html:186
+msgid "Diabetes Expert Chatbot"
+msgstr "糖尿病专家聊天机器人"
+
+#: templates/chatbot.html:190
+msgid ""
+"Hello! I'm here to help you understand diabetes and answer your "
+"questions. How can I assist you today?"
+msgstr "您好！我在这里帮助您了解糖尿病并回答您的问题。今天我能为您做些什么？"
+
+#: templates/chatbot.html:195
+msgid "Type your message"
+msgstr "输入您的消息"
+
+#: templates/chatbot.html:196
+msgid "Type your message..."
+msgstr "输入您的消息..."
+
+#: templates/chatbot.html:197
+msgid "Send"
+msgstr "发送"
+
+#: templates/chatbot.html:203
+msgid "Thinking..."
+msgstr "思考中..."
+
+#: templates/chatbot.html:204
+msgid "Sorry, I could not get a response. Please try again."
+msgstr "抱歉，无法获取回复。请重试。"
+
+#: templates/chatbot.html:205
+msgid "Sending message, please wait..."
+msgstr "正在发送消息，请稍候..."
+
+#: templates/explore.html:6
+msgid "Data Explorer"
+msgstr "数据探索器"
+
+#: templates/explore.html:6 templates/index.html:6 templates/index.html:65
+msgid "Diabetes Prediction"
+msgstr "糖尿病预测"
+
+#: templates/explore.html:70
+msgid "Diabetes Data Explorer"
+msgstr "糖尿病数据探索器"
+
+#: templates/explore.html:109 templates/explore.html:110
+#: templates/explore.html:111
+msgid "Correlation Heatmap"
+msgstr "相关性热图"
+
+#: templates/explore.html:114
+msgid "Histogram of Glucose"
+msgstr "血糖直方图"
+
+#: templates/explore.html:115
+msgid "Histogram: Glucose"
+msgstr "直方图：血糖"
+
+#: templates/explore.html:119
+msgid "Histogram of BMI"
+msgstr "BMI直方图"
+
+#: templates/explore.html:120
+msgid "Histogram: BMI"
+msgstr "直方图：BMI"
+
+#: templates/explore.html:124
+msgid "Back to Home"
+msgstr "返回首页"
+
+#: templates/explore.html:128
+msgid "Diabetes Prediction Project"
+msgstr "糖尿病预测项目"
+
+#: templates/forum.html:6 templates/forum.html:60
+msgid "Diabetes Care Forum"
+msgstr "糖尿病护理论坛"
+
+#: templates/forum.html:39 templates/forum.html:45
+msgid "Notifications"
+msgstr "通知"
+
+#: templates/forum.html:41
+msgid "unread notifications"
+msgstr "未读通知"
+
+#: templates/forum.html:43
+msgid "Notifications panel"
+msgstr "通知面板"
+
+#: templates/forum.html:47
+msgid "Mark all notifications as read"
+msgstr "将所有通知标记为已读"
+
+#: templates/forum.html:47
+msgid "Mark all read"
+msgstr "全部标记为已读"
+
+#: templates/forum.html:48
+msgid "Open notification settings"
+msgstr "打开通知设置"
+
+#: templates/forum.html:51
+msgid "No notifications yet"
+msgstr "暂无通知"
+
+#: templates/forum.html:61
+msgid "Share experiences, ask questions, and support the community."
+msgstr "分享经验、提出问题并支持社区。"
+
+#: templates/forum.html:66
+msgid "Share Your Story or Ask a Question"
+msgstr "分享您的故事或提出问题"
+
+#: templates/forum.html:68
+msgid "Type your story or question here... Use @username to mention someone"
+msgstr "在此输入您的故事或问题... 使用@用户名来提及某人"
+
+#: templates/forum.html:70
+msgid "Post"
+msgstr "发布"
+
+#: templates/forum.html:76
+msgid "Search & Filter Posts"
+msgstr "搜索和筛选帖子"
+
+#: templates/forum.html:79
+msgid "Search posts by keyword..."
+msgstr "按关键词搜索帖子..."
+
+#: templates/forum.html:84
+msgid "From Date"
+msgstr "开始日期"
+
+#: templates/forum.html:85
+msgid "To Date"
+msgstr "结束日期"
+
+#: templates/forum.html:88
+msgid "Clear Filters"
+msgstr "清除筛选"
+
+#: templates/forum.html:93
+msgid "Loading posts..."
+msgstr "正在加载帖子..."
+
+#: templates/forum.html:94
+msgid "Forum posts"
+msgstr "论坛帖子"
+
+#: templates/forum.html:97
+msgid "No posts yet — be the first to share!"
+msgstr "暂无帖子 — 成为第一个分享的人！"
+
+#: templates/forum.html:98
+msgid "No posts found matching your search."
+msgstr "未找到与您搜索匹配的帖子。"
+
+#: templates/forum.html:98
+msgid "Clear filters and show all posts"
+msgstr "清除筛选并显示所有帖子"
+
+#: templates/forum.html:100
+msgid "Previous"
+msgstr "上一页"
+
+#: templates/forum.html:101
+msgid "Page"
+msgstr "页"
+
+#: templates/forum.html:101
+msgid "of"
+msgstr "共"
+
+#: templates/forum.html:102
+msgid "Next"
+msgstr "下一页"
+
+#: templates/forum.html:105
+msgid "Diabetes Care Forum. Empowering lives, one post at a time."
+msgstr "糖尿病护理论坛。一帖一帖，赋能生活。"
+
+#: templates/forum.html:114
+msgid "Notification Settings"
+msgstr "通知设置"
+
+#: templates/forum.html:118 templates/life.html:141
+msgid "Your Profile"
+msgstr "您的资料"
+
+#: templates/forum.html:120
+msgid "Username"
+msgstr "用户名"
+
+#: templates/forum.html:120
+msgid "Enter username"
+msgstr "输入用户名"
+
+#: templates/forum.html:121
+msgid "Email (for notifications)"
+msgstr "邮箱（用于通知）"
+
+#: templates/forum.html:121
+msgid "your@email.com"
+msgstr "您的@邮箱.com"
+
+#: templates/forum.html:125
+msgid "Email Notifications"
+msgstr "邮件通知"
+
+#: templates/forum.html:126
+msgid "Replies to my posts"
+msgstr "我的帖子的回复"
+
+#: templates/forum.html:126
+msgid "Get notified when someone replies"
+msgstr "当有人回复时收到通知"
+
+#: templates/forum.html:127
+msgid "Mentions (@username)"
+msgstr "提及（@用户名）"
+
+#: templates/forum.html:127
+msgid "Get notified when you're mentioned"
+msgstr "当您被提及时收到通知"
+
+#: templates/forum.html:128
+msgid "Subscribed threads"
+msgstr "订阅的帖子"
+
+#: templates/forum.html:128
+msgid "Updates on threads you follow"
+msgstr "您关注的帖子的更新"
+
+#: templates/forum.html:130
+msgid "Save Settings"
+msgstr "保存设置"
+
+#: templates/home.html:6
+msgid "Diabetes Care Home"
+msgstr "糖尿病护理首页"
+
+#: templates/home.html:74 templates/navbar.html:22
+msgid "Home"
+msgstr "首页"
+
+#: templates/home.html:109
+msgid "Doctor illustration"
+msgstr "医生插图"
+
+#: templates/home.html:115
+msgid "Welcome to"
+msgstr "欢迎来到"
+
+#: templates/home.html:118
+msgid ""
+"Your one-stop solution for prediction, lifestyle advice, AI-powered "
+"chatbot, and real-time health data insights."
+msgstr "您的一站式解决方案，包括预测、生活方式建议、AI聊天机器人和实时健康数据洞察。"
+
+#: templates/home.html:123
+msgid "Lifestyle"
+msgstr "生活方式"
+
+#: templates/home.html:125
+msgid "Explore"
+msgstr "探索"
+
+#: templates/home.html:140
+msgid "Passionate about healthcare and AI."
+msgstr "热衷于医疗保健和人工智能。"
+
+#: templates/home.html:141
+msgid "Building smart solutions for meaningful impact."
+msgstr "构建智能解决方案，创造有意义的影响。"
+
+#: templates/home.html:146
+msgid "Connect with me"
+msgstr "与我联系"
+
+#: templates/home.html:159
+msgid "Diabetes Care Platform"
+msgstr "糖尿病护理平台"
+
+#: templates/index.html:71
+msgid "Pregnancies"
+msgstr "怀孕次数"
+
+#: templates/index.html:72
+msgid "e.g., 2"
+msgstr "例如，2"
+
+#: templates/index.html:77
+msgid "Glucose Level"
+msgstr "血糖水平"
+
+#: templates/index.html:78
+msgid "e.g., 130"
+msgstr "例如，130"
+
+#: templates/index.html:83
+msgid "Blood Pressure"
+msgstr "血压"
+
+#: templates/index.html:84
+msgid "e.g., 70"
+msgstr "例如，70"
+
+#: templates/index.html:89
+msgid "Skin Thickness"
+msgstr "皮肤厚度"
+
+#: templates/index.html:90
+msgid "e.g., 32"
+msgstr "例如，32"
+
+#: templates/index.html:95
+msgid "Insulin Level"
+msgstr "胰岛素水平"
+
+#: templates/index.html:96
+msgid "e.g., 85"
+msgstr "例如，85"
+
+#: templates/index.html:101 templates/life.html:144
+msgid "BMI"
+msgstr "BMI"
+
+#: templates/index.html:102
+msgid "e.g., 28.5"
+msgstr "例如，28.5"
+
+#: templates/index.html:107
+msgid "Diabetes Pedigree Function"
+msgstr "糖尿病家族函数"
+
+#: templates/index.html:108
+msgid "e.g., 0.45"
+msgstr "例如，0.45"
+
+#: templates/index.html:113 templates/life.html:75 templates/life.html:143
+msgid "Age"
+msgstr "年龄"
+
+#: templates/index.html:114
+msgid "e.g., 35"
+msgstr "例如，35"
+
+#: templates/index.html:124
+msgid "Predict"
+msgstr "预测"
+
+#: templates/index.html:135
+msgid "Explore Dataset"
+msgstr "探索数据集"
+
+#: templates/index.html:139
+msgid "CHECK YOUR LIFESTYLE"
+msgstr "检查您的生活方式"
+
+#: templates/life.html:6 templates/life.html:71
+msgid "Personalized Lifestyle Plan"
+msgstr "个性化生活方式计划"
+
+#: templates/life.html:76
+msgid "Enter your age"
+msgstr "输入您的年龄"
+
+#: templates/life.html:81
+msgid "BMI (Body Mass Index)"
+msgstr "BMI（身体质量指数）"
+
+#: templates/life.html:82
+msgid "Enter your BMI"
+msgstr "输入您的BMI"
+
+#: templates/life.html:84
+msgid "Not sure? BMI = weight(kg) / height(m)²"
+msgstr "不确定？BMI = 体重(公斤) / 身高(米)²"
+
+#: templates/life.html:88
+msgid "Physical Activity Level"
+msgstr "身体活动水平"
+
+#: templates/life.html:91
+msgid "Select activity level"
+msgstr "选择活动水平"
+
+#: templates/life.html:92
+msgid "Low (Sedentary)"
+msgstr "低（久坐）"
+
+#: templates/life.html:93
+msgid "Moderate (3-5 days/week)"
+msgstr "中等（每周3-5天）"
+
+#: templates/life.html:94
+msgid "High (Daily or intense exercise)"
+msgstr "高（每日或高强度运动）"
+
+#: templates/life.html:100 templates/life.html:117
+msgid "Generate Plan"
+msgstr "生成计划"
+
+#: templates/life.html:116
+msgid "Generating..."
+msgstr "生成中..."
+
+#: templates/life.html:118
+msgid "Something went wrong. Please try again."
+msgstr "出了点问题。请重试。"
+
+#: templates/life.html:122
+msgid "Diet & Nutrition"
+msgstr "饮食与营养"
+
+#: templates/life.html:123
+msgid "Exercise & Activity"
+msgstr "运动与活动"
+
+#: templates/life.html:124
+msgid "Stress Management"
+msgstr "压力管理"
+
+#: templates/life.html:125
+msgid "Sleep & Recovery"
+msgstr "睡眠与恢复"
+
+#: templates/life.html:126
+msgid "Health Monitoring"
+msgstr "健康监测"
+
+#: templates/life.html:145
+msgid "Activity"
+msgstr "活动"
+
+#: templates/life.html:150
+msgid "Your Custom Lifestyle Plan"
+msgstr "您的定制生活方式计划"
+
+#: templates/life.html:171
+msgid "Personalized with AI"
+msgstr "AI个性化定制"
+
+#: templates/life.html:180
+msgid "Error"
+msgstr "错误"
+
+#: templates/navbar.html:31
+msgid "Select language"
+msgstr "选择语言"
+
