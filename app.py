@@ -355,10 +355,13 @@ def posts_api():
 
 
 # --- Notification System ---
+import uuid
+
 
 def extract_mentions(content):
     """Extract @username mentions from post content."""
     return re.findall(r'@(\w+)', content)
+
 
 
 def send_email_notification(to_email, subject, body):
@@ -378,10 +381,11 @@ def send_email_notification(to_email, subject, body):
         return False
 
 
+
 def create_notification(user_id, notif_type, message, post_id=None):
     """Create an in-app notification."""
     notification = {
-        'id': len(notifications) + 1,
+        'id': str(uuid.uuid4()),
         'user_id': user_id,
         'type': notif_type,
         'message': message,
@@ -391,6 +395,7 @@ def create_notification(user_id, notif_type, message, post_id=None):
     }
     notifications.append(notification)
     return notification
+
 
 
 def process_post_notifications(post):
@@ -410,7 +415,7 @@ def process_post_notifications(post):
                 # Create in-app notification
                 create_notification(
                     original_author, 
-                    'reply', 
+                    'reply',
                     f"Someone replied to your post",
                     post_id
                 )
