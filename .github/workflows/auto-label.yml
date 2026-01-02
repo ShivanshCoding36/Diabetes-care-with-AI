@@ -1,0 +1,78 @@
+name: Auto Label Issues and PRs
+
+on:
+  issues:
+    types: [opened, edited]
+  pull_request:
+    types: [opened, edited]
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Auto-label based on keywords
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue || context.payload.pull_request;
+            const title = (issue.title || '').toLowerCase();
+            const body = (issue.body || '').toLowerCase();
+            const content = `${title} ${body}`;
+            
+            const labelsToAdd = [];
+            
+            // Bug-related keywords
+            if (/\b(bug|error|fix|broken|crash|fail|not working)\b/.test(content)) {
+              labelsToAdd.push('bug');
+            }
+            
+            // Feature/Enhancement-related keywords
+            if (/\b(feature|enhancement|add|new|request|improve|implement)\b/.test(content)) {
+              labelsToAdd.push('enhancement');
+            }
+            
+            // Documentation-related keywords
+            if (/\b(doc|documentation|readme|docs|typo|spelling)\b/.test(content)) {
+              labelsToAdd.push('documentation');
+            }
+            
+            // Question-related keywords
+            if (/\b(question|how to|how do|confused|why does)\b/.test(content)) {
+              labelsToAdd.push('question');
+            }
+            
+            // Help wanted keywords
+            if (/\b(help|help wanted|assistance|stuck|blocked)\b/.test(content)) {
+              labelsToAdd.push('help wanted');
+            }
+            
+            // Good first issue keywords
+            if (/\b(beginner|easy|good first issue|starter|simple|newcomer)\b/.test(content)) {
+              labelsToAdd.push('good first issue');
+            }
+            
+            // Invalid keywords
+            if (/\b(invalid|spam|off.?topic)\b/.test(content)) {
+              labelsToAdd.push('invalid');
+            }
+            
+            // Duplicate keywords
+            if (/\b(duplicate|dupe|already exists|same as)\b/.test(content)) {
+              labelsToAdd.push('duplicate');
+            }
+            
+            if (labelsToAdd.length > 0) {
+              const issueNumber = issue.number;
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                labels: labelsToAdd
+              });
+              console.log(`Added labels: ${labelsToAdd.join(', ')}`);
+            } else {
+              console.log('No matching keywords found, no labels added.');
+            }
