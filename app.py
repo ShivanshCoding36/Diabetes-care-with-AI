@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from flask import Flask, render_template, request, jsonify
+from flask_mail import Mail, Message
 import pickle
 import numpy as np
 import pandas as pd
@@ -13,6 +14,8 @@ import io
 import base64
 import logging
 import sys
+import re
+import threading
 from datetime import datetime
 from flask_cors import CORS
 
@@ -24,8 +27,22 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.jinja_env.auto_reload = True
 CORS(app)
 
+# Flask-Mail Configuration
+app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER', 'smtp.gmail.com')
+app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT', 587))
+app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS', 'true').lower() == 'true'
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER', 'noreply@diabetescare.com')
+
+mail = Mail(app)
+
 # In-memory store for forum posts
 posts = []
+
+# In-memory store for users and notifications
+users = {}  # {user_id: {email, username, preferences, subscribed_posts}}
+notifications = []  # [{id, user_id, type, message, post_id, read, timestamp}]
 
 # Setup logging
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG,
@@ -316,16 +333,273 @@ def posts_api():
     elif request.method == 'POST':
         data = request.json
         content = data.get('content', '').strip()
+        author_id = data.get('author_id', 'anonymous')
+        parent_id = data.get('parent_id')  # For replies
+        
         if not content:
             return jsonify({"error": "Content is required"}), 400
 
         post = {
             'id': len(posts) + 1,
             'content': content,
+            'author_id': author_id,
+            'parent_id': parent_id,
             'timestamp': datetime.utcnow().isoformat() + 'Z'
         }
         posts.append(post)
+        
+        # Process notifications asynchronously
+        threading.Thread(target=process_post_notifications, args=(post,)).start()
+        
         return jsonify(post), 201
+
+
+# --- Notification System ---
+
+def extract_mentions(content):
+    """Extract @username mentions from post content."""
+    return re.findall(r'@(\w+)', content)
+
+
+def send_email_notification(to_email, subject, body):
+    """Send email notification asynchronously."""
+    try:
+        if not app.config['MAIL_USERNAME']:
+            logging.warning("Email not configured, skipping notification")
+            return False
+        
+        with app.app_context():
+            msg = Message(subject=subject, recipients=[to_email], body=body)
+            mail.send(msg)
+            logging.info(f"Email sent to {to_email}")
+            return True
+    except Exception as e:
+        logging.error(f"Failed to send email: {e}")
+        return False
+
+
+def create_notification(user_id, notif_type, message, post_id=None):
+    """Create an in-app notification."""
+    notification = {
+        'id': len(notifications) + 1,
+        'user_id': user_id,
+        'type': notif_type,
+        'message': message,
+        'post_id': post_id,
+        'read': False,
+        'timestamp': datetime.utcnow().isoformat() + 'Z'
+    }
+    notifications.append(notification)
+    return notification
+
+
+def process_post_notifications(post):
+    """Process notifications for a new post (replies, mentions)."""
+    content = post.get('content', '')
+    author_id = post.get('author_id', 'anonymous')
+    post_id = post.get('id')
+    parent_id = post.get('parent_id')
+    
+    # Handle reply notifications
+    if parent_id:
+        parent_post = next((p for p in posts if p['id'] == parent_id), None)
+        if parent_post and parent_post.get('author_id') != author_id:
+            original_author = parent_post.get('author_id')
+            if original_author in users:
+                user = users[original_author]
+                # Create in-app notification
+                create_notification(
+                    original_author, 
+                    'reply', 
+                    f"Someone replied to your post",
+                    post_id
+                )
+                # Send email if enabled
+                if user.get('preferences', {}).get('email_replies', True):
+                    send_email_notification(
+                        user['email'],
+                        "New reply to your post - Diabetes Care Forum",
+                        f"Someone replied to your post:\n\n{content[:200]}...\n\nVisit the forum to see the full reply."
+                    )
+    
+    # Handle mention notifications
+    mentions = extract_mentions(content)
+    logging.info(f"Processing mentions: {mentions}, registered users: {list(users.keys())}")
+    
+    # Get author's username for the notification message
+    author_username = users.get(author_id, {}).get('username', 'Someone')
+    
+    for username in mentions:
+        # Find user by username (case-insensitive)
+        mentioned_user = next(
+            (uid for uid, u in users.items() if u.get('username', '').lower() == username.lower()),
+            None
+        )
+        logging.info(f"Looking for @{username}, found user_id: {mentioned_user}")
+        if mentioned_user and mentioned_user != author_id:
+            user = users[mentioned_user]
+            create_notification(
+                mentioned_user,
+                'mention',
+                f"@{author_username} mentioned you in a post",
+                post_id
+            )
+            logging.info(f"Created mention notification for {mentioned_user}")
+            if user.get('preferences', {}).get('email_mentions', True):
+                send_email_notification(
+                    user['email'],
+                    "You were mentioned - Diabetes Care Forum",
+                    f"You were mentioned in a post:\n\n{content[:200]}...\n\nVisit the forum to see the full post."
+                )
+    
+    # Notify subscribers of the thread
+    if parent_id:
+        for uid, user in users.items():
+            if parent_id in user.get('subscribed_posts', []) and uid != author_id:
+                create_notification(
+                    uid,
+                    'subscription',
+                    f"New activity in a thread you're following",
+                    post_id
+                )
+                if user.get('preferences', {}).get('email_subscriptions', True):
+                    send_email_notification(
+                        user['email'],
+                        "New activity in subscribed thread - Diabetes Care Forum",
+                        f"There's new activity in a thread you're following:\n\n{content[:200]}..."
+                    )
+
+
+# --- User & Notification API Endpoints ---
+
+@app.route('/api/users', methods=['GET', 'POST'])
+def users_api():
+    """Register or update a user for notifications, or list all users."""
+    if request.method == 'GET':
+        # Debug endpoint to see registered users
+        return jsonify({"users": {uid: {"username": u.get("username"), "email": u.get("email")} for uid, u in users.items()}})
+    
+    data = request.json
+    user_id = data.get('user_id')
+    email = data.get('email', '').strip()
+    username = data.get('username', '').strip()
+    
+    if not user_id or not email:
+        return jsonify({"error": "user_id and email are required"}), 400
+    
+    if user_id in users:
+        # Update existing user
+        users[user_id]['email'] = email
+        if username:
+            users[user_id]['username'] = username
+    else:
+        # Create new user
+        users[user_id] = {
+            'email': email,
+            'username': username or user_id,
+            'preferences': {
+                'email_replies': True,
+                'email_mentions': True,
+                'email_subscriptions': True
+            },
+            'subscribed_posts': []
+        }
+    
+    logging.info(f"User registered/updated: {user_id} -> {users[user_id]}")
+    return jsonify({"message": "User registered", "user": users[user_id]}), 200
+
+
+@app.route('/api/users/<user_id>/preferences', methods=['GET', 'PUT'])
+def user_preferences(user_id):
+    """Get or update user notification preferences."""
+    if user_id not in users:
+        return jsonify({"error": "User not found"}), 404
+    
+    if request.method == 'GET':
+        return jsonify(users[user_id].get('preferences', {}))
+    
+    elif request.method == 'PUT':
+        data = request.json
+        prefs = users[user_id].get('preferences', {})
+        
+        if 'email_replies' in data:
+            prefs['email_replies'] = bool(data['email_replies'])
+        if 'email_mentions' in data:
+            prefs['email_mentions'] = bool(data['email_mentions'])
+        if 'email_subscriptions' in data:
+            prefs['email_subscriptions'] = bool(data['email_subscriptions'])
+        
+        users[user_id]['preferences'] = prefs
+        return jsonify({"message": "Preferences updated", "preferences": prefs})
+
+
+@app.route('/api/users/<user_id>/subscribe/<int:post_id>', methods=['POST', 'DELETE'])
+def subscribe_post(user_id, post_id):
+    """Subscribe or unsubscribe from a post/thread."""
+    if user_id not in users:
+        return jsonify({"error": "User not found"}), 404
+    
+    subscribed = users[user_id].setdefault('subscribed_posts', [])
+    
+    if request.method == 'POST':
+        if post_id not in subscribed:
+            subscribed.append(post_id)
+        return jsonify({"message": "Subscribed", "subscribed_posts": subscribed})
+    
+    elif request.method == 'DELETE':
+        if post_id in subscribed:
+            subscribed.remove(post_id)
+        return jsonify({"message": "Unsubscribed", "subscribed_posts": subscribed})
+
+
+@app.route('/api/notifications/<user_id>', methods=['GET'])
+def get_notifications(user_id):
+    """Get notifications for a user."""
+    # Allow fetching even if user not fully registered yet
+    user_notifications = [n for n in notifications if n['user_id'] == user_id]
+    
+    # Sort by timestamp descending
+    user_notifications.sort(key=lambda x: x['timestamp'], reverse=True)
+    
+    unread_count = sum(1 for n in user_notifications if not n['read'])
+    
+    return jsonify({
+        "notifications": user_notifications[:50],
+        "unread_count": unread_count
+    })
+
+
+@app.route('/api/notifications/<user_id>/read', methods=['POST'])
+def mark_notifications_read(user_id):
+    """Mark notifications as read and optionally delete them."""
+    data = request.json or {}
+    notification_ids = data.get('notification_ids', [])
+    mark_all = data.get('mark_all', False)
+    delete_read = data.get('delete', True)  # Delete by default
+    
+    global notifications
+    count = 0
+    
+    if delete_read:
+        # Remove notifications instead of just marking as read
+        if mark_all:
+            before_count = len([n for n in notifications if n['user_id'] == user_id])
+            notifications = [n for n in notifications if n['user_id'] != user_id]
+            count = before_count
+        else:
+            before_count = len(notifications)
+            notifications = [n for n in notifications if not (n['user_id'] == user_id and n['id'] in notification_ids)]
+            count = before_count - len(notifications)
+    else:
+        # Just mark as read
+        for n in notifications:
+            if n['user_id'] == user_id:
+                if mark_all or n['id'] in notification_ids:
+                    if not n['read']:
+                        n['read'] = True
+                        count += 1
+    
+    return jsonify({"message": f"Processed {count} notifications"})
 
 
 # --- Run App ---

@@ -6,538 +6,450 @@
   <title>Diabetes Care Forum</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style> 
-    /* Fade-in animation */
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(15px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
     .fade-in { animation: fadeIn 0.6s ease-out forwards; }
-
-    /* Post card hover - IMPROVED: softer, more subtle */
-    .post-card {
-      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-    }
-    .post-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 24px rgba(59,130,246,0.12);
-      border-color: rgba(59,130,246,0.3);
-    }
-
-    /* Button hover - IMPROVED: smoother scale */
-    .btn-primary {
-      transition: all 0.25s ease;
-    }
-    .btn-primary:hover {
-      transform: scale(1.03);
-      background-color: #2563eb;
-      box-shadow: 0 8px 16px rgba(37,99,235,0.2);
-    }
-
-    /* Loading spinner */
-    .spinner {
-      border: 3px solid #f3f3f3;
-      border-top: 3px solid #3b82f6;
-      border-radius: 50%;
-      width: 24px;
-      height: 24px;
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    /* IMPROVED: Focus states for accessibility */
-    textarea:focus, input:focus {
-      outline: none;
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
-    }
-
-    /* IMPROVED: Smooth transitions for interactive elements */
-    a, button {
-      transition: all 0.2s ease;
-    }
+    .post-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .post-card:hover { transform: translateY(-5px); box-shadow: 0 15px 25px rgba(59,130,246,0.15); }
+    .btn-primary { transition: all 0.2s ease; }
+    .btn-primary:hover { transform: scale(1.05); background-color: #2563eb; }
+    .spinner { border: 3px solid #f3f3f3; border-top: 3px solid #3b82f6; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .notification-dropdown { max-height: 400px; overflow-y: auto; }
+    .notification-item:hover { background-color: #f3f4f6; }
+    .notification-unread { background-color: #eff6ff; border-left: 3px solid #3b82f6; }
+    .modal-overlay { background-color: rgba(0, 0, 0, 0.5); }
+    .toast { animation: slideIn 0.3s ease-out, fadeOut 0.3s ease-in 4.7s forwards; }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
   </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-white text-gray-800 min-h-screen flex flex-col font-sans">
-
-  <!-- Header - IMPROVED: Better vertical spacing and balance -->
   <header class="bg-blue-700 text-white shadow-lg sticky top-0 z-50">
     <div class="container mx-auto flex flex-col md:flex-row justify-between items-center py-5 px-6">
       <h1 class="text-3xl md:text-4xl font-extrabold tracking-wide">🩺 Diabetes Care</h1>
-      <nav class="mt-4 md:mt-0">
-        <ul class="flex flex-wrap justify-center md:justify-end space-x-4 md:space-x-6 text-base md:text-lg font-semibold">
-          <li><a href="/index" class="hover:text-blue-200 hover:underline underline-offset-4 transition">Prediction</a></li>
-          <li><a href="/life" class="hover:text-blue-200 hover:underline underline-offset-4 transition">Lifestyle Check</a></li>
-          <li><a href="/chatbot" class="hover:text-blue-200 hover:underline underline-offset-4 transition">Chatbot</a></li>
-          <li><a href="/explore" class="hover:text-blue-200 hover:underline underline-offset-4 transition">Explore Data</a></li>
-          <li><a href="/forum" class="text-blue-200 border-b-2 border-blue-200 pb-1 transition">Forum</a></li>
+      <nav class="mt-3 md:mt-0 flex items-center gap-4">
+        <ul class="flex flex-wrap justify-center md:justify-end space-x-4 md:space-x-6 text-lg font-semibold">
+          <li><a href="/index" class="hover:text-blue-300 transition">Prediction</a></li>
+          <li><a href="/life" class="hover:text-blue-300 transition">Lifestyle Check</a></li>
+          <li><a href="/chatbot" class="hover:text-blue-300 transition">Chatbot</a></li>
+          <li><a href="/explore" class="hover:text-blue-300 transition">Explore Data</a></li>
+          <li><a href="/forum" class="hover:text-blue-300 transition font-bold">Forum</a></li>
         </ul>
+        <div class="relative ml-4">
+          <button id="notificationBell" class="relative p-2 hover:bg-blue-600 rounded-full transition" type="button">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+            <span id="notificationBadge" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">0</span>
+          </button>
+          <div id="notificationDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-2xl border border-gray-200 z-50">
+            <div class="p-4 border-b border-gray-100 flex justify-between items-center">
+              <h3 class="font-semibold text-gray-800">Notifications</h3>
+              <div class="flex gap-2">
+                <button id="markAllRead" class="text-xs text-blue-600 hover:text-blue-800" type="button">Mark all read</button>
+                <button id="openSettings" class="text-gray-500 hover:text-gray-700" type="button">⚙️</button>
+              </div>
+            </div>
+            <div id="notificationList" class="notification-dropdown"><p class="p-4 text-gray-500 text-center text-sm">No notifications yet</p></div>
+          </div>
+        </div>
       </nav>
     </div>
   </header>
 
-  <!-- Forum Banner - IMPROVED: Better hierarchy and breathing room -->
-  <section class="bg-gradient-to-r from-blue-700 to-blue-600 text-white py-16 shadow-md">
-    <div class="container mx-auto text-center px-6">
-      <h1 class="text-4xl md:text-5xl font-extrabold tracking-wide mb-3">💬 Community Forum</h1>
-      <p class="text-blue-50 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-        Share experiences, ask questions, and support one another on your diabetes journey.
-      </p>
+  <section class="bg-blue-700 text-white py-12">
+    <div class="container mx-auto text-center">
+      <h1 class="text-3xl md:text-4xl font-extrabold tracking-wide">🩺 Diabetes Care Forum</h1>
+      <p class="text-blue-100 text-base mt-2">Share experiences, ask questions, and support the community.</p>
     </div>
   </section>
-
-  <!-- IMPROVED: Main content with better max-width and spacing -->
-  <main class="flex-grow container mx-auto px-4 sm:px-6 py-12 max-w-4xl">
-   
-    <!-- New Post Form - IMPROVED: Enhanced visual hierarchy and helper text -->
-    <section class="mb-10 bg-white p-6 sm:p-10 rounded-3xl shadow-xl border-2 border-blue-100">
-      <div class="mb-6">
-        <h2 class="text-2xl sm:text-3xl font-bold mb-2 text-blue-800">✍️ Share Your Story</h2>
-        <p class="text-gray-600 text-sm sm:text-base leading-relaxed">
-          Whether you have a question, want to share a success, or need support — this community is here for you.
-        </p>
-      </div>
-      
-      <form id="postForm" class="flex flex-col gap-5">
-        <div class="relative">
-          <label for="forum-post" class="block text-sm font-semibold text-gray-700 mb-2">
-            Your Message
-          </label>
-          <textarea
-            id="forum-post"
-            name="forum-post"
-            aria-label="Write your story or question for the forum"
-            placeholder="Share your thoughts, experiences, or questions with the community..."
-            rows="6"
-            maxlength="500"
-            class="w-full p-4 border-2 border-gray-200 rounded-xl resize-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition text-base leading-relaxed"
-          ></textarea>
-          <!-- IMPROVED: Character counter positioned below textarea with better styling -->
-          <div class="flex justify-between items-center mt-3">
-            <span class="text-xs text-gray-500 italic">💡 Be respectful and supportive</span>
-            <span class="text-sm font-medium text-gray-600" id="charCount">0 / 500</span>
-          </div>
-        </div>
-        
-        <div class="flex justify-end">
-          <button 
-            type="submit" 
-            class="btn-primary bg-blue-600 hover:bg-blue-700 text-white py-3 px-8 rounded-full font-semibold shadow-lg text-base sm:text-lg"
-          >
-            📤 Post to Forum
-          </button>
+  <main class="flex-grow container mx-auto px-6 py-10 max-w-3xl">
+    <section class="mb-8 bg-white p-8 rounded-2xl shadow-xl border border-blue-100">
+      <h2 class="text-2xl font-semibold mb-4 text-blue-700">Share Your Story or Ask a Question</h2>
+      <form id="postForm" class="flex flex-col gap-4">
+        <textarea id="postContent" rows="4" class="p-5 border border-gray-300 rounded-2xl resize-none focus:outline-none focus:ring-4 focus:ring-blue-300 placeholder-gray-400 shadow-sm" placeholder="Type your story or question here... Use @username to mention someone"></textarea>
+        <div class="flex justify-between items-center">
+          <button type="submit" class="btn-primary bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-full font-semibold shadow-lg">➕ Post</button>
+          <span class="text-gray-500 text-sm" id="charCount">0/500</span>
         </div>
       </form>
     </section>
-
-    <!-- Search and Filter Section - IMPROVED: Better organization and visual clarity -->
-    <section class="mb-10 bg-white p-6 sm:p-8 rounded-3xl shadow-lg border border-gray-200">
-      <h3 class="text-xl sm:text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-        🔍 Search & Filter
-      </h3>
-      
-      <!-- Search Bar - IMPROVED: Better input styling -->
-      <div class="mb-6">
-        <label for="searchInput" class="block text-sm font-semibold text-gray-700 mb-2">
-          Search Posts
-        </label>
+    <section class="mb-8 bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+      <h3 class="text-lg font-semibold text-gray-700 mb-4">🔍 Search & Filter Posts</h3>
+      <div class="mb-4">
         <div class="relative">
-          <input 
-            type="text" 
-            id="searchInput" 
-            class="w-full p-4 pl-12 border-2 border-gray-200 rounded-xl focus:border-blue-400 focus:ring-2 focus:ring-blue-100 placeholder-gray-400 text-base transition"
-            placeholder="Type keywords to search..."
-          >
-          <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-          </svg>
+          <input type="text" id="searchInput" class="w-full p-4 pl-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder-gray-400" placeholder="Search posts by keyword...">
+          <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
         </div>
       </div>
-
-      <!-- Date Filters - IMPROVED: Better labels and spacing -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-6">
-        <div>
-          <label for="startDate" class="block text-sm font-semibold text-gray-700 mb-2">
-            📅 From Date
-          </label>
-          <input 
-            type="date" 
-            id="startDate" 
-            class="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-blue-400 focus:ring-2 focus:ring-blue-100 text-base transition"
-          >
-        </div>
-        <div>
-          <label for="endDate" class="block text-sm font-semibold text-gray-700 mb-2">
-            📅 To Date
-          </label>
-          <input 
-            type="date" 
-            id="endDate" 
-            class="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-blue-400 focus:ring-2 focus:ring-blue-100 text-base transition"
-          >
-        </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div><label for="startDate" class="block text-sm font-medium text-gray-600 mb-1">From Date</label><input type="date" id="startDate" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"></div>
+        <div><label for="endDate" class="block text-sm font-medium text-gray-600 mb-1">To Date</label><input type="date" id="endDate" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"></div>
       </div>
-
-      <!-- Filter Actions - IMPROVED: Better visual balance -->
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pt-4 border-t border-gray-200">
-        <button 
-          id="clearFilters" 
-          class="text-blue-600 hover:text-blue-800 hover:bg-blue-50 font-semibold text-sm flex items-center gap-2 px-4 py-2 rounded-lg transition"
-        >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-          </svg>
-          Clear All Filters
-        </button>
-        <div id="activeFilters" class="text-sm text-gray-600 font-medium"></div>
+      <div class="flex justify-between items-center">
+        <button id="clearFilters" type="button" class="text-blue-600 hover:text-blue-800 font-medium text-sm flex items-center gap-1 transition">✕ Clear Filters</button>
+        <div id="activeFilters" class="text-sm text-gray-500"></div>
       </div>
-
-      <!-- Date Validation Error - IMPROVED: Better error styling -->
-      <div id="dateError" class="hidden mt-4 p-3 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm rounded-lg"></div>
+      <div id="dateError" class="hidden mt-2 text-red-500 text-sm"></div>
     </section>
-
-    <!-- Loading Indicator - IMPROVED: Better centering and styling -->
-    <div id="loadingIndicator" class="hidden flex justify-center items-center py-12">
-      <div class="spinner"></div>
-      <span class="ml-4 text-gray-600 font-medium">Loading posts...</span>
+    <div id="loadingIndicator" class="hidden flex justify-center items-center py-8"><div class="spinner"></div><span class="ml-3 text-gray-500">Loading posts...</span></div>
+    <section id="postsList" class="space-y-6"></section>
+    <div id="noPosts" class="text-center text-gray-400 text-lg hidden mt-6">📝 No posts yet — be the first to share!</div>
+    <div id="noResults" class="hidden text-center py-8"><p class="text-gray-500 text-lg mb-2">🔍 No posts found matching your search.</p><button id="clearFiltersFromNoResults" type="button" class="text-blue-600 hover:text-blue-800 font-medium">Clear filters and show all posts</button></div>
+    <div id="paginationControls" class="hidden mt-8 flex justify-center items-center gap-4">
+      <button id="prevPage" type="button" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg font-medium text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition">← Previous</button>
+      <span id="pageInfo" class="text-gray-600 font-medium">Page 1 of 1</span>
+      <button id="nextPage" type="button" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg font-medium text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition">Next →</button>
     </div>
-
-    <!-- Posts List - IMPROVED: Better spacing between posts -->
-    <section id="postsList" class="space-y-5">
-      <!-- Posts loaded via JS -->
-    </section>
-
-    <!-- No posts placeholder - IMPROVED: More engaging empty state -->
-    <div id="noPosts" class="text-center py-16 hidden">
-      <div class="mb-4 text-6xl">📝</div>
-      <p class="text-gray-500 text-xl font-semibold mb-2">No posts yet</p>
-      <p class="text-gray-400 text-base max-w-md mx-auto">
-        Be the first to share your story or ask a question to get the conversation started!
-      </p>
-    </div>
-
-    <!-- No results placeholder - IMPROVED: Better feedback and action -->
-    <div id="noResults" class="hidden text-center py-16">
-      <div class="mb-4 text-6xl">🔍</div>
-      <p class="text-gray-600 text-xl font-semibold mb-3">No posts found</p>
-      <p class="text-gray-500 text-base mb-6 max-w-md mx-auto">
-        Try adjusting your search terms or date range to find what you're looking for.
-      </p>
-      <button 
-        id="clearFiltersFromNoResults" 
-        class="text-blue-600 hover:text-blue-800 hover:bg-blue-50 font-semibold px-6 py-3 rounded-lg border-2 border-blue-200 transition"
-      >
-        Clear Filters & Show All Posts
-      </button>
-    </div>
-
-    <!-- Pagination Controls - IMPROVED: Better button styling and spacing -->
-    <div id="paginationControls" class="hidden mt-12 flex justify-center items-center gap-4">
-      <button 
-        id="prevPage" 
-        class="px-6 py-3 bg-white hover:bg-blue-50 border-2 border-gray-300 hover:border-blue-400 rounded-xl font-semibold text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:border-gray-300 transition shadow-sm"
-      >
-        ← Previous
-      </button>
-      <span id="pageInfo" class="text-gray-700 font-semibold px-4 py-2 bg-gray-100 rounded-lg text-sm sm:text-base">
-        Page 1 of 1
-      </span>
-      <button 
-        id="nextPage" 
-        class="px-6 py-3 bg-white hover:bg-blue-50 border-2 border-gray-300 hover:border-blue-400 rounded-xl font-semibold text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:border-gray-300 transition shadow-sm"
-      >
-        Next →
-      </button>
-    </div>
-
   </main>
+  <footer class="bg-blue-50 text-center text-gray-500 text-sm py-4 border-t mt-8">© 2025 Diabetes Care Forum. Empowering lives, one post at a time.</footer>
 
-  <!-- Footer - IMPROVED: Better padding and typography -->
-  <footer class="bg-gradient-to-r from-blue-50 to-white text-center text-gray-600 text-sm py-6 border-t border-gray-200 mt-12">
-    <p class="font-medium">© 2025 Diabetes Care Forum</p>
-    <p class="text-gray-500 text-xs mt-1">Empowering lives, one conversation at a time.</p>
-  </footer>
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2"></div>
 
-  <!-- JS -->
+  <div id="settingsModal" class="hidden fixed inset-0 z-50 flex items-center justify-center">
+    <div class="modal-overlay absolute inset-0" onclick="closeSettingsModal()"></div>
+    <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6 z-10">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-bold text-gray-800">Notification Settings</h2>
+        <button onclick="closeSettingsModal()" type="button" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+      </div>
+      <div class="mb-6 p-4 bg-blue-50 rounded-xl">
+        <h3 class="font-semibold text-gray-700 mb-3">Your Profile</h3>
+        <div class="space-y-3">
+          <div><label class="block text-sm text-gray-600 mb-1">Username</label><input type="text" id="settingsUsername" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none" placeholder="Enter username"></div>
+          <div><label class="block text-sm text-gray-600 mb-1">Email (for notifications)</label><input type="email" id="settingsEmail" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none" placeholder="your@email.com"></div>
+        </div>
+      </div>
+      <div class="space-y-4">
+        <h3 class="font-semibold text-gray-700">Email Notifications</h3>
+        <label class="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100"><div><span class="font-medium text-gray-700">Replies to my posts</span><p class="text-sm text-gray-500">Get notified when someone replies</p></div><input type="checkbox" id="prefReplies" class="w-5 h-5 text-blue-600 rounded" checked></label>
+        <label class="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100"><div><span class="font-medium text-gray-700">Mentions (@username)</span><p class="text-sm text-gray-500">Get notified when you're mentioned</p></div><input type="checkbox" id="prefMentions" class="w-5 h-5 text-blue-600 rounded" checked></label>
+        <label class="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100"><div><span class="font-medium text-gray-700">Subscribed threads</span><p class="text-sm text-gray-500">Updates on threads you follow</p></div><input type="checkbox" id="prefSubscriptions" class="w-5 h-5 text-blue-600 rounded" checked></label>
+      </div>
+      <button id="saveSettings" type="button" class="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold transition">Save Settings</button>
+    </div>
+  </div>
   <script>
-    // DOM Elements
-    const postForm = document.getElementById('postForm');
-    const postContent = document.getElementById('forum-post');
-    const postsList = document.getElementById('postsList');
-    const noPosts = document.getElementById('noPosts');
-    const noResults = document.getElementById('noResults');
-    const charCount = document.getElementById('charCount');
-    const searchInput = document.getElementById('searchInput');
-    const startDate = document.getElementById('startDate');
-    const endDate = document.getElementById('endDate');
-    const clearFiltersBtn = document.getElementById('clearFilters');
-    const clearFiltersFromNoResultsBtn = document.getElementById('clearFiltersFromNoResults');
-    const activeFiltersDisplay = document.getElementById('activeFilters');
-    const dateError = document.getElementById('dateError');
-    const loadingIndicator = document.getElementById('loadingIndicator');
-    const paginationControls = document.getElementById('paginationControls');
-    const prevPageBtn = document.getElementById('prevPage');
-    const nextPageBtn = document.getElementById('nextPage');
-    const pageInfo = document.getElementById('pageInfo');
+    const $ = id => document.getElementById(id);
+    const postForm = $('postForm'), postContent = $('postContent'), postsList = $('postsList');
+    const noPosts = $('noPosts'), noResults = $('noResults'), charCount = $('charCount');
+    const searchInput = $('searchInput'), startDate = $('startDate'), endDate = $('endDate');
+    const clearFiltersBtn = $('clearFilters'), clearFiltersFromNoResultsBtn = $('clearFiltersFromNoResults');
+    const activeFiltersDisplay = $('activeFilters'), dateError = $('dateError');
+    const loadingIndicator = $('loadingIndicator'), paginationControls = $('paginationControls');
+    const prevPageBtn = $('prevPage'), nextPageBtn = $('nextPage'), pageInfo = $('pageInfo');
+    const notificationBell = $('notificationBell'), notificationBadge = $('notificationBadge');
+    const notificationDropdown = $('notificationDropdown'), notificationList = $('notificationList');
+    const markAllReadBtn = $('markAllRead'), openSettingsBtn = $('openSettings');
+    const settingsModal = $('settingsModal'), saveSettingsBtn = $('saveSettings');
 
-    // Filter State
-    const filterState = {
-      search: '',
-      startDate: null,
-      endDate: null,
-      page: 1,
-      perPage: 10
-    };
+    let currentUser = JSON.parse(localStorage.getItem('forumUser')) || null;
+    const filterState = { search: '', startDate: null, endDate: null, page: 1, perPage: 10 };
 
-    // Debounce function for search input
-    function debounce(func, wait) {
-      let timeout;
-      return function executedFunction(...args) {
-        const later = () => {
-          clearTimeout(timeout);
-          func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-      };
+    function getOrCreateUserId() {
+      let userId = localStorage.getItem('forumUserId');
+      if (!userId) { userId = 'user_' + Math.random().toString(36).substr(2, 9); localStorage.setItem('forumUserId', userId); }
+      return userId;
     }
 
-    // Build query string from filter state
+    function toggleNotificationDropdown(e) {
+      e.stopPropagation();
+      notificationDropdown.classList.toggle('hidden');
+    }
+
+    function openSettingsModal() {
+      loadUserPreferences();
+      settingsModal.classList.remove('hidden');
+      notificationDropdown.classList.add('hidden');
+    }
+
+    function closeSettingsModal() { settingsModal.classList.add('hidden'); }
+
+    async function initUser() { if (currentUser) { loadUserPreferences(); fetchNotifications(); } }
+
+    async function registerUser(username, email) {
+      const userId = getOrCreateUserId();
+      try {
+        const res = await fetch('/api/users', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ user_id: userId, username, email }) });
+        if (res.ok) { const data = await res.json(); currentUser = { userId, username, email, ...data.user }; localStorage.setItem('forumUser', JSON.stringify(currentUser)); return true; }
+      } catch (err) { console.error('Failed to register:', err); }
+      return false;
+    }
+
+    function loadUserPreferences() {
+      if (currentUser) {
+        $('settingsUsername').value = currentUser.username || '';
+        $('settingsEmail').value = currentUser.email || '';
+        const prefs = currentUser.preferences || {};
+        $('prefReplies').checked = prefs.email_replies !== false;
+        $('prefMentions').checked = prefs.email_mentions !== false;
+        $('prefSubscriptions').checked = prefs.email_subscriptions !== false;
+      }
+    }
+
+    async function saveUserPreferences() {
+      const username = $('settingsUsername').value.trim();
+      const email = $('settingsEmail').value.trim();
+      if (!username || !email) { alert('Please enter both username and email'); return; }
+      await registerUser(username, email);
+      const userId = getOrCreateUserId();
+      const prefs = { email_replies: $('prefReplies').checked, email_mentions: $('prefMentions').checked, email_subscriptions: $('prefSubscriptions').checked };
+      try {
+        await fetch('/api/users/' + userId + '/preferences', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(prefs) });
+        if (currentUser) { currentUser.preferences = prefs; localStorage.setItem('forumUser', JSON.stringify(currentUser)); }
+        closeSettingsModal(); alert('Settings saved!');
+      } catch (err) { console.error('Failed to save:', err); }
+    }
+
+    async function fetchNotifications() {
+      if (!currentUser) return;
+      try {
+        const res = await fetch('/api/notifications/' + getOrCreateUserId());
+        if (res.ok) { 
+          const data = await res.json(); 
+          
+          // Check for new notifications and show toast (skip first fetch)
+          if (data.notifications && !isFirstFetch) {
+            data.notifications.forEach(n => {
+              if (!seenNotificationIds.has(n.id)) {
+                showToast(n.message, n.type);
+              }
+            });
+          }
+          
+          // Update seen IDs
+          if (data.notifications) {
+            data.notifications.forEach(n => seenNotificationIds.add(n.id));
+          }
+          
+          isFirstFetch = false;
+          renderNotifications(data.notifications); 
+          updateNotificationBadge(data.unread_count); 
+        }
+      } catch (err) { console.error('Notifications error:', err); }
+    }
+
+    function renderNotifications(notifs) {
+      if (!notifs || notifs.length === 0) { notificationList.innerHTML = '<p class="p-4 text-gray-500 text-center text-sm">No notifications yet</p>'; return; }
+      notificationList.innerHTML = notifs.map(n => {
+        const icon = n.type === 'reply' ? '💬' : n.type === 'mention' ? '📢' : '🔔';
+        const time = new Date(n.timestamp).toLocaleString();
+        const postId = n.post_id || 'null';
+        return '<div class="notification-item p-3 border-b border-gray-100 cursor-pointer ' + (n.read ? '' : 'notification-unread') + '" onclick="handleNotificationClick(' + n.id + ', ' + postId + ')"><div class="flex items-start gap-3"><span class="text-xl">' + icon + '</span><div class="flex-1"><p class="text-sm text-gray-800">' + n.message + '</p><p class="text-xs text-gray-400 mt-1">' + time + '</p></div></div></div>';
+      }).join('');
+    }
+
+    function updateNotificationBadge(count) {
+      if (count > 0) { notificationBadge.textContent = count > 99 ? '99+' : count; notificationBadge.classList.remove('hidden'); }
+      else { notificationBadge.classList.add('hidden'); }
+    }
+
+    // Track seen notification IDs to detect new ones
+    let seenNotificationIds = new Set();
+    let isFirstFetch = true;
+
+    function showToast(message, type) {
+      const toastContainer = document.getElementById('toastContainer');
+      const icon = type === 'mention' ? '📢' : type === 'reply' ? '💬' : '🔔';
+      const toast = document.createElement('div');
+      toast.className = 'toast bg-white rounded-lg shadow-lg border border-gray-200 p-4 flex items-start gap-3 max-w-sm cursor-pointer hover:bg-gray-50';
+      toast.innerHTML = '<span class="text-2xl">' + icon + '</span><div><p class="font-medium text-gray-800">New Notification</p><p class="text-sm text-gray-600">' + message + '</p></div><button class="ml-auto text-gray-400 hover:text-gray-600">&times;</button>';
+      toast.onclick = () => { notificationDropdown.classList.remove('hidden'); toast.remove(); };
+      toast.querySelector('button').onclick = (e) => { e.stopPropagation(); toast.remove(); };
+      toastContainer.appendChild(toast);
+      
+      // Play sound (optional)
+      try { new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdH2Coverage').play().catch(() => {}); } catch(e) {}
+      
+      setTimeout(() => toast.remove(), 5000);
+    }
+
+    async function handleNotificationClick(notifId, postId) {
+      // Delete the notification
+      await fetch('/api/notifications/' + getOrCreateUserId() + '/read', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ notification_ids: [notifId] }) });
+      
+      // Refresh notifications to update badge and list
+      fetchNotifications();
+      notificationDropdown.classList.add('hidden');
+      
+      // Scroll to the post if postId exists
+      if (postId) {
+        const postEl = document.querySelector('[data-post-id="' + postId + '"]');
+        if (postEl) {
+          postEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          postEl.classList.add('ring-4', 'ring-blue-400');
+          setTimeout(() => postEl.classList.remove('ring-4', 'ring-blue-400'), 3000);
+        }
+      }
+    }
+
+    async function markAllNotificationsRead() {
+      await fetch('/api/notifications/' + getOrCreateUserId() + '/read', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mark_all: true }) });
+      // Clear the notification list visually
+      notificationList.innerHTML = '<p class="p-4 text-gray-500 text-center text-sm">No notifications yet</p>';
+      updateNotificationBadge(0);
+    }
+
+    async function subscribeToPost(postId) {
+      if (!currentUser) { openSettingsModal(); alert('Please set up your profile first'); return; }
+      await fetch('/api/users/' + getOrCreateUserId() + '/subscribe/' + postId, { method: 'POST' });
+      alert('You are now following this thread!');
+    }
+
+    let replyingToPostId = null;
+
+    function replyToPost(postId) {
+      replyingToPostId = postId;
+      postContent.placeholder = 'Write your reply...';
+      postContent.focus();
+      // Show reply indicator
+      const indicator = document.createElement('div');
+      indicator.id = 'replyIndicator';
+      indicator.className = 'mb-2 p-2 bg-blue-100 rounded-lg text-sm text-blue-700 flex justify-between items-center';
+      indicator.innerHTML = '<span>💬 Replying to post #' + postId + '</span><button onclick="cancelReply()" type="button" class="text-blue-500 hover:text-blue-700">✕ Cancel</button>';
+      const existing = document.getElementById('replyIndicator');
+      if (existing) existing.remove();
+      postContent.parentElement.insertBefore(indicator, postContent);
+    }
+
+    function cancelReply() {
+      replyingToPostId = null;
+      postContent.placeholder = 'Type your story or question here... Use @username to mention someone';
+      const indicator = document.getElementById('replyIndicator');
+      if (indicator) indicator.remove();
+    }
+
+    function debounce(func, wait) { let timeout; return function(...args) { clearTimeout(timeout); timeout = setTimeout(() => func(...args), wait); }; }
+
     function buildQueryString() {
       const params = new URLSearchParams();
-      
-      if (filterState.search) {
-        params.append('search', filterState.search);
-      }
-      if (filterState.startDate) {
-        params.append('start_date', filterState.startDate);
-      }
-      if (filterState.endDate) {
-        params.append('end_date', filterState.endDate);
-      }
+      if (filterState.search) params.append('search', filterState.search);
+      if (filterState.startDate) params.append('start_date', filterState.startDate);
+      if (filterState.endDate) params.append('end_date', filterState.endDate);
       params.append('page', filterState.page);
       params.append('per_page', filterState.perPage);
-      
       return params.toString();
     }
 
-    // Validate date range
     function validateDateRange() {
-      if (filterState.startDate && filterState.endDate) {
-        if (filterState.startDate > filterState.endDate) {
-          dateError.textContent = '⚠️ Start date must be before or equal to end date';
-          dateError.classList.remove('hidden');
-          return false;
-        }
+      if (filterState.startDate && filterState.endDate && filterState.startDate > filterState.endDate) {
+        dateError.textContent = 'Start date must be before or equal to end date';
+        dateError.classList.remove('hidden');
+        return false;
       }
       dateError.classList.add('hidden');
       return true;
     }
 
-    // Update active filters display
     function updateActiveFiltersDisplay() {
       const filters = [];
-      if (filterState.search) {
-        filters.push(`Search: "${filterState.search}"`);
-      }
-      if (filterState.startDate) {
-        filters.push(`From: ${filterState.startDate}`);
-      }
-      if (filterState.endDate) {
-        filters.push(`To: ${filterState.endDate}`);
-      }
-      
-      activeFiltersDisplay.textContent = filters.length > 0 ? filters.join(' • ') : '';
+      if (filterState.search) filters.push('Search: "' + filterState.search + '"');
+      if (filterState.startDate) filters.push('From: ' + filterState.startDate);
+      if (filterState.endDate) filters.push('To: ' + filterState.endDate);
+      activeFiltersDisplay.textContent = filters.length > 0 ? filters.join(' | ') : '';
     }
 
-    // Show/hide loading indicator
     function setLoading(isLoading) {
-      if (isLoading) {
-        loadingIndicator.classList.remove('hidden');
-        postsList.classList.add('opacity-50');
-      } else {
-        loadingIndicator.classList.add('hidden');
-        postsList.classList.remove('opacity-50');
-      }
+      loadingIndicator.classList.toggle('hidden', !isLoading);
+      postsList.classList.toggle('opacity-50', isLoading);
     }
 
-    // Update pagination controls
     function updatePagination(pagination) {
       const { page, total_pages, total } = pagination;
-      
-      if (total === 0 || total_pages <= 1) {
-        paginationControls.classList.add('hidden');
-        return;
-      }
-      
+      if (total === 0 || total_pages <= 1) { paginationControls.classList.add('hidden'); return; }
       paginationControls.classList.remove('hidden');
-      pageInfo.textContent = `Page ${page} of ${total_pages}`;
-      
+      pageInfo.textContent = 'Page ' + page + ' of ' + total_pages;
       prevPageBtn.disabled = page <= 1;
       nextPageBtn.disabled = page >= total_pages;
     }
 
-    // Fetch posts with current filters
-    async function fetchPosts() {
-      if (!validateDateRange()) {
-        return;
-      }
+    function escapeRegex(str) { return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 
+    function clearFilters() {
+      filterState.search = ''; filterState.startDate = null; filterState.endDate = null; filterState.page = 1;
+      searchInput.value = ''; startDate.value = ''; endDate.value = '';
+      dateError.classList.add('hidden');
+      fetchPosts();
+    }
+
+    async function fetchPosts() {
+      if (!validateDateRange()) return;
       setLoading(true);
       updateActiveFiltersDisplay();
-
       try {
-        const queryString = buildQueryString();
-        const res = await fetch(`/api/posts?${queryString}`);
+        const res = await fetch('/api/posts?' + buildQueryString());
         const data = await res.json();
-
-        if (!res.ok) {
-          throw new Error(data.error || 'Failed to fetch posts');
-        }
-
+        if (!res.ok) throw new Error(data.error || 'Failed to fetch posts');
         const { posts, pagination } = data;
-
         postsList.innerHTML = '';
         noPosts.classList.add('hidden');
         noResults.classList.add('hidden');
-
         if (posts.length === 0) {
-          // Check if filters are active
           const hasFilters = filterState.search || filterState.startDate || filterState.endDate;
-          if (hasFilters) {
-            noResults.classList.remove('hidden');
-          } else {
-            noPosts.classList.remove('hidden');
-          }
+          (hasFilters ? noResults : noPosts).classList.remove('hidden');
           paginationControls.classList.add('hidden');
           return;
         }
-
         posts.forEach(post => {
           const time = new Date(post.timestamp).toLocaleString();
           const postEl = document.createElement('article');
-          postEl.className = "post-card p-6 sm:p-8 bg-white rounded-2xl shadow-md border-2 border-gray-100 fade-in hover:shadow-lg";
-          
-          // Highlight search term if present
+          postEl.className = "post-card p-6 bg-white rounded-2xl shadow-md border border-gray-100 fade-in transition-all duration-300";
+          postEl.setAttribute('data-post-id', post.id);
           let content = post.content;
           if (filterState.search) {
-            const regex = new RegExp(`(${escapeRegex(filterState.search)})`, 'gi');
-            content = content.replace(regex, '<mark class="bg-yellow-200 px-1 rounded font-medium">$1</mark>');
+            const regex = new RegExp('(' + escapeRegex(filterState.search) + ')', 'gi');
+            content = content.replace(regex, '<mark class="bg-yellow-200 px-1 rounded">$1</mark>');
           }
-          
-          postEl.innerHTML = `
-            <p class="text-gray-800 leading-relaxed text-base sm:text-lg whitespace-pre-line mb-4">${content}</p>
-            <div class="flex items-center gap-2 text-sm text-gray-500 pt-4 border-t border-gray-100">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
-              <span>${time}</span>
-            </div>
-          `;
+          content = content.replace(/@(\w+)/g, '<span class="text-blue-600 font-medium">@$1</span>');
+          postEl.innerHTML = '<p class="text-gray-800 leading-relaxed text-lg whitespace-pre-line">' + content + '</p><div class="mt-4 flex justify-between items-center"><span class="text-sm text-gray-500">🕒 ' + time + '</span><div class="flex gap-3"><button onclick="replyToPost(' + post.id + ')" type="button" class="text-sm text-gray-600 hover:text-gray-800 flex items-center gap-1">💬 Reply</button><button onclick="subscribeToPost(' + post.id + ')" type="button" class="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1">🔔 Follow</button></div></div>';
           postsList.appendChild(postEl);
         });
-
         updatePagination(pagination);
       } catch (err) {
-        console.error('Fetch error:', err);
-        postsList.innerHTML = `<div class="p-6 bg-red-50 border-l-4 border-red-500 rounded-lg"><p class="text-red-700 font-medium">⚠️ Failed to load posts: ${err.message}</p></div>`;
+        postsList.innerHTML = '<p class="text-red-500">Failed to load posts: ' + err.message + '</p>';
       } finally {
         setLoading(false);
       }
     }
 
-    // Escape special regex characters
-    function escapeRegex(string) {
-      return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    }
-
-    // Clear all filters
-    function clearFilters() {
-      filterState.search = '';
-      filterState.startDate = null;
-      filterState.endDate = null;
-      filterState.page = 1;
-      
-      searchInput.value = '';
-      startDate.value = '';
-      endDate.value = '';
-      dateError.classList.add('hidden');
-      
-      fetchPosts();
-    }
-
     // Event Listeners
-    postContent.addEventListener('input', () => {
-      charCount.textContent = `${postContent.value.length} / 500`;
-    });
-
-    // Debounced search
-    const debouncedSearch = debounce(() => {
-      filterState.search = searchInput.value.trim();
-      filterState.page = 1; // Reset to first page on new search
-      fetchPosts();
-    }, 300);
-
+    postContent.addEventListener('input', () => { charCount.textContent = postContent.value.length + '/500'; });
+    const debouncedSearch = debounce(() => { filterState.search = searchInput.value.trim(); filterState.page = 1; fetchPosts(); }, 300);
     searchInput.addEventListener('input', debouncedSearch);
-
-    startDate.addEventListener('change', () => {
-      filterState.startDate = startDate.value || null;
-      filterState.page = 1;
-      fetchPosts();
-    });
-
-    endDate.addEventListener('change', () => {
-      filterState.endDate = endDate.value || null;
-      filterState.page = 1;
-      fetchPosts();
-    });
-
+    startDate.addEventListener('change', () => { filterState.startDate = startDate.value || null; filterState.page = 1; fetchPosts(); });
+    endDate.addEventListener('change', () => { filterState.endDate = endDate.value || null; filterState.page = 1; fetchPosts(); });
     clearFiltersBtn.addEventListener('click', clearFilters);
     clearFiltersFromNoResultsBtn.addEventListener('click', clearFilters);
+    prevPageBtn.addEventListener('click', () => { if (filterState.page > 1) { filterState.page--; fetchPosts(); } });
+    nextPageBtn.addEventListener('click', () => { filterState.page++; fetchPosts(); });
 
-    prevPageBtn.addEventListener('click', () => {
-      if (filterState.page > 1) {
-        filterState.page--;
-        fetchPosts();
+    notificationBell.addEventListener('click', toggleNotificationDropdown);
+    markAllReadBtn.addEventListener('click', markAllNotificationsRead);
+    openSettingsBtn.addEventListener('click', openSettingsModal);
+    saveSettingsBtn.addEventListener('click', saveUserPreferences);
+
+    document.addEventListener('click', (e) => {
+      if (!notificationBell.contains(e.target) && !notificationDropdown.contains(e.target)) {
+        notificationDropdown.classList.add('hidden');
       }
-    });
-
-    nextPageBtn.addEventListener('click', () => {
-      filterState.page++;
-      fetchPosts();
     });
 
     postForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const content = postContent.value.trim();
       if (!content) return;
-
       try {
-        const res = await fetch('/api/posts', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ content })
-        });
-
-        if (!res.ok) {
-          const data = await res.json();
-          throw new Error(data.error || 'Failed to create post');
-        }
-
+        const res = await fetch('/api/posts', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content, author_id: currentUser ? getOrCreateUserId() : 'anonymous' }) });
+        if (!res.ok) throw new Error((await res.json()).error || 'Failed to create post');
         postContent.value = '';
-        charCount.textContent = "0 / 500";
-        
-        // Preserve filter state but refresh posts
+        charCount.textContent = '0/500';
         fetchPosts();
-      } catch (err) {
-        alert('Failed to create post: ' + err.message);
-      }
+      } catch (err) { alert('Failed to create post: ' + err.message); }
     });
 
-    // Initial load
+    // Initialize
+    initUser();
     fetchPosts();
+    setInterval(fetchNotifications, 5000); // Poll every 5 seconds for faster notifications
   </script>
 </body>
 </html>
