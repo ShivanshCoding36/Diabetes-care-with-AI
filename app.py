@@ -1,31 +1,111 @@
 import os
+
 from dotenv import load_dotenv
+
 load_dotenv()
 
-from flask import Flask, render_template, request, jsonify
-from flask_mail import Mail, Message
+import base64
+import io
+import logging
 import pickle
+import re
+import sys
+import threading
+from datetime import datetime
+
+# ✅ Correct Gemini import
+import google.generativeai as genai
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import plotly.express as px
 import seaborn as sns
-import matplotlib.pyplot as plt
-import io
-import base64
-import logging
-import sys
-import re
-import threading
-from datetime import datetime
+from flask import Flask, jsonify, render_template, request, make_response
 from flask_cors import CORS
-
-# ✅ Correct Gemini import
-import google.generativeai as genai
+from flask_mail import Mail, Message
+from flask_babel import Babel, gettext as _
 
 app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.jinja_env.auto_reload = True
 CORS(app)
+
+# --- i18n Configuration ---
+SUPPORTED_LANGUAGES = {
+    'en': 'English',
+    'es': 'Español',
+    'hi': 'हिन्दी',
+    'fr': 'Français',
+    'zh': '中文'
+}
+DEFAULT_LANGUAGE = 'en'
+
+app.config['BABEL_DEFAULT_LOCALE'] = DEFAULT_LANGUAGE
+app.config['BABEL_TRANSLATION_DIRECTORIES'] = 'translations'
+
+babel = Babel(app)
+
+
+def get_locale():
+    """
+    Select locale based on priority:
+    1. User's cookie preference
+    2. Browser's Accept-Language header
+    3. Default language (English)
+    """
+    # Check for user's language preference in cookie
+    user_language = request.cookies.get('language')
+    if user_language and user_language in SUPPORTED_LANGUAGES:
+        return user_language
+    
+    # Fall back to browser's preferred language
+    best_match = request.accept_languages.best_match(SUPPORTED_LANGUAGES.keys())
+    if best_match:
+        return best_match
+    
+    # Default to English
+    return DEFAULT_LANGUAGE
+
+
+babel.init_app(app, locale_selector=get_locale)
+
+
+@app.context_processor
+def inject_i18n_context():
+    """Inject language context into all templates."""
+    return {
+        'languages': SUPPORTED_LANGUAGES,
+        'current_language': get_locale(),
+    }
+
+
+@app.route('/api/set-language', methods=['POST'])
+def set_language():
+    """Set user's preferred language via cookie."""
+    data = request.get_json()
+    
+    if not data or 'language' not in data:
+        return jsonify({'error': 'Language code is required'}), 400
+    
+    language = data['language']
+    
+    if language not in SUPPORTED_LANGUAGES:
+        return jsonify({
+            'error': 'Unsupported language',
+            'supported': list(SUPPORTED_LANGUAGES.keys())
+        }), 400
+    
+    response = make_response(jsonify({
+        'success': True,
+        'language': language,
+        'language_name': SUPPORTED_LANGUAGES[language]
+    }))
+    
+    # Set cookie for 1 year
+    response.set_cookie('language', language, max_age=365*24*60*60, samesite='Lax')
+    
+    return response
+
 
 # Flask-Mail Configuration
 app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER', 'smtp.gmail.com')
@@ -113,16 +193,16 @@ def predict():
         features = [float(request.form.get(f, 0)) for f in expected_features]
 
         if scaler is None or model is None:
-            return render_template('index.html', prediction_text="Model not available.")
+            return render_template('index.html', prediction_text=_("Model not available."))
 
         final_input = scaler.transform([features])
         prediction = model.predict(final_input)
-        result = "Diabetic" if prediction[0] == 1 else "Not Diabetic"
+        result = _("Diabetic") if prediction[0] == 1 else _("Not Diabetic")
 
-        return render_template('index.html', prediction_text=f"Prediction: {result}")
+        return render_template('index.html', prediction_text=_("Prediction: %(result)s", result=result))
     except Exception as e:
         logging.error(f"Predict error: {e}")
-        return render_template('index.html', prediction_text="Error during prediction.")
+        return render_template('index.html', prediction_text=_("Error during prediction."))
 
 
 @app.route('/explore')

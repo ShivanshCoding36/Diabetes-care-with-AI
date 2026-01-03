@@ -2,15 +2,16 @@
 Property-based tests for paginate_posts function.
 Feature: forum-search-filter
 """
-import pytest
-from hypothesis import given, strategies as st, settings, assume
 import math
-import sys
 import os
+import sys
+
+import pytest
+from hypothesis import assume, given, settings
+from hypothesis import strategies as st
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from app import paginate_posts
-
 
 # --- Generators ---
 

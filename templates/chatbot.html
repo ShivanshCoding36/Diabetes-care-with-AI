@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ current_language }}"></html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diabetes Chatbot v2</title>
+    <title>{{ _('Diabetes Chatbot') }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
     body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -82,24 +83,13 @@
         scrollbar-width: thin;
         scrollbar-color: #007bff #e1e1e1;
     }
-    .chat-messages::-webkit-scrollbar {
-        width: 8px;
-    }
-    .chat-messages::-webkit-scrollbar-thumb {
-        background-color: #007bff;
-        border-radius: 20px;
-    }
     .message {
         margin-bottom: 14px;
         display: flex;
         animation: fadeIn 0.3s ease forwards;
     }
-    .message.user {
-        justify-content: flex-end;
-    }
-    .message.bot {
-        justify-content: flex-start;
-    }
+    .message.user { justify-content: flex-end; }
+    .message.bot { justify-content: flex-start; }
     .message-bubble {
         max-width: 70%;
         padding: 14px 20px;
@@ -108,7 +98,6 @@
         word-wrap: break-word;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         font-size: 1rem;
-        transition: background-color 0.3s ease;
     }
     .message.user .message-bubble {
         background: linear-gradient(135deg, #4caf50, #81c784);
@@ -116,9 +105,13 @@
         border-bottom-right-radius: 4px;
     }
     .message.bot .message-bubble {
-        background: #e0e0e0;
-        color: #333;
+        background: #ffffff;
+        color: #374151;
         border-bottom-left-radius: 4px;
+        max-width: 92%;
+        padding: 4px 16px;
+        font-size: 15px;
+        line-height: 1.75;
     }
     .chat-input {
         display: flex;
@@ -133,11 +126,6 @@
         border-radius: 25px;
         font-size: 1rem;
         outline: none;
-        transition: border-color 0.3s ease;
-    }
-    .chat-input input[type="text"]:focus {
-        border-color: #0056b3;
-        box-shadow: 0 0 8px #0056b3aa;
     }
     .chat-input button {
         margin-left: 12px;
@@ -149,135 +137,150 @@
         cursor: pointer;
         font-size: 1rem;
         font-weight: 600;
-        transition: background-color 0.3s ease;
-        box-shadow: 0 4px 12px rgba(0, 123, 255, 0.5);
-    }
-    .chat-input button:hover {
-        background-color: #0056b3;
-        box-shadow: 0 6px 16px rgba(0, 86, 179, 0.7);
     }
     @keyframes fadeIn {
         from {opacity: 0; transform: translateY(10px);}
         to {opacity: 1; transform: translateY(0);}
     }
+    .lang-dropdown { max-height: 0; overflow: hidden; transition: max-height 0.2s ease-out; }
+    .lang-dropdown.show { max-height: 300px; }
 </style>
-
 </head>
 <body class="min-h-screen flex flex-col">
-
     <header class="navbar">
         <div class="navbar-inner">
-          <h1 class="navbar-title">🩺 Diabetes Care</h1>
-          <nav>
+          <h1 class="navbar-title">{{ _('Diabetes Care') }}</h1>
+          <nav class="flex items-center gap-4">
             <ul class="navbar-links">
-              <li><a href="/index">Prediction</a></li>
-              <li><a href="/life">Lifestyle Check</a></li>
-              <li><a href="/chatbot">Chatbot</a></li>
-              <li><a href="/explore">Explore Data</a></li>
-              <li><a href="/forum">Forum</a></li>
+              <li><a href="/index">{{ _('Prediction') }}</a></li>
+              <li><a href="/life">{{ _('Lifestyle Check') }}</a></li>
+              <li><a href="/chatbot">{{ _('Chatbot') }}</a></li>
+              <li><a href="/explore">{{ _('Explore Data') }}</a></li>
+              <li><a href="/forum">{{ _('Forum') }}</a></li>
             </ul>
+            <!-- Language Selector -->
+            <div class="relative ml-4">
+              <button id="lang-btn" class="flex items-center space-x-1 px-3 py-1 rounded hover:bg-blue-600 transition text-sm text-white">
+                <span>{{ languages.get(current_language, 'English') }}</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </button>
+              <div id="lang-dropdown" class="lang-dropdown absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg z-50">
+                {% for code, name in languages.items() %}
+                <button onclick="setLanguage('{{ code }}')" 
+                        class="block w-full text-left px-4 py-2 text-gray-800 hover:bg-blue-100 text-sm {% if code == current_language %}bg-blue-50 font-semibold{% endif %}">
+                  {{ name }}
+                </button>
+                {% endfor %}
+              </div>
+            </div>
           </nav>
         </div>
     </header>
 
     <main style="flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px;">
-<body>
-    {% include 'navbar.html' %}
-    <div class="chat-container">
-        <div class="chat-header">
-            Diabetes Expert Chatbot
-        </div>
-        <div class="chat-messages" id="chat-messages">
-            <div class="message bot">
-                <div class="message-bubble">Hello! I'm here to help you understand diabetes and answer your questions. How can I assist you today?</div>
+        <div class="chat-container">
+            <div class="chat-header">
+                {{ _('Diabetes Expert Chatbot') }}
+            </div>
+            <div class="chat-messages" id="chat-messages" role="log" aria-live="polite">
+                <div class="message bot">
+                    <div class="message-bubble">{{ _("Hello! I'm here to help you understand diabetes and answer your questions. How can I assist you today?") }}</div>
+                </div>
+            </div>
+            <div id="sr-status" role="status" aria-live="polite" aria-atomic="true" class="sr-only"></div>
+            <div class="chat-input">
+                <label for="user-input" class="sr-only">{{ _('Type your message') }}</label>
+                <input type="text" id="user-input" placeholder="{{ _('Type your message...') }}">
+                <button onclick="sendMessage()">{{ _('Send') }}</button>
             </div>
         </div>
-        <div class="chat-input">
-            <input type="text" id="user-input" placeholder="Type your message...">
-            <button onclick="sendMessage()">Send</button>
-        </div>
-    </div>
     </main>
 
     <script>
+        const THINKING_TEXT = "{{ _('Thinking...') }}";
+        const ERROR_TEXT = "{{ _('Sorry, I could not get a response. Please try again.') }}";
+        const SENDING_TEXT = "{{ _('Sending message, please wait...') }}";
+
         async function sendMessage() {
             const userInput = document.getElementById('user-input');
             const chatMessages = document.getElementById('chat-messages');
             const message = userInput.value.trim();
 
-            if (message === '') {
-                return;
-            }
+            if (message === '') return;
 
-            // Display user message
             const userMessageDiv = document.createElement('div');
             userMessageDiv.classList.add('message', 'user');
             userMessageDiv.innerHTML = `<div class="message-bubble">${message}</div>`;
             chatMessages.appendChild(userMessageDiv);
-
-            // Clear input
             userInput.value = '';
-
-            // Scroll to bottom
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
-            // Show a "typing" indicator or a temporary message
             const thinkingMessageDiv = document.createElement('div');
             thinkingMessageDiv.classList.add('message', 'bot');
-            thinkingMessageDiv.innerHTML = `<div class="message-bubble">Thinking...</div>`;
+            thinkingMessageDiv.innerHTML = `<div class="message-bubble">${THINKING_TEXT}</div>`;
             chatMessages.appendChild(thinkingMessageDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
             try {
                 const response = await fetch('/generate', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ message: message })
                 });
 
-                // Remove the "thinking" message
                 chatMessages.removeChild(thinkingMessageDiv);
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
                 const data = await response.json();
-
-                // Display bot response
                 const botMessageDiv = document.createElement('div');
                 botMessageDiv.classList.add('message', 'bot');
-                botMessageDiv.innerHTML = `<div class="message-bubble">${data.reply}</div>`;
+                botMessageDiv.innerHTML = `<div class="message-bubble">${formatMarkdown(data.reply)}</div>`;
                 chatMessages.appendChild(botMessageDiv);
-
             } catch (error) {
                 console.error('Error:', error);
-                // Remove the "thinking" message and display an error
                 chatMessages.removeChild(thinkingMessageDiv);
                 const errorMessageDiv = document.createElement('div');
                 errorMessageDiv.classList.add('message', 'bot');
-                errorMessageDiv.innerHTML = `<div class="message-bubble">Sorry, I couldn't get a response. Please try again.</div>`;
+                errorMessageDiv.innerHTML = `<div class="message-bubble">${ERROR_TEXT}</div>`;
                 chatMessages.appendChild(errorMessageDiv);
             } finally {
-                // Scroll to bottom after response
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             }
         }
 
-        // Send message on Enter key press
         document.getElementById('user-input').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
+            if (e.key === 'Enter') sendMessage();
         });
 
-        // Initial scroll to bottom in case of pre-existing messages
-        document.addEventListener('DOMContentLoaded', () => {
-            const chatMessages = document.getElementById('chat-messages');
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+        function formatMarkdown(text) {
+            if (!text) return '';
+            let html = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            html = html.replace(/###\s*(.+?)(?=\n|$)/g, '\n<h3>$1</h3>\n');
+            html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            return html;
+        }
+
+        // Language selector
+        document.getElementById('lang-btn').addEventListener('click', function(e) {
+            e.stopPropagation();
+            document.getElementById('lang-dropdown').classList.toggle('show');
         });
+        document.addEventListener('click', function() {
+            document.getElementById('lang-dropdown').classList.remove('show');
+        });
+        function setLanguage(langCode) {
+            fetch('/api/set-language', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ language: langCode })
+            })
+            .then(response => response.json())
+            .then(data => { if (data.success) window.location.reload(); })
+            .catch(err => console.error('Language switch failed:', err));
+        }
     </script>
 </body>
 </html>

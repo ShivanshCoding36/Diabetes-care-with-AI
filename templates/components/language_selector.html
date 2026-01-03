@@ -1,0 +1,46 @@
+<!-- Language Selector Component -->
+<div class="language-selector relative">
+  <button id="lang-btn" class="flex items-center space-x-1 px-3 py-1 rounded hover:bg-blue-600 transition">
+    <span id="current-lang">{{ current_language_name }}</span>
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+    </svg>
+  </button>
+  <div id="lang-dropdown" class="hidden absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg z-50">
+    {% for code, name in languages.items() %}
+    <button onclick="setLanguage('{{ code }}')" 
+            class="block w-full text-left px-4 py-2 text-gray-800 hover:bg-blue-100 {% if code == current_language %}bg-blue-50 font-semibold{% endif %}">
+      {{ name }}
+    </button>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+  // Toggle dropdown
+  document.getElementById('lang-btn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    document.getElementById('lang-dropdown').classList.toggle('hidden');
+  });
+  
+  // Close dropdown when clicking outside
+  document.addEventListener('click', function() {
+    document.getElementById('lang-dropdown').classList.add('hidden');
+  });
+  
+  // Set language via API
+  function setLanguage(langCode) {
+    fetch('/api/set-language', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ language: langCode })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        window.location.reload();
+      }
+    })
+    .catch(err => console.error('Language switch failed:', err));
+  }
+</script>

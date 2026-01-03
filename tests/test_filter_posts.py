@@ -2,16 +2,17 @@
 Property-based tests for filter_posts function.
 Feature: forum-search-filter
 """
-import pytest
-from hypothesis import given, strategies as st, settings
-from datetime import datetime, timedelta
-import sys
 import os
+import sys
+from datetime import datetime, timedelta
+
+import pytest
+from hypothesis import given, settings
+from hypothesis import strategies as st
 
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from app import filter_posts, parse_post_timestamp
-
 
 # --- Generators ---
 
