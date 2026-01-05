@@ -114,6 +114,9 @@ mail = Mail(app)
 # In-memory store for forum posts
 posts = []
 
+# Available topics for posts
+FORUM_TOPICS = ['General', 'Diet', 'Exercise', 'Medication', 'Lifestyle', 'Support']
+
 # In-memory store for users and notifications
 users = {}  # {user_id: {email, username, preferences, subscribed_posts}}
 notifications = []  # [{id, user_id, type, message, post_id, read, timestamp}]
@@ -455,34 +458,39 @@ def chat_gemini():
 
 # --- Forum Backend ---
 
-def filter_posts(posts_list, search=None, start_date=None, end_date=None):
+def filter_posts(posts_list, search=None, start_date=None, end_date=None, topic=None):
     """
-    Filter posts by search term and date range.
-    
+    Filter posts by search term, date range, and topic.
+
     Args:
         posts_list: List of post dictionaries
         search: Optional search string (case-insensitive)
         start_date: Optional datetime for minimum date
         end_date: Optional datetime for maximum date
-    
+        topic: Optional topic string
+
     Returns:
         List of filtered posts
     """
     filtered = posts_list.copy()
-    
+
     # Apply search filter (case-insensitive)
     if search and search.strip():
         search_lower = search.lower()
         filtered = [p for p in filtered if search_lower in p.get('content', '').lower()]
-    
+
+    # Apply topic filter
+    if topic and topic.strip():
+        filtered = [p for p in filtered if p.get('topic') == topic]
+
     # Apply start_date filter
     if start_date:
         filtered = [p for p in filtered if parse_post_timestamp(p.get('timestamp')) >= start_date]
-    
+
     # Apply end_date filter
     if end_date:
         filtered = [p for p in filtered if parse_post_timestamp(p.get('timestamp')) <= end_date]
-    
+
     return filtered
 
 
@@ -553,31 +561,32 @@ def posts_api():
         search = request.args.get('search', '').strip() or None
         start_date_str = request.args.get('start_date', '').strip()
         end_date_str = request.args.get('end_date', '').strip()
-        
+        topic = request.args.get('topic', '').strip() or None
+
         try:
             page = int(request.args.get('page', 1))
             if page < 1:
                 return jsonify({"error": "Page must be a positive integer"}), 400
         except ValueError:
             return jsonify({"error": "Page must be a positive integer"}), 400
-        
+
         try:
             per_page = int(request.args.get('per_page', 10))
             if per_page < 1 or per_page > 50:
                 return jsonify({"error": "per_page must be between 1 and 50"}), 400
         except ValueError:
             return jsonify({"error": "per_page must be between 1 and 50"}), 400
-        
+
         # Parse dates
         start_date = None
         end_date = None
-        
+
         if start_date_str:
             try:
                 start_date = datetime.fromisoformat(start_date_str)
             except ValueError:
                 return jsonify({"error": "Invalid date format. Use YYYY-MM-DD"}), 400
-        
+
         if end_date_str:
             try:
                 end_date = datetime.fromisoformat(end_date_str)
@@ -585,20 +594,20 @@ def posts_api():
                 end_date = end_date.replace(hour=23, minute=59, second=59)
             except ValueError:
                 return jsonify({"error": "Invalid date format. Use YYYY-MM-DD"}), 400
-        
+
         # Validate date range
         if start_date and end_date and start_date > end_date:
             return jsonify({"error": "start_date must be before or equal to end_date"}), 400
-        
+
         # Sort posts by timestamp (newest first)
         sorted_posts = sorted(posts, key=lambda x: x['timestamp'], reverse=True)
-        
+
         # Apply filters
-        filtered_posts = filter_posts(sorted_posts, search=search, start_date=start_date, end_date=end_date)
-        
+        filtered_posts = filter_posts(sorted_posts, search=search, start_date=start_date, end_date=end_date, topic=topic)
+
         # Paginate results
         result = paginate_posts(filtered_posts, page=page, per_page=per_page)
-        
+
         return jsonify({
             'posts': result['posts'],
             'pagination': {
@@ -614,22 +623,27 @@ def posts_api():
         content = data.get('content', '').strip()
         author_id = data.get('author_id', 'anonymous')
         parent_id = data.get('parent_id')  # For replies
-        
+        topic = data.get('topic', '').strip() or None
+
         if not content:
             return jsonify({"error": "Content is required"}), 400
+
+        if topic and topic not in FORUM_TOPICS:
+            return jsonify({"error": f"Invalid topic. Available topics: {FORUM_TOPICS}"}), 400
 
         post = {
             'id': len(posts) + 1,
             'content': content,
             'author_id': author_id,
             'parent_id': parent_id,
+            'topic': topic,
             'timestamp': datetime.utcnow().isoformat() + 'Z'
         }
         posts.append(post)
-        
+
         # Process notifications asynchronously
         threading.Thread(target=process_post_notifications, args=(post,)).start()
-        
+
         return jsonify(post), 201
 
 
