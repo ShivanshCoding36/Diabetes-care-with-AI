@@ -304,8 +304,8 @@
     const prevPageBtn = $('prevPage'), nextPageBtn = $('nextPage'), pageInfo = $('pageInfo');
     const notificationBell = $('notificationBell'), notificationBadge = $('notificationBadge');
     const notificationDropdown = $('notificationDropdown'), notificationList = $('notificationList');
-    const markAllReadBtn = $('markAllRead'), openSettingsBtn = $('openSettings');
-    const settingsModal = $('settingsModal'), saveSettingsBtn = $('saveSettings');
+    const markAllReadBtn = $('markAllRead'), openSettingsBtn = $('openSettings'),
+          settingsModal = $('settingsModal'), saveSettingsBtn = $('saveSettings');
 
     let currentUser = JSON.parse(localStorage.getItem('forumUser')) || null;
     const filterState = { search: '', startDate: null, endDate: null, page: 1, perPage: 10 };

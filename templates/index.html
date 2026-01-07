@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{{ _('Diabetes Prediction') }}</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
     body {
       background-image:
@@ -16,6 +17,12 @@
     }
     .lang-dropdown { max-height: 0; overflow: hidden; transition: max-height 0.2s ease-out; }
     .lang-dropdown.show { max-height: 300px; }
+    @media print {
+      body * { visibility: hidden; }
+      #printableReport, #printableReport * { visibility: visible; }
+      #printableReport { position: absolute; left: 0; top: 0; width: 100%; }
+      .no-print { display: none !important; }
+    }
   </style>
 </head>
 
@@ -98,10 +105,52 @@
       </form>
 
       {% if prediction_text %}
-      <div
+      <div id="predictionResult"
         class="mt-10 mx-auto max-w-xl bg-blue-100 bg-opacity-70 border border-blue-400 rounded-3xl p-8 text-blue-900 font-semibold text-center text-xl shadow-lg backdrop-blur-sm"
         role="alert">
         {{ prediction_text }}
+      </div>
+      
+      <!-- Print and Download Buttons -->
+      <div class="mt-4 flex justify-center gap-4 no-print">
+        <button onclick="printReport()" 
+          class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl shadow-md transition-transform duration-300 hover:scale-105">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+          </svg>
+          {{ _('Print Report') }}
+        </button>
+        <button onclick="downloadPDF()" 
+          class="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-xl shadow-md transition-transform duration-300 hover:scale-105">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          {{ _('Download PDF') }}
+        </button>
+      </div>
+
+      <!-- Hidden Printable Report -->
+      <div id="printableReport" class="hidden print:block absolute left-0 top-0 w-full bg-white p-8">
+        <div class="max-w-2xl mx-auto">
+          <h1 class="text-3xl font-bold text-blue-900 text-center mb-6">DIABETES PREDICTION REPORT</h1>
+          <p class="text-gray-600 text-center mb-8" id="reportDate"></p>
+          
+          <div class="bg-blue-50 border-2 border-blue-400 rounded-xl p-6 mb-6">
+            <h2 class="text-xl font-bold text-blue-800 mb-2">RESULT</h2>
+            <p class="text-2xl font-bold" id="reportResult">{{ prediction_text }}</p>
+          </div>
+          
+          <div class="bg-gray-50 border border-gray-300 rounded-xl p-6 mb-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">INPUT VALUES</h2>
+            <ul class="space-y-2 text-gray-700" id="reportInputValues"></ul>
+          </div>
+          
+          <div class="bg-yellow-50 border border-yellow-400 rounded-xl p-4 mt-6">
+            <p class="text-sm text-yellow-800">
+              <strong>DISCLAIMER:</strong> This prediction is for informational purposes only and should not be considered medical advice. Please consult a healthcare professional for proper diagnosis.
+            </p>
+          </div>
+        </div>
       </div>
       {% endif %}
 
@@ -145,6 +194,71 @@
       .then(response => response.json())
       .then(data => { if (data.success) window.location.reload(); })
       .catch(err => console.error('Language switch failed:', err));
+    }
+
+    // Print and PDF Download Functions
+    function getInputValues() {
+      return {
+        'Pregnancies': document.getElementById('Pregnancies')?.value || 'N/A',
+        'Glucose Level': document.getElementById('Glucose')?.value || 'N/A',
+        'Blood Pressure': document.getElementById('BloodPressure')?.value || 'N/A',
+        'Skin Thickness': document.getElementById('SkinThickness')?.value || 'N/A',
+        'Insulin Level': document.getElementById('Insulin')?.value || 'N/A',
+        'BMI': document.getElementById('BMI')?.value || 'N/A',
+        'Diabetes Pedigree Function': document.getElementById('DiabetesPedigreeFunction')?.value || 'N/A',
+        'Age': document.getElementById('Age')?.value || 'N/A'
+      };
+    }
+
+    function formatDate() {
+      return new Date().toLocaleString('en-US', {
+        year: 'numeric', month: 'long', day: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+      });
+    }
+
+    function prepareReport() {
+      const reportDate = document.getElementById('reportDate');
+      const reportInputValues = document.getElementById('reportInputValues');
+      
+      if (reportDate) reportDate.textContent = 'Date: ' + formatDate();
+      
+      if (reportInputValues) {
+        const values = getInputValues();
+        reportInputValues.innerHTML = Object.entries(values)
+          .map(([key, val]) => '<li><strong>' + key + ':</strong> ' + val + '</li>')
+          .join('');
+      }
+    }
+
+    function printReport() {
+      prepareReport();
+      const printableReport = document.getElementById('printableReport');
+      if (printableReport) {
+        printableReport.classList.remove('hidden');
+        window.print();
+        setTimeout(() => printableReport.classList.add('hidden'), 100);
+      }
+    }
+
+    function downloadPDF() {
+      prepareReport();
+      const printableReport = document.getElementById('printableReport');
+      if (printableReport && typeof html2pdf !== 'undefined') {
+        printableReport.classList.remove('hidden');
+        const opt = {
+          margin: 10,
+          filename: 'diabetes-prediction-report-' + Date.now() + '.pdf',
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2 },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        html2pdf().set(opt).from(printableReport).save().then(() => {
+          printableReport.classList.add('hidden');
+        });
+      } else {
+        alert('PDF generation is not available. Please try the Print option instead.');
+      }
     }
   </script>
 </body>

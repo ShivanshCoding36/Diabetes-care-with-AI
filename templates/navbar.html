@@ -5,91 +5,117 @@
     text-shadow: 1px 1px 0 rgba(0,0,0,0.15), 2px 2px 0 rgba(0,0,0,0.08);
   }
   .lang-dropdown {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.2s ease-out;
+    display: none;
   }
   .lang-dropdown.show {
-    max-height: 300px;
+    display: block;
   }
 </style>
-<script src="https://cdn.tailwindcss.com"></script>
 <header class="bg-blue-700 text-white shadow-lg fixed top-0 left-0 right-0 z-50">
   <div class="container mx-auto flex justify-between items-center py-4 px-6">
-    <h1 class="text-3xl sm:text-4xl font-extrabold tracking-wide text-white dc-text-3d">🩺 Diabetes Care</h1>
+    <a href="/" class="text-2xl sm:text-3xl font-extrabold tracking-wide text-white dc-text-3d hover:opacity-90 transition">
+      🩺 {{ _('Diabetes Care') }}
+    </a>
     
     <!-- Desktop Menu -->
-    <nav class="hidden md:block">
-      <ul class="flex space-x-4 sm:space-x-6 text-base sm:text-lg font-semibold">
-        <li><a href="/" class="hover:text-blue-300 transition">{{ _('Home') }}</a></li>
-        <li><a href="/index" class="hover:text-blue-300 transition">{{ _('Prediction') }}</a></li>
-        <li><a href="/life" class="hover:text-blue-300 transition">{{ _('Lifestyle Check') }}</a></li>
-        <li><a href="/chatbot" class="hover:text-blue-300 transition">{{ _('Chatbot') }}</a></li>
-        <li><a href="/explore" class="hover:text-blue-300 transition">{{ _('Explore Data') }}</a></li>
-        <li><a href="/forum" class="hover:text-blue-300 transition">{{ _('Forum') }}</a></li>
-      </ul>
+    <div class="hidden md:flex items-center space-x-6">
+      <nav>
+        <ul class="flex space-x-4 lg:space-x-6 text-base font-semibold">
+          <li><a href="/" class="hover:text-blue-300 transition">{{ _('Home') }}</a></li>
+          <li><a href="/index" class="hover:text-blue-300 transition">{{ _('Prediction') }}</a></li>
+          <li><a href="/life" class="hover:text-blue-300 transition">{{ _('Lifestyle') }}</a></li>
+          <li><a href="/chatbot" class="hover:text-blue-300 transition">{{ _('Chatbot') }}</a></li>
+          <li><a href="/explore" class="hover:text-blue-300 transition">{{ _('Explore') }}</a></li>
+          <li><a href="/forum" class="hover:text-blue-300 transition">{{ _('Forum') }}</a></li>
+        </ul>
+      </nav>
+      
       <!-- Language Selector -->
-      <div class="relative ml-4">
-        <button id="lang-btn" class="flex items-center space-x-1 px-3 py-1 rounded hover:bg-blue-600 transition text-sm" aria-label="{{ _('Select language') }}">
-          <span id="current-lang">{{ languages.get(current_language, 'English') }}</span>
+      <div class="relative">
+        <button onclick="toggleLangDropdown(event)" class="flex items-center space-x-1 px-3 py-2 rounded-lg hover:bg-blue-600 transition text-sm border border-blue-500" aria-label="{{ _('Select language') }}">
+          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
+          </svg>
+          <span>{{ languages.get(current_language, 'EN') }}</span>
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
           </svg>
         </button>
-        <div id="lang-dropdown" class="lang-dropdown absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg z-50">
+        <div id="lang-dropdown" class="lang-dropdown absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-xl z-[100] overflow-hidden">
           {% for code, name in languages.items() %}
           <button onclick="setLanguage('{{ code }}')" 
-                  class="block w-full text-left px-4 py-2 text-gray-800 hover:bg-blue-100 text-sm {% if code == current_language %}bg-blue-50 font-semibold{% endif %}">
+                  class="block w-full text-left px-4 py-2 text-gray-800 hover:bg-blue-100 text-sm {% if code == current_language %}bg-blue-50 font-semibold text-blue-700{% endif %} transition">
             {{ name }}
           </button>
           {% endfor %}
         </div>
       </div>
-    </nav>
+    </div>
 
     <!-- Mobile Hamburger Button -->
-    <button id="mobile-menu-btn" class="md:hidden text-white focus:outline-none">
-      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <button id="mobile-menu-btn" class="md:hidden text-white focus:outline-none p-2 hover:bg-blue-600 rounded-lg transition">
+      <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
       </svg>
     </button>
   </div>
 
-  <!-- Mobile Menu Drawer (Hidden by default) -->
+  <!-- Mobile Menu Drawer -->
   <div id="mobile-menu" class="hidden md:hidden bg-blue-800 border-t border-blue-600">
-    <ul class="flex flex-col space-y-2 p-4 text-lg font-semibold">
-      <li><a href="/" class="block py-2 px-4 hover:bg-blue-700 rounded transition">Home</a></li>
-      <li><a href="/index" class="block py-2 px-4 hover:bg-blue-700 rounded transition">Prediction</a></li>
-      <li><a href="/life" class="block py-2 px-4 hover:bg-blue-700 rounded transition">Lifestyle Check</a></li>
-      <li><a href="/chatbot" class="block py-2 px-4 hover:bg-blue-700 rounded transition">Chatbot</a></li>
-      <li><a href="/explore" class="block py-2 px-4 hover:bg-blue-700 rounded transition">Explore Data</a></li>
-      <li><a href="/forum" class="block py-2 px-4 hover:bg-blue-700 rounded transition">Forum</a></li>
+    <ul class="flex flex-col p-4 text-base font-semibold space-y-1">
+      <li><a href="/" class="block py-3 px-4 hover:bg-blue-700 rounded-lg transition">{{ _('Home') }}</a></li>
+      <li><a href="/index" class="block py-3 px-4 hover:bg-blue-700 rounded-lg transition">{{ _('Prediction') }}</a></li>
+      <li><a href="/life" class="block py-3 px-4 hover:bg-blue-700 rounded-lg transition">{{ _('Lifestyle') }}</a></li>
+      <li><a href="/chatbot" class="block py-3 px-4 hover:bg-blue-700 rounded-lg transition">{{ _('Chatbot') }}</a></li>
+      <li><a href="/explore" class="block py-3 px-4 hover:bg-blue-700 rounded-lg transition">{{ _('Explore') }}</a></li>
+      <li><a href="/forum" class="block py-3 px-4 hover:bg-blue-700 rounded-lg transition">{{ _('Forum') }}</a></li>
     </ul>
+    <!-- Mobile Language Selector -->
+    <div class="px-4 pb-4 pt-2 border-t border-blue-700">
+      <p class="text-blue-300 text-sm mb-2">{{ _('Language') }}</p>
+      <div class="flex flex-wrap gap-2">
+        {% for code, name in languages.items() %}
+        <button onclick="setLanguage('{{ code }}')" 
+                class="px-3 py-1 rounded-full text-sm {% if code == current_language %}bg-white text-blue-700 font-semibold{% else %}bg-blue-600 hover:bg-blue-500{% endif %} transition">
+          {{ name }}
+        </button>
+        {% endfor %}
+      </div>
+    </div>
   </div>
 </header>
 
-<script>
-  const btn = document.getElementById('mobile-menu-btn');
-  const menu = document.getElementById('mobile-menu');
-
-  btn.addEventListener('click', () => {
-    menu.classList.toggle('hidden');
-  });
-</script>
-<!-- Spacer equal to header height to prevent content being overlapped -->
-<div class="h-20" aria-hidden="true"></div>
+<!-- Spacer for fixed header -->
+<div class="h-16 md:h-[72px]" aria-hidden="true"></div>
 
 <script>
   // Toggle language dropdown
-  document.getElementById('lang-btn').addEventListener('click', function(e) {
+  function toggleLangDropdown(e) {
     e.stopPropagation();
-    document.getElementById('lang-dropdown').classList.toggle('show');
-  });
+    var dropdown = document.getElementById('lang-dropdown');
+    if (dropdown) {
+      dropdown.classList.toggle('show');
+    }
+  }
   
   // Close dropdown when clicking outside
-  document.addEventListener('click', function() {
-    document.getElementById('lang-dropdown').classList.remove('show');
-  });
+  document.onclick = function(e) {
+    var dropdown = document.getElementById('lang-dropdown');
+    if (dropdown && dropdown.classList.contains('show')) {
+      dropdown.classList.remove('show');
+    }
+  };
+
+  // Mobile menu toggle
+  (function() {
+    var mobileBtn = document.getElementById('mobile-menu-btn');
+    var mobileMenu = document.getElementById('mobile-menu');
+    if (mobileBtn && mobileMenu) {
+      mobileBtn.onclick = function() {
+        mobileMenu.classList.toggle('hidden');
+      };
+    }
+  })();
   
   // Set language via API
   function setLanguage(langCode) {
@@ -98,12 +124,8 @@
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ language: langCode })
     })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        window.location.reload();
-      }
-    })
-    .catch(err => console.error('Language switch failed:', err));
+    .then(function(response) { return response.json(); })
+    .then(function(data) { if (data.success) window.location.reload(); })
+    .catch(function(err) { console.error('Language switch failed:', err); });
   }
 </script>

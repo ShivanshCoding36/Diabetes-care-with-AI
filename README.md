@@ -60,6 +60,13 @@ The core feature uses a machine learning model trained on the Pima Indians Diabe
 
 The model processes these inputs through a StandardScaler for normalization and returns a binary prediction (Diabetic / Not Diabetic).
 
+### Note on Prediction Inputs
+
+The diabetes prediction model is trained on the Pima Indians Diabetes Dataset.
+Due to limitations of the dataset, gender and individual height/weight values are not included as input features.
+BMI is used as a combined indicator of height and weight.
+
+
 ### 2. Data Exploration Dashboard
 
 Interactive visualization tools for understanding diabetes-related health patterns:
