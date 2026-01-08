@@ -5,6 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{{ _('Diabetes Care Home') }}</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     .gradient-bg {
@@ -178,6 +179,101 @@
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
+/* Footer section */
+.footer {
+  background-color:var(--dark-blue);
+  color: #ffffff;
+  padding: 60px 20px 20px;
+  font-family: 'Inter', sans-serif;
+  max-width:100%;
+  margin-top: 28px;
+  padding-left: 25px;
+  padding-top: 35px;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 60px;
+}
+
+.footer-brand h2 {
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.footer-brand span {
+  color:var(--accent-cyan)
+}
+
+.footer-brand p {
+  margin-top: 10px;
+  font-size: 14px;
+  opacity: 0.9;
+  padding-left: 10px;
+}
+
+.footer-links h4,
+.footer-social h4 {
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+
+.footer-links a {
+  display: block;
+  color: #e5e7eb;
+  text-decoration: none;
+  margin-bottom: 8px;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.footer-links a:hover {
+  color: var(--accent-cyan);
+  text-decoration: underline;
+  transform: translateX(4px);
+}
+
+.social-icons a {
+  font-size: 25px;
+  margin-right: 12px;
+  transition: 0.3s;
+}
+
+.social-icons a:hover {
+  color: var(--accent-cyan);
+  transform: scale(1.2);
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.2);
+  text-align: center;
+  padding-top: 15px;
+  margin-top: 40px;
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+/* 📱 Responsive */
+@media (max-width: 900px) {
+  .footer-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+  }
+}
+
+@media (max-width: 500px) {
+  .footer-container {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .social-icons {
+    justify-content: center;
+  }
+}
 /* Responsive (Mobile) */
 @media (max-width: 992px) {
   .nav-menu {
@@ -423,13 +519,50 @@
         {{ _('Start Free Prediction') }}
       </a>
     </div>
-  </section>
-
     <p class="mt-8 text-center text-sm text-blue-400">
       {{ current_year }} {{ _('Diabetes Care Platform') }}
     </p>
-  </footer>
+  </section>
+ <!--Footer section-->
+  <footer class="footer">
+  <div class="footer-container">
+    <div class="footer-brand">
+      <h2>⚕️Diabetes<span>Care</span></h2>
+      <p>Your AI-powered companion for smarter diabetes management.</p>
+    </div>
 
+    <div class="footer-links">
+      <h4>Quick Links</h4>
+      <a href="#">Home</a>
+      <a href="#">Prediction</a>
+      <a href="#">Lifestyle Check</a>
+      <a href="#">Chatbot</a>
+      <a href="#">Forum</a>
+    </div>
+
+    <div class="footer-links">
+      <h4>Resources</h4>
+      <a href="#">About Us</a>
+      <a href="#">Contact</a>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms & Conditions</a>
+    </div>
+
+    <div class="footer-social">
+      <h4>Connect</h4>
+      <div class="social-icons">
+        <a href="#"><i class="fa-brands fa-github"></i></a>
+        <a href="#"><i class="fa-brands fa-twitter"></i></a>
+        <a href="#"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    © 2026 Diabetes Care Platform. All rights reserved.
+  </div>
+</footer>
   <script>
     document.getElementById('lang-btn').addEventListener('click', function(e) {
       e.stopPropagation();
@@ -451,4 +584,3 @@
   </script>
 </body>
 </html>
-""
