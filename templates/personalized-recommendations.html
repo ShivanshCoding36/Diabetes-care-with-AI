@@ -1,0 +1,2011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personalized Diabetes Care - AI Recommendations</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --secondary: #06b6d4;
+            --accent: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --light: #f8fafc;
+            --light-gray: #e2e8f0;
+            --medium-gray: #94a3b8;
+            --dark: #1e293b;
+            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --card-shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --radius: 12px;
+            --radius-lg: 16px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding-bottom: 2rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 2.5rem 0;
+            border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+            margin-bottom: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--secondary) 0%, var(--accent) 100%);
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo {
+            background: rgba(255, 255, 255, 0.2);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .header-text h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        
+        .header-text p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+            max-width: 600px;
+        }
+        
+        /* Main Layout */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+        
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 1.75rem;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        
+        .card:hover {
+            box-shadow: var(--card-shadow-hover);
+            transform: translateY(-2px);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+        
+        .card-title i {
+            color: var(--primary);
+        }
+        
+        /* Profile Section */
+        .profile-section .card {
+            position: sticky;
+            top: 1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.95rem;
+        }
+        
+        .form-label i {
+            margin-right: 0.5rem;
+            color: var(--primary);
+        }
+        
+        .form-select, .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: white;
+            color: var(--dark);
+        }
+        
+        .form-select:focus, .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+        
+        @media (max-width: 480px) {
+            .checkbox-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 6px;
+            transition: var(--transition);
+        }
+        
+        .checkbox-item:hover {
+            background: var(--light);
+        }
+        
+        .checkbox-item input {
+            width: auto;
+            accent-color: var(--primary);
+        }
+        
+        /* Buttons */
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            width: 100%;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+        
+        /* Disease Indicator */
+        .disease-indicator {
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+        }
+        
+        /* Tabs */
+        .tabs-container {
+            margin-bottom: 1.5rem;
+            background: white;
+            border-radius: var(--radius);
+            padding: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .tab {
+            flex: 1;
+            min-width: 120px;
+            padding: 0.875rem 1rem;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            color: var(--medium-gray);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .tab:hover {
+            color: var(--primary);
+            background: var(--light);
+        }
+        
+        .tab.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Meal Cards */
+        .meal-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .meal-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            border-left: 4px solid var(--primary);
+            transition: var(--transition);
+        }
+        
+        .meal-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .meal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .meal-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--primary-dark);
+        }
+        
+        .carb-badge {
+            background: var(--primary-light);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .meal-suggestions {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .meal-suggestions li {
+            padding: 0.5rem 0;
+            border-bottom: 1px dashed rgba(148, 163, 184, 0.3);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        
+        .meal-suggestions li:last-child {
+            border-bottom: none;
+        }
+        
+        .meal-suggestions li:before {
+            content: "✓";
+            color: var(--success);
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        /* Guidelines */
+        .guidelines-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .guideline-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            border-top: 4px solid var(--success);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        
+        .guideline-card.avoid {
+            border-top-color: var(--danger);
+        }
+        
+        .guideline-title {
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .guideline-title i {
+            color: var(--success);
+        }
+        
+        .guideline-card.avoid .guideline-title i {
+            color: var(--danger);
+        }
+        
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            margin: 1.5rem 0;
+        }
+        
+        .data-table th {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .data-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .data-table tr:hover {
+            background: var(--light);
+        }
+        
+        /* Activity Cards */
+        .activity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.25rem;
+            margin: 1.5rem 0;
+        }
+        
+        .activity-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        
+        .activity-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--card-shadow-hover);
+            border-color: var(--primary-light);
+        }
+        
+        .activity-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--secondary) 50%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        .activity-card h4 {
+            margin-bottom: 0.5rem;
+            color: var(--primary-dark);
+        }
+        
+        /* Blood Sugar Monitoring */
+        .bg-monitoring {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .bg-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .readings-list {
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+        
+        .reading-item {
+            background: white;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid var(--primary);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .reading-item.low {
+            border-left-color: var(--warning);
+        }
+        
+        .reading-item.high {
+            border-left-color: var(--danger);
+        }
+        
+        .reading-value {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--dark);
+        }
+        
+        .reading-details {
+            color: var(--medium-gray);
+            font-size: 0.9rem;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .status-good {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+        
+        .status-warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+        
+        .status-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+        
+        /* Success Message */
+        .success-message {
+            background: linear-gradient(135deg, var(--success) 0%, #34d399 100%);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius);
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            animation: slideIn 0.5s ease;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateY(-10px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem 0;
+            color: var(--medium-gray);
+            border-top: 1px solid var(--light-gray);
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+        
+        .footer-links a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary-dark);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .logo-container {
+                justify-content: center;
+            }
+            
+            .meal-cards, .guidelines-grid, .activity-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-container">
+                    <div class="logo">
+                        <i class="fas fa-stethoscope"></i>
+                    </div>
+                    <div class="header-text">
+                        <h1>Personalized Diabetes Care</h1>
+                        <p>AI-powered recommendations tailored to your specific condition</p>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="exportPlan()">
+                        <i class="fas fa-download"></i>
+                        Export Plan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <!-- Medical Disclaimer -->
+        <div class="card" style="margin-bottom: 1.5rem; background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 1px solid #fbbf24;">
+            <div style="display: flex; gap: 1rem; align-items: flex-start;">
+                <div style="color: #d97706; font-size: 1.5rem;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div>
+                    <h3 style="color: #92400e; margin-bottom: 0.5rem;">Medical Disclaimer</h3>
+                    <p style="color: #92400e;">These recommendations are for informational purposes only and are not medical advice. Always consult with your healthcare provider before making changes to your diet, medication, or exercise routine. Individual needs may vary.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <!-- Left Column: Profile -->
+            <div class="profile-section">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-user-circle"></i>
+                            Your Health Profile
+                        </div>
+                        <div class="profile-status">
+                            <span class="status-badge status-good">Active</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-heartbeat"></i>
+                            Select Your Condition
+                        </label>
+                        <select class="form-select" id="diseaseType">
+                            <option value="type1">Type 1 Diabetes</option>
+                            <option value="type2" selected>Type 2 Diabetes</option>
+                            <option value="prediabetes">Prediabetes</option>
+                            <option value="gestational">Gestational Diabetes</option>
+                            <option value="lada">LADA (Type 1.5)</option>
+                            <option value="mody">MODY</option>
+                            <option value="none">General/No Specific Condition</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-pills"></i>
+                            Medication Use
+                        </label>
+                        <div class="checkbox-grid">
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="usesInsulin">
+                                <span>Uses Insulin</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="usesOralMeds" checked>
+                                <span>Oral Medications</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="usesCGM">
+                                <span>CGM User</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="usesPump">
+                                <span>Insulin Pump</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" id="insulinTypeGroup" style="display: none;">
+                        <label class="form-label">
+                            <i class="fas fa-syringe"></i>
+                            Insulin Type
+                        </label>
+                        <select class="form-select" id="insulinType">
+                            <option>Rapid-acting (Humalog, Novolog)</option>
+                            <option>Short-acting (Regular)</option>
+                            <option>Intermediate-acting (NPH)</option>
+                            <option selected>Long-acting (Lantus, Levemir)</option>
+                            <option>Premixed</option>
+                            <option>Multiple types</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-running"></i>
+                            Activity Level
+                        </label>
+                        <select class="form-select" id="activityLevel">
+                            <option value="sedentary">Sedentary (little or no exercise)</option>
+                            <option value="light">Lightly Active (light exercise 1-3 days/week)</option>
+                            <option value="moderate" selected>Moderately Active (moderate exercise 3-5 days/week)</option>
+                            <option value="active">Very Active (hard exercise 6-7 days/week)</option>
+                            <option value="athlete">Athlete (very hard exercise & physical job)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-utensils"></i>
+                            Dietary Preferences
+                        </label>
+                        <div class="checkbox-grid">
+                            <label class="checkbox-item">
+                                <input type="checkbox" class="diet-pref" value="vegetarian">
+                                <span>Vegetarian</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" class="diet-pref" value="lowcarb" checked>
+                                <span>Low-carb</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" class="diet-pref" value="mediterranean">
+                                <span>Mediterranean</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" class="diet-pref" value="glutenfree">
+                                <span>Gluten-free</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="showUpdateNotification()">
+                        <i class="fas fa-sync-alt"></i>
+                        Save Profile
+                    </button>
+                    
+                    <div id="autoUpdateStatus" style="margin-top: 1rem; padding: 0.75rem; background: var(--light); border-radius: 8px; text-align: center;">
+                        <i class="fas fa-sync fa-spin" style="color: var(--primary); margin-right: 0.5rem;"></i>
+                        <span style="color: var(--primary); font-weight: 600;">Updates automatically as you make changes</span>
+                    </div>
+                </div>
+                
+                <!-- <div class="card" style="margin-top: 1.5rem;">
+                    <div class="card-title">
+                        <i class="fas fa-chart-line"></i>
+                        Quick Stats
+                    </div>
+                    <div class="stats-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                        <div style="text-align: center;">
+                            <div class="stat-value" style="font-size: 1.8rem; font-weight: 700; color: var(--primary);">7.2%</div>
+                            <div style="font-size: 0.9rem; color: var(--medium-gray);">A1C Goal</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div class="stat-value" style="font-size: 1.8rem; font-weight: 700; color: var(--success);">150</div>
+                            <div style="font-size: 0.9rem; color: var(--medium-gray);">Avg BG</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div class="stat-value" style="font-size: 1.8rem; font-weight: 700; color: var(--secondary);">85%</div>
+                            <div style="font-size: 0.9rem; color: var(--medium-gray);">In Range</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div class="stat-value" style="font-size: 1.8rem; font-weight: 700; color: var(--accent);">28</div>
+                            <div style="font-size: 0.9rem; color: var(--medium-gray);">Days Logged</div>
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+            
+            <!-- Right Column: Recommendations -->
+            <div class="recommendations-section">
+                <div class="disease-indicator" id="diseaseIndicator">
+                    <i class="fas fa-user-md"></i>
+                    <span id="selectedDisease">Type 2 Diabetes</span>
+                </div>
+                
+                <!-- Tabs -->
+                <div class="tabs-container">
+                    <div class="tabs">
+                        <button class="tab active" data-tab="diet">
+                            <i class="fas fa-utensils"></i>
+                            Diet Plan
+                        </button>
+                        <button class="tab" data-tab="medication">
+                            <i class="fas fa-pills"></i>
+                            Medication
+                        </button>
+                        <button class="tab" data-tab="activity">
+                            <i class="fas fa-running"></i>
+                            Activity
+                        </button>
+                        <button class="tab" data-tab="monitoring">
+                            <i class="fas fa-chart-bar"></i>
+                            Monitoring
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Diet Plan Tab -->
+                <div class="tab-content active" id="diet-tab">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-apple-alt"></i>
+                                Personalized Diet Plan
+                            </div>
+                            <div class="carb-goal">
+                                <span class="status-badge status-good" id="dailyCarbsGoal">Daily Carbs: 150-200g</span>
+                            </div>
+                        </div>
+                        
+                        <p id="dietDescription" style="margin-bottom: 1.5rem; color: var(--medium-gray);">
+                            <i class="fas fa-info-circle" style="color: var(--primary);"></i>
+                            Focus on low glycemic index foods and portion control for optimal blood sugar management.
+                        </p>
+                        
+                        <div class="meal-cards">
+                            <div class="meal-card">
+                                <div class="meal-header">
+                                    <div class="meal-title">Breakfast</div>
+                                    <div class="carb-badge" id="breakfastCarbs">30-45g</div>
+                                </div>
+                                <ul class="meal-suggestions" id="breakfastSuggestions">
+                                    <li>Vegetable omelette (3 eggs + spinach, mushrooms)</li>
+                                    <li>Chia pudding made with unsweetened almond milk</li>
+                                    <li>High-fiber cereal (10g+ fiber) with milk alternative</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="meal-card">
+                                <div class="meal-header">
+                                    <div class="meal-title">Lunch</div>
+                                    <div class="carb-badge" id="lunchCarbs">45-60g</div>
+                                </div>
+                                <ul class="meal-suggestions" id="lunchSuggestions">
+                                    <li>Large salad with protein (chicken/tuna) + olive oil dressing</li>
+                                    <li>Vegetable soup + small protein portion</li>
+                                    <li>Cauliflower rice bowl with tofu/meat</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="meal-card">
+                                <div class="meal-header">
+                                    <div class="meal-title">Dinner</div>
+                                    <div class="carb-badge" id="dinnerCarbs">30-40g</div>
+                                </div>
+                                <ul class="meal-suggestions" id="dinnerSuggestions">
+                                    <li>Grilled fish + non-starchy vegetables (2 cups)</li>
+                                    <li>Chicken/turkey + cauliflower mash + green beans</li>
+                                    <li>Tofu curry with coconut milk + vegetables</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <h3 style="margin: 1.5rem 0 1rem; color: var(--primary-dark);">
+                            <i class="fas fa-check-circle" style="color: var(--success);"></i>
+                            Key Guidelines
+                        </h3>
+                        
+                        <div class="guidelines-grid" id="dietGuidelines">
+                            <div class="guideline-card">
+                                <div class="guideline-title">
+                                    <i class="fas fa-leaf"></i>
+                                    Vegetables First
+                                </div>
+                                <p>Fill half your plate with non-starchy vegetables at each meal.</p>
+                            </div>
+                            
+                            <div class="guideline-card">
+                                <div class="guideline-title">
+                                    <i class="fas fa-seedling"></i>
+                                    Whole Grains
+                                </div>
+                                <p>Choose whole grains over refined carbohydrates.</p>
+                            </div>
+                            
+                            <div class="guideline-card">
+                                <div class="guideline-title">
+                                    <i class="fas fa-heart"></i>
+                                    Healthy Fats
+                                </div>
+                                <p>Include avocado, nuts, and olive oil in moderation.</p>
+                            </div>
+                            
+                            <div class="guideline-card avoid">
+                                <div class="guideline-title">
+                                    <i class="fas fa-times-circle"></i>
+                                    Limit or Avoid
+                                </div>
+                                <p>Sugary beverages, processed snacks, and large portions of refined carbs.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Medication Tab -->
+                <div class="tab-content" id="medication-tab">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-capsules"></i>
+                                <span id="medicationTitle">Medication & Insulin Guidance</span>
+                            </div>
+                        </div>
+                        
+                        <div id="insulinInfo" style="margin-bottom: 2rem;">
+                            <h3 style="margin-bottom: 1rem; color: var(--primary-dark);">
+                                <i class="fas fa-clock"></i>
+                                <span id="insulinTimingTitle">Insulin Timing Suggestions</span>
+                            </h3>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Time</th>
+                                        <th>Insulin Type</th>
+                                        <th>Timing</th>
+                                        <th>Target BG</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="insulinSchedule">
+                                    <!-- Dynamic content will be inserted here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div id="oralMedsInfo">
+                            <h3 style="margin-bottom: 1rem; color: var(--primary-dark);">
+                                <i class="fas fa-tablets"></i>
+                                Common Oral Medications
+                            </h3>
+                            <div class="activity-grid" id="medicationCards">
+                                <!-- Dynamic content will be inserted here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Activity Tab -->
+                <div class="tab-content" id="activity-tab">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-dumbbell"></i>
+                                Activity & Exercise Plan
+                            </div>
+                            <div class="activity-goal">
+                                <span class="status-badge status-good" id="activityGoal">Goal: 150 mins/week</span>
+                            </div>
+                        </div>
+                        
+                        <p id="activityFocus" style="margin-bottom: 1.5rem; color: var(--medium-gray);">
+                            <i class="fas fa-info-circle" style="color: var(--primary);"></i>
+                            Improving insulin sensitivity and blood sugar control through regular physical activity.
+                        </p>
+                        
+                        <div class="activity-grid" id="activityCards">
+                            <!-- Dynamic content will be inserted here -->
+                        </div>
+                        
+                        <h3 style="margin: 2rem 0 1rem; color: var(--primary-dark);">
+                            <i class="fas fa-calendar-alt"></i>
+                            Sample Weekly Plan
+                        </h3>
+                        
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Day</th>
+                                    <th>Activity</th>
+                                    <th>Duration</th>
+                                    <th>Intensity</th>
+                                </tr>
+                            </thead>
+                            <tbody id="weeklyPlan">
+                                <!-- Dynamic content will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Monitoring Tab -->
+                <div class="tab-content" id="monitoring-tab">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-chart-line"></i>
+                                Blood Sugar Monitoring
+                            </div>
+                            <div class="monitoring-stats">
+                                <span class="status-badge status-good" id="inRangePercentage">In Range: 85%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-monitoring">
+                            <h3 style="margin-bottom: 1rem; color: var(--primary-dark);">
+                                <i class="fas fa-plus-circle"></i>
+                                Add New Reading
+                            </h3>
+                            
+                            <div class="bg-inputs">
+                                <div>
+                                    <label class="form-label">BG Value (mg/dL)</label>
+                                    <input type="number" id="bgValue" class="form-input" min="50" max="400" value="" placeholder="Enter BG reading">
+                                </div>
+                                <div>
+                                    <label class="form-label">Time of Day</label>
+                                    <select id="bgTime" class="form-select">
+                                        <option>Fasting</option>
+                                        <option>Before Breakfast</option>
+                                        <option>After Breakfast</option>
+                                        <option>Before Lunch</option>
+                                        <option>After Lunch</option>
+                                        <option>Before Dinner</option>
+                                        <option>After Dinner</option>
+                                        <option>Bedtime</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="form-label">Notes (optional)</label>
+                                    <input type="text" id="bgNotes" class="form-input" placeholder="e.g., After exercise">
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-primary" id="addReading" style="width: auto;">
+                                <i class="fas fa-plus"></i>
+                                Add Reading
+                            </button>
+                        </div>
+                        
+                        <h3 style="margin: 2rem 0 1rem; color: var(--primary-dark);">
+                            <i class="fas fa-history"></i>
+                            Recent Readings
+                        </h3>
+                        
+                        <div class="readings-list" id="bgReadings">
+                            <!-- Dynamic content will be inserted here -->
+                        </div>
+                        
+                        <h3 style="margin: 2rem 0 1rem; color: var(--primary-dark);">
+                            <i class="fas fa-bullseye"></i>
+                            Target Ranges
+                        </h3>
+                        
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Measurement</th>
+                                    <th>Target Range</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="targetRanges">
+                                <!-- Dynamic content will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>© 2026 Diabetes Care AI • Personalized Recommendations System</p>
+            <p>For informational purposes only • Always consult your healthcare provider</p>
+            <div class="footer-links">
+                <a href="#"><i class="fas fa-shield-alt"></i> Privacy Policy</a>
+                <a href="#"><i class="fas fa-file-contract"></i> Terms of Use</a>
+                <a href="#"><i class="fas fa-envelope"></i> Contact Us</a>
+                <a href="#"><i class="fas fa-question-circle"></i> Help Center</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Complete disease data with all recommendations
+        const diseaseData = {
+            type1: {
+                name: "Type 1 Diabetes",
+                color: "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)",
+                stats: { a1c: "7.0%", avgBg: "145", inRange: "75%", days: "28" },
+                diet: {
+                    focus: "Carbohydrate-Conscious Plan",
+                    description: "Focus on consistent carb intake with insulin timing for optimal management.",
+                    dailyCarbs: "150-180g",
+                    breakfast: { 
+                        carbs: "30-45g", 
+                        suggestions: [
+                            "2 scrambled eggs + 1 slice whole grain toast + ½ avocado",
+                            "½ cup oatmeal + ¼ cup berries + 1 tbsp nuts",
+                            "Greek yogurt (plain) + ¼ cup granola + chia seeds"
+                        ]
+                    },
+                    lunch: { 
+                        carbs: "45-60g", 
+                        suggestions: [
+                            "Grilled chicken salad with mixed greens + vinaigrette",
+                            "Turkey wrap in whole wheat tortilla with veggies",
+                            "Quinoa bowl with roasted vegetables and lean protein"
+                        ]
+                    },
+                    dinner: { 
+                        carbs: "45-60g", 
+                        suggestions: [
+                            "Salmon + ½ cup brown rice + steamed broccoli",
+                            "Lean beef stir-fry with vegetables",
+                            "Lentil soup + small whole grain roll"
+                        ]
+                    },
+                    guidelines: [
+                        { title: "Carb Counting", text: "Count carbohydrates for accurate insulin dosing", icon: "fas fa-calculator" },
+                        { title: "Consistent Timing", text: "Maintain consistent meal timing", icon: "fas fa-clock" },
+                        { title: "Protein Balance", text: "Include protein with every meal", icon: "fas fa-drumstick-bite" },
+                        { title: "Emergency Glucose", text: "Always carry fast-acting glucose", icon: "fas fa-first-aid" }
+                    ]
+                },
+                medication: {
+                    title: "Insulin Management",
+                    timingTitle: "Insulin Timing Suggestions",
+                    schedule: [
+                        { time: "Morning", type: "Long-acting", timing: "Consistent time daily", target: "80-130 mg/dL" },
+                        { time: "Before meals", type: "Rapid-acting", timing: "15-20 min before eating", target: "80-130 mg/dL" },
+                        { time: "After meals", type: "Correction dose", timing: "As needed based on BG", target: "<180 mg/dL" },
+                        { time: "Bedtime", type: "As prescribed", timing: "Check BG before", target: "100-140 mg/dL" }
+                    ],
+                    cards: [
+                        { icon: "fas fa-syringe", title: "Basal Insulin", text: "Background insulin, taken 1-2x daily", color: "primary-light" },
+                        { icon: "fas fa-bolt", title: "Bolus Insulin", text: "Mealtime & correction doses", color: "secondary" },
+                        { icon: "fas fa-mobile-alt", title: "CGM Use", text: "Continuous monitoring recommended", color: "accent" }
+                    ]
+                },
+                activity: {
+                    focus: "Managing blood sugar during exercise",
+                    goal: "150 mins/week",
+                    cards: [
+                        { icon: "fas fa-walking", title: "Aerobic Exercise", text: "150 mins/week moderate-intensity", tip: "Best: 1-3 hours after meal" },
+                        { icon: "fas fa-dumbbell", title: "Strength Training", text: "2-3 days/week", tip: "Check BG before and after" },
+                        { icon: "fas fa-hands", title: "Flexibility", text: "Daily stretching", tip: "Good for joint health" },
+                        { icon: "fas fa-candy-cane", title: "Carry Glucose", text: "Always have fast-acting carbs", tip: "For hypoglycemia prevention" }
+                    ],
+                    weeklyPlan: [
+                        { day: "Monday", activity: "30 min brisk walk after dinner", duration: "30 mins", intensity: "Moderate" },
+                        { day: "Tuesday", activity: "Strength training (light weights)", duration: "20 mins", intensity: "Vigorous" },
+                        { day: "Wednesday", activity: "Swimming or cycling", duration: "30 mins", intensity: "Moderate" },
+                        { day: "Thursday", activity: "Yoga or stretching", duration: "20 mins", intensity: "Light" },
+                        { day: "Friday", activity: "30 min walk + strength", duration: "30 mins", intensity: "Moderate" },
+                        { day: "Saturday", activity: "Active hobby (gardening, dancing)", duration: "45 mins", intensity: "Moderate" },
+                        { day: "Sunday", activity: "Rest or gentle walking", duration: "20 mins", intensity: "Light" }
+                    ]
+                },
+                monitoring: {
+                    targets: [
+                        { measurement: "Fasting/Before meals", target: "80-130 mg/dL", status: "Optimal" },
+                        { measurement: "2 hours after meals", target: "<180 mg/dL", status: "Good" },
+                        { measurement: "Bedtime", target: "100-140 mg/dL", status: "Good" },
+                        { measurement: "A1C Goal", target: "<7.0%", status: "Needs improvement" }
+                    ]
+                }
+            },
+            type2: {
+                name: "Type 2 Diabetes",
+                color: "linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%)",
+                stats: { a1c: "7.2%", avgBg: "150", inRange: "85%", days: "28" },
+                diet: {
+                    focus: "Blood Sugar Balancing Plan",
+                    description: "Focus on low glycemic index foods and portion control for optimal blood sugar management.",
+                    dailyCarbs: "150-200g",
+                    breakfast: { 
+                        carbs: "30-45g", 
+                        suggestions: [
+                            "Vegetable omelette (3 eggs + spinach, mushrooms)",
+                            "Chia pudding made with unsweetened almond milk",
+                            "High-fiber cereal (10g+ fiber) with milk alternative"
+                        ]
+                    },
+                    lunch: { 
+                        carbs: "45-60g", 
+                        suggestions: [
+                            "Large salad with protein (chicken/tuna) + olive oil dressing",
+                            "Vegetable soup + small protein portion",
+                            "Cauliflower rice bowl with tofu/meat"
+                        ]
+                    },
+                    dinner: { 
+                        carbs: "30-40g", 
+                        suggestions: [
+                            "Grilled fish + non-starchy vegetables (2 cups)",
+                            "Chicken/turkey + cauliflower mash + green beans",
+                            "Tofu curry with coconut milk + vegetables"
+                        ]
+                    },
+                    guidelines: [
+                        { title: "Vegetables First", text: "Fill half your plate with non-starchy vegetables", icon: "fas fa-leaf" },
+                        { title: "Whole Grains", text: "Choose whole grains over refined carbohydrates", icon: "fas fa-seedling" },
+                        { title: "Healthy Fats", text: "Include avocado, nuts, and olive oil", icon: "fas fa-heart" },
+                        { title: "Portion Control", text: "Use smaller plates and measure portions", icon: "fas fa-balance-scale" }
+                    ]
+                },
+                medication: {
+                    title: "Medication Management",
+                    timingTitle: "Medication Timing",
+                    schedule: [
+                        { time: "Morning", type: "Metformin", timing: "With breakfast", target: "80-130 mg/dL" },
+                        { time: "With meals", type: "Other oral meds", timing: "As prescribed", target: "80-130 mg/dL" },
+                        { time: "Evening", type: "Long-acting insulin", timing: "Consistent time", target: "100-140 mg/dL" }
+                    ],
+                    cards: [
+                        { icon: "fas fa-capsules", title: "Metformin", text: "First-line treatment, reduces liver glucose", color: "primary-light" },
+                        { icon: "fas fa-pills", title: "SGLT2 Inhibitors", text: "Remove glucose through urine", color: "secondary" },
+                        { icon: "fas fa-syringe", title: "GLP-1 Agonists", text: "Weekly injections, aid weight loss", color: "accent" }
+                    ]
+                },
+                activity: {
+                    focus: "Improving insulin sensitivity",
+                    goal: "150 mins/week",
+                    cards: [
+                        { icon: "fas fa-walking", title: "Aerobic Exercise", text: "150 mins/week moderate-intensity", tip: "Best: After meals" },
+                        { icon: "fas fa-dumbbell", title: "Strength Training", text: "2-3 days/week", tip: "Builds muscle, improves sensitivity" },
+                        { icon: "fas fa-hands", title: "Flexibility", text: "Daily stretching", tip: "Improves mobility" },
+                        { icon: "fas fa-chair", title: "Reduce Sitting", text: "Stand every 30 minutes", tip: "Breaks up sedentary time" }
+                    ],
+                    weeklyPlan: [
+                        { day: "Monday", activity: "Morning walk 20 mins", duration: "20 mins", intensity: "Moderate" },
+                        { day: "Tuesday", activity: "Bodyweight exercises", duration: "15 mins", intensity: "Vigorous" },
+                        { day: "Wednesday", activity: "Evening walk 30 mins", duration: "30 mins", intensity: "Moderate" },
+                        { day: "Thursday", activity: "Resistance bands", duration: "20 mins", intensity: "Moderate" },
+                        { day: "Friday", activity: "Weekend activity prep", duration: "15 mins", intensity: "Light" },
+                        { day: "Saturday", activity: "45 min activity (hike, bike)", duration: "45 mins", intensity: "Moderate" },
+                        { day: "Sunday", activity: "Family walk or stretching", duration: "30 mins", intensity: "Light" }
+                    ]
+                },
+                monitoring: {
+                    targets: [
+                        { measurement: "Fasting/Before meals", target: "80-130 mg/dL", status: "Optimal" },
+                        { measurement: "2 hours after meals", target: "<180 mg/dL", status: "Good" },
+                        { measurement: "Bedtime", target: "100-140 mg/dL", status: "Good" },
+                        { measurement: "A1C Goal", target: "<7.0%", status: "Needs improvement" }
+                    ]
+                }
+            },
+            prediabetes: {
+                name: "Prediabetes",
+                color: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                stats: { a1c: "5.8%", avgBg: "110", inRange: "95%", days: "28" },
+                diet: {
+                    focus: "Prevention Focused Plan",
+                    description: "Prevent progression to diabetes with strategic lifestyle changes and weight management.",
+                    dailyCarbs: "130-170g",
+                    breakfast: { 
+                        carbs: "25-35g", 
+                        suggestions: [
+                            "Greek yogurt with berries and walnuts",
+                            "Avocado on whole grain toast",
+                            "Protein smoothie (no added sugar)"
+                        ]
+                    },
+                    lunch: { 
+                        carbs: "30-40g", 
+                        suggestions: [
+                            "Mediterranean salad with chickpeas",
+                            "Vegetable and bean soup",
+                            "Grilled chicken with roasted vegetables"
+                        ]
+                    },
+                    dinner: { 
+                        carbs: "30-40g", 
+                        suggestions: [
+                            "Baked salmon with quinoa and asparagus",
+                            "Turkey meatballs with zucchini noodles",
+                            "Stir-fried tofu with mixed vegetables"
+                        ]
+                    },
+                    guidelines: [
+                        { title: "Weight Loss Goal", text: "Aim for 7% weight loss if overweight", icon: "fas fa-weight-scale" },
+                        { title: "High Fiber", text: "Increase dietary fiber to 25-30g daily", icon: "fas fa-wheat-awn" },
+                        { title: "Low Glycemic", text: "Choose low glycemic index foods", icon: "fas fa-chart-line-down" },
+                        { title: "Limit Saturated Fat", text: "Reduce butter, red meat, full-fat dairy", icon: "fas fa-ban" }
+                    ]
+                },
+                medication: {
+                    title: "Prevention Focus",
+                    timingTitle: "Lifestyle Intervention",
+                    schedule: [
+                        { time: "Daily", type: "Metformin (if needed)", timing: "As prescribed by doctor", target: "Normal range" },
+                        { time: "Lifestyle", type: "Diet & Exercise", timing: "Consistent daily routine", target: "Prevent progression" },
+                        { time: "Monitoring", type: "Regular checkups", timing: "Every 3-6 months", target: "Catch early changes" }
+                    ],
+                    cards: [
+                        { icon: "fas fa-apple-alt", title: "Diet First", text: "Lifestyle changes are primary treatment", color: "success" },
+                        { icon: "fas fa-running", title: "Exercise", text: "150+ mins/week to prevent progression", color: "primary-light" },
+                        { icon: "fas fa-weight-scale", title: "Weight Loss", text: "7% weight loss if overweight", color: "secondary" }
+                    ]
+                },
+                activity: {
+                    focus: "Preventing progression to diabetes",
+                    goal: "300 mins/week",
+                    cards: [
+                        { icon: "fas fa-walking", title: "Aerobic Exercise", text: "300 mins/week for best results", tip: "More is better for prevention" },
+                        { icon: "fas fa-dumbbell", title: "Strength Training", text: "2-3 days/week", tip: "Builds insulin-sensitive muscle" },
+                        { icon: "fas fa-shoe-prints", title: "Step Goal", text: "8,000-10,000 steps daily", tip: "Use a pedometer or app" },
+                        { icon: "fas fa-couch", title: "Reduce Sitting", text: "Break up prolonged sitting", tip: "Stand every 30 minutes" }
+                    ],
+                    weeklyPlan: [
+                        { day: "Monday", activity: "Brisk walking 45 mins", duration: "45 mins", intensity: "Moderate" },
+                        { day: "Tuesday", activity: "Strength training", duration: "25 mins", intensity: "Vigorous" },
+                        { day: "Wednesday", activity: "Cycling or swimming", duration: "45 mins", intensity: "Moderate" },
+                        { day: "Thursday", activity: "Yoga or Pilates", duration: "30 mins", intensity: "Light" },
+                        { day: "Friday", activity: "Weekend activity planning", duration: "20 mins", intensity: "Light" },
+                        { day: "Saturday", activity: "Hiking or sports", duration: "60 mins", intensity: "Moderate" },
+                        { day: "Sunday", activity: "Active family time", duration: "45 mins", intensity: "Light" }
+                    ]
+                },
+                monitoring: {
+                    targets: [
+                        { measurement: "Fasting Glucose", target: "<100 mg/dL", status: "Optimal" },
+                        { measurement: "2 hours after meals", target: "<140 mg/dL", status: "Good" },
+                        { measurement: "A1C", target: "<5.7%", status: "Normal" },
+                        { measurement: "Annual Screening", target: "Regular checkups", status: "Essential" }
+                    ]
+                }
+            },
+            gestational: {
+                name: "Gestational Diabetes",
+                color: "linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)",
+                stats: { a1c: "5.5%", avgBg: "115", inRange: "90%", days: "28" },
+                diet: {
+                    focus: "Pregnancy-Specific Plan",
+                    description: "Balanced nutrition for both mother and baby with controlled carb intake throughout the day.",
+                    dailyCarbs: "175-200g",
+                    breakfast: { 
+                        carbs: "30-40g", 
+                        suggestions: [
+                            "Whole grain toast with peanut butter",
+                            "Oatmeal with nuts and seeds",
+                            "Egg and vegetable muffin cups"
+                        ]
+                    },
+                    lunch: { 
+                        carbs: "45-55g", 
+                        suggestions: [
+                            "Chicken salad with whole grain crackers",
+                            "Lentil and vegetable stew",
+                            "Quinoa salad with grilled vegetables"
+                        ]
+                    },
+                    dinner: { 
+                        carbs: "45-55g", 
+                        suggestions: [
+                            "Baked chicken with sweet potato and greens",
+                            "Fish with brown rice and broccoli",
+                            "Lean beef with vegetables"
+                        ]
+                    },
+                    guidelines: [
+                        { title: "Frequent Meals", text: "Eat 3 meals + 3 snacks daily", icon: "fas fa-utensils" },
+                        { title: "Protein Every Meal", text: "Include protein with each meal and snack", icon: "fas fa-egg" },
+                        { title: "Hydration", text: "Drink plenty of water", icon: "fas fa-glass-water" },
+                        { title: "Prenatal Vitamins", text: "Continue prenatal vitamins as prescribed", icon: "fas fa-capsules" }
+                    ]
+                },
+                medication: {
+                    title: "Pregnancy-Safe Management",
+                    timingTitle: "Monitoring & Medication",
+                    schedule: [
+                        { time: "Fasting", type: "Check BG", timing: "Upon waking", target: "<95 mg/dL" },
+                        { time: "1 hour after meals", type: "Check BG", timing: "After each meal", target: "<140 mg/dL" },
+                        { time: "If prescribed", type: "Insulin", timing: "As directed by OB", target: "Within targets" }
+                    ],
+                    cards: [
+                        { icon: "fas fa-baby", title: "Baby's Health", text: "Primary focus is healthy baby development", color: "accent" },
+                        { icon: "fas fa-chart-line", title: "Frequent Monitoring", text: "Check BG 4+ times daily", color: "primary-light" },
+                        { icon: "fas fa-user-md", title: "OB Guidance", text: "Follow obstetrician's recommendations", color: "secondary" }
+                    ]
+                },
+                activity: {
+                    focus: "Safe exercise during pregnancy",
+                    goal: "150 mins/week",
+                    cards: [
+                        { icon: "fas fa-walking", title: "Walking", text: "Safe throughout pregnancy", tip: "Low impact, easy to modify" },
+                        { icon: "fas fa-swimmer", title: "Swimming", text: "Excellent pregnancy exercise", tip: "Supports weight, cools body" },
+                        { icon: "fas fa-hands", title: "Prenatal Yoga", text: "Improves flexibility & relaxation", tip: "Look for certified instructors" },
+                        { icon: "fas fa-ban", title: "Avoid High Risk", text: "No contact sports or high impact", tip: "Safety first for mom & baby" }
+                    ],
+                    weeklyPlan: [
+                        { day: "Monday", activity: "Prenatal yoga", duration: "30 mins", intensity: "Light" },
+                        { day: "Tuesday", activity: "Brisk walking", duration: "30 mins", intensity: "Moderate" },
+                        { day: "Wednesday", activity: "Swimming or water aerobics", duration: "30 mins", intensity: "Moderate" },
+                        { day: "Thursday", activity: "Rest or gentle stretching", duration: "20 mins", intensity: "Light" },
+                        { day: "Friday", activity: "Walking + light strength", duration: "30 mins", intensity: "Moderate" },
+                        { day: "Saturday", activity: "Family walk", duration: "45 mins", intensity: "Light" },
+                        { day: "Sunday", activity: "Rest and preparation", duration: "0 mins", intensity: "Rest" }
+                    ]
+                },
+                monitoring: {
+                    targets: [
+                        { measurement: "Fasting", target: "<95 mg/dL", status: "Critical" },
+                        { measurement: "1 hour after meals", target: "<140 mg/dL", status: "Critical" },
+                        { measurement: "2 hours after meals", target: "<120 mg/dL", status: "Good" },
+                        { measurement: "Regular OB visits", target: "As scheduled", status: "Essential" }
+                    ]
+                }
+            }
+        };
+
+        // DOM Elements
+        const diseaseSelect = document.getElementById('diseaseType');
+        const selectedDisease = document.getElementById('selectedDisease');
+        const diseaseIndicator = document.getElementById('diseaseIndicator');
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        // Initialize - Set up event listeners for auto-update
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("Initializing Personalized Diabetes Care...");
+            
+            // Set up insulin checkbox toggle
+            const usesInsulinCheckbox = document.getElementById('usesInsulin');
+            const insulinTypeGroup = document.getElementById('insulinTypeGroup');
+            
+            if (usesInsulinCheckbox) {
+                usesInsulinCheckbox.addEventListener('change', function() {
+                    insulinTypeGroup.style.display = this.checked ? 'block' : 'none';
+                    updateRecommendations(); // Auto-update when insulin use changes
+                });
+            }
+            
+            // Auto-update when disease selection changes
+            if (diseaseSelect) {
+                diseaseSelect.addEventListener('change', updateRecommendations);
+            }
+            
+            // Auto-update when activity level changes
+            const activityLevelSelect = document.getElementById('activityLevel');
+            if (activityLevelSelect) {
+                activityLevelSelect.addEventListener('change', updateRecommendations);
+            }
+            
+            // Auto-update when dietary preferences change
+            const dietPrefCheckboxes = document.querySelectorAll('.diet-pref');
+            dietPrefCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateRecommendations);
+            });
+            
+            // Auto-update when medication checkboxes change
+            const medicationCheckboxes = ['usesOralMeds', 'usesCGM', 'usesPump'];
+            medicationCheckboxes.forEach(id => {
+                const checkbox = document.getElementById(id);
+                if (checkbox) {
+                    checkbox.addEventListener('change', updateRecommendations);
+                }
+            });
+            
+            // Tab switching
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    switchTab(tabId);
+                });
+            });
+            
+            // Add blood sugar reading
+            const addReadingBtn = document.getElementById('addReading');
+            if (addReadingBtn) {
+                addReadingBtn.addEventListener('click', addBloodSugarReading);
+            }
+            
+            // Initialize with current data
+            updateRecommendations();
+        });
+
+        function updateRecommendations() {
+            const disease = diseaseSelect.value;
+            const diseaseInfo = diseaseData[disease] || diseaseData.type2;
+            
+            console.log(`Auto-updating recommendations for: ${diseaseInfo.name}`);
+            
+            // Update disease indicator
+            selectedDisease.textContent = diseaseInfo.name;
+            diseaseIndicator.style.background = diseaseInfo.color;
+            
+            // Update quick stats
+            updateQuickStats(diseaseInfo.stats);
+            
+            // Update diet tab
+            updateDietTab(diseaseInfo.diet);
+            
+            // Update medication tab
+            updateMedicationTab(diseaseInfo.medication);
+            
+            // Update activity tab
+            updateActivityTab(diseaseInfo.activity);
+            
+            // Update monitoring tab
+            updateMonitoringTab(diseaseInfo.monitoring);
+            
+            // Show subtle update indicator
+            showAutoUpdateIndicator();
+        }
+
+        function updateQuickStats(stats) {
+            const statValues = document.querySelectorAll('.stat-value');
+            if (statValues.length >= 4) {
+                statValues[0].textContent = stats.a1c;
+                statValues[1].textContent = stats.avgBg;
+                statValues[2].textContent = stats.inRange;
+                statValues[3].textContent = stats.days;
+            }
+        }
+
+        function updateDietTab(diet) {
+            // Update description
+            const dietDescription = document.getElementById('dietDescription');
+            if (dietDescription) {
+                dietDescription.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary);"></i> ${diet.description}`;
+            }
+            
+            // Update daily carbs goal
+            const dailyCarbsGoal = document.getElementById('dailyCarbsGoal');
+            if (dailyCarbsGoal) {
+                dailyCarbsGoal.textContent = `Daily Carbs: ${diet.dailyCarbs}`;
+            }
+            
+            // Update meal suggestions
+            updateMealSuggestions('breakfast', diet.breakfast);
+            updateMealSuggestions('lunch', diet.lunch);
+            updateMealSuggestions('dinner', diet.dinner);
+            
+            // Update guidelines
+            updateDietGuidelines(diet.guidelines);
+        }
+
+        function updateMealSuggestions(mealType, mealData) {
+            const suggestionsId = `${mealType}Suggestions`;
+            const carbsId = `${mealType}Carbs`;
+            
+            // Update carb badge
+            const carbBadge = document.getElementById(carbsId);
+            if (carbBadge) {
+                carbBadge.textContent = mealData.carbs;
+            }
+            
+            // Update suggestions list
+            const suggestionsList = document.getElementById(suggestionsId);
+            if (suggestionsList) {
+                suggestionsList.innerHTML = '';
+                mealData.suggestions.forEach(suggestion => {
+                    const li = document.createElement('li');
+                    li.textContent = suggestion;
+                    suggestionsList.appendChild(li);
+                });
+            }
+        }
+
+        function updateDietGuidelines(guidelines) {
+            const guidelinesGrid = document.getElementById('dietGuidelines');
+            if (!guidelinesGrid) return;
+            
+            guidelinesGrid.innerHTML = '';
+            
+            guidelines.forEach(guideline => {
+                const card = document.createElement('div');
+                card.className = 'guideline-card';
+                card.innerHTML = `
+                    <div class="guideline-title">
+                        <i class="${guideline.icon}"></i>
+                        ${guideline.title}
+                    </div>
+                    <p>${guideline.text}</p>
+                `;
+                guidelinesGrid.appendChild(card);
+            });
+            
+            // Add the "avoid" card
+            const avoidCard = document.createElement('div');
+            avoidCard.className = 'guideline-card avoid';
+            avoidCard.innerHTML = `
+                <div class="guideline-title">
+                    <i class="fas fa-times-circle"></i>
+                    Limit or Avoid
+                </div>
+                <p>Sugary beverages, processed snacks, and large portions of refined carbs.</p>
+            `;
+            guidelinesGrid.appendChild(avoidCard);
+        }
+
+        function updateMedicationTab(medication) {
+            // Update titles
+            const medicationTitle = document.getElementById('medicationTitle');
+            const insulinTimingTitle = document.getElementById('insulinTimingTitle');
+            
+            if (medicationTitle) medicationTitle.textContent = medication.title;
+            if (insulinTimingTitle) insulinTimingTitle.textContent = medication.timingTitle;
+            
+            // Update schedule table
+            const scheduleTable = document.getElementById('insulinSchedule');
+            if (scheduleTable) {
+                scheduleTable.innerHTML = '';
+                medication.schedule.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.time}</td>
+                        <td>${item.type}</td>
+                        <td>${item.timing}</td>
+                        <td>${item.target}</td>
+                    `;
+                    scheduleTable.appendChild(row);
+                });
+            }
+            
+            // Update medication cards
+            const medicationCards = document.getElementById('medicationCards');
+            if (medicationCards) {
+                medicationCards.innerHTML = '';
+                medication.cards.forEach(card => {
+                    const cardDiv = document.createElement('div');
+                    cardDiv.className = 'activity-card';
+                    cardDiv.innerHTML = `
+                        <div class="activity-icon" style="background: linear-gradient(135deg, var(--${card.color}) 0%, var(--secondary) 100%);">
+                            <i class="${card.icon}"></i>
+                        </div>
+                        <h4>${card.title}</h4>
+                        <p>${card.text}</p>
+                    `;
+                    medicationCards.appendChild(cardDiv);
+                });
+            }
+        }
+
+        function updateActivityTab(activity) {
+            // Update focus and goal
+            const activityFocus = document.getElementById('activityFocus');
+            const activityGoal = document.getElementById('activityGoal');
+            
+            if (activityFocus) {
+                activityFocus.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary);"></i> ${activity.focus}`;
+            }
+            if (activityGoal) {
+                activityGoal.textContent = `Goal: ${activity.goal}`;
+            }
+            
+            // Update activity cards
+            const activityCards = document.getElementById('activityCards');
+            if (activityCards) {
+                activityCards.innerHTML = '';
+                activity.cards.forEach(card => {
+                    const cardDiv = document.createElement('div');
+                    cardDiv.className = 'activity-card';
+                    cardDiv.innerHTML = `
+                        <div class="activity-icon">
+                            <i class="${card.icon}"></i>
+                        </div>
+                        <h4>${card.title}</h4>
+                        <p>${card.text}</p>
+                        <div style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--primary);">
+                            <i class="fas fa-lightbulb"></i> ${card.tip}
+                        </div>
+                    `;
+                    activityCards.appendChild(cardDiv);
+                });
+            }
+            
+            // Update weekly plan
+            const weeklyPlan = document.getElementById('weeklyPlan');
+            if (weeklyPlan) {
+                weeklyPlan.innerHTML = '';
+                activity.weeklyPlan.forEach(day => {
+                    const row = document.createElement('tr');
+                    const intensityClass = day.intensity === 'Vigorous' ? 'status-warning' : 
+                                          day.intensity === 'Moderate' ? 'status-good' : 'status-good';
+                    
+                    row.innerHTML = `
+                        <td>${day.day}</td>
+                        <td>${day.activity}</td>
+                        <td>${day.duration}</td>
+                        <td><span class="status-badge ${intensityClass}">${day.intensity}</span></td>
+                    `;
+                    weeklyPlan.appendChild(row);
+                });
+            }
+        }
+
+        function updateMonitoringTab(monitoring) {
+            // Update target ranges
+            const targetRanges = document.getElementById('targetRanges');
+            if (targetRanges) {
+                targetRanges.innerHTML = '';
+                monitoring.targets.forEach(target => {
+                    const row = document.createElement('tr');
+                    const statusClass = target.status === 'Optimal' ? 'status-good' : 
+                                       target.status === 'Critical' ? 'status-danger' : 
+                                       target.status === 'Essential' ? 'status-warning' : 'status-good';
+                    
+                    row.innerHTML = `
+                        <td>${target.measurement}</td>
+                        <td>${target.target}</td>
+                        <td><span class="status-badge ${statusClass}">${target.status}</span></td>
+                    `;
+                    targetRanges.appendChild(row);
+                });
+            }
+        }
+
+        function showAutoUpdateIndicator() {
+            const statusDiv = document.getElementById('autoUpdateStatus');
+            if (statusDiv) {
+                // Briefly highlight the update status
+                statusDiv.style.background = 'rgba(37, 99, 235, 0.1)';
+                statusDiv.style.border = '1px solid rgba(37, 99, 235, 0.2)';
+                
+                setTimeout(() => {
+                    statusDiv.style.background = 'var(--light)';
+                    statusDiv.style.border = 'none';
+                }, 500);
+            }
+        }
+
+        function showUpdateNotification() {
+            showNotification('Profile saved successfully!', 'success');
+        }
+
+        function switchTab(tabId) {
+            // Remove active class from all tabs and contents
+            tabs.forEach(tab => tab.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Add active class to selected tab and content
+            const selectedTab = document.querySelector(`[data-tab="${tabId}"]`);
+            const selectedContent = document.getElementById(`${tabId}-tab`);
+            
+            if (selectedTab) selectedTab.classList.add('active');
+            if (selectedContent) selectedContent.classList.add('active');
+        }
+
+        function addBloodSugarReading() {
+            const bgValueInput = document.getElementById('bgValue');
+            const bgTimeSelect = document.getElementById('bgTime');
+            const bgNotesInput = document.getElementById('bgNotes');
+            const bgReadingsContainer = document.getElementById('bgReadings');
+            const inRangePercentage = document.getElementById('inRangePercentage');
+            
+            const value = parseInt(bgValueInput.value);
+            const time = bgTimeSelect.value;
+            const notes = bgNotesInput.value;
+            const now = new Date();
+            const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const dateString = now.toLocaleDateString();
+            
+            if (!value || value < 50 || value > 400) {
+                showNotification('Please enter a valid blood sugar value (50-400 mg/dL)', 'error');
+                return;
+            }
+            
+            // Create reading element
+            const readingDiv = document.createElement('div');
+            readingDiv.className = 'reading-item';
+            
+            // Determine status
+            let status = 'Good';
+            let statusClass = 'status-good';
+            
+            if (value < 70) {
+                status = 'Low';
+                statusClass = 'status-warning';
+                readingDiv.classList.add('low');
+            } else if (value > 180 && time.includes('Before')) {
+                status = 'High';
+                statusClass = 'status-danger';
+                readingDiv.classList.add('high');
+            } else if (value > 250) {
+                status = 'High';
+                statusClass = 'status-danger';
+                readingDiv.classList.add('high');
+            } else if (value > 180) {
+                status = 'High';
+                statusClass = 'status-warning';
+                readingDiv.classList.add('high');
+            }
+            
+            readingDiv.innerHTML = `
+                <div>
+                    <div class="reading-value">${value} mg/dL</div>
+                    <div class="reading-details">${time} • ${timeString} • ${dateString}${notes ? ` • ${notes}` : ''}</div>
+                </div>
+                <div>
+                    <span class="status-badge ${statusClass}">${status}</span>
+                </div>
+            `;
+            
+            // Add to top of readings
+            bgReadingsContainer.insertBefore(readingDiv, bgReadingsContainer.firstChild);
+            
+            // Clear inputs
+            bgValueInput.value = '';
+            bgNotesInput.value = '';
+            
+            // Update in-range percentage
+            updateInRangePercentage();
+            
+            // Show success notification
+            showNotification('Blood sugar reading added successfully!', 'success');
+        }
+
+        function updateInRangePercentage() {
+            const readings = document.querySelectorAll('.reading-item');
+            let total = 0;
+            let inRange = 0;
+            
+            readings.forEach(reading => {
+                const valueText = reading.querySelector('.reading-value').textContent;
+                const value = parseInt(valueText);
+                total++;
+                
+                if (value >= 70 && value <= 180) {
+                    inRange++;
+                }
+            });
+            
+            const inRangePercentage = total > 0 ? Math.round((inRange / total) * 100) : 0;
+            const badge = document.getElementById('inRangePercentage');
+            
+            if (badge) {
+                badge.textContent = `In Range: ${inRangePercentage}%`;
+                badge.className = 'status-badge ' + 
+                    (inRangePercentage >= 80 ? 'status-good' : 
+                     inRangePercentage >= 70 ? 'status-warning' : 'status-danger');
+            }
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' : 
+                             type === 'error' ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)' : 
+                             'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: var(--radius);
+                box-shadow: var(--card-shadow);
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                max-width: 350px;
+            `;
+            
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        function exportPlan() {
+            const disease = diseaseSelect.value;
+            const diseaseInfo = diseaseData[disease] || diseaseData.type2;
+            
+            const plan = `
+PERSONALIZED DIABETES CARE PLAN
+================================
+
+Condition: ${diseaseInfo.name}
+Generated: ${new Date().toLocaleDateString()}
+
+DIET PLAN
+---------
+${diseaseInfo.diet.description}
+
+Daily Carbohydrate Goal: ${diseaseInfo.diet.dailyCarbs}
+
+Breakfast (${diseaseInfo.diet.breakfast.carbs}):
+${diseaseInfo.diet.breakfast.suggestions.map(s => `• ${s}`).join('\n')}
+
+Lunch (${diseaseInfo.diet.lunch.carbs}):
+${diseaseInfo.diet.lunch.suggestions.map(s => `• ${s}`).join('\n')}
+
+Dinner (${diseaseInfo.diet.dinner.carbs}):
+${diseaseInfo.diet.dinner.suggestions.map(s => `• ${s}`).join('\n')}
+
+ACTIVITY PLAN
+-------------
+Goal: ${diseaseInfo.activity.goal}
+${diseaseInfo.activity.focus}
+
+Sample Weekly Schedule:
+${diseaseInfo.activity.weeklyPlan.map(d => `• ${d.day}: ${d.activity} (${d.duration}, ${d.intensity})`).join('\n')}
+
+MONITORING TARGETS
+------------------
+${diseaseInfo.monitoring.targets.map(t => `• ${t.measurement}: ${t.target} (${t.status})`).join('\n')}
+
+IMPORTANT REMINDER
+------------------
+This plan is for informational purposes only.
+Always consult with your healthcare provider before
+making changes to your diabetes management routine.
+
+© 2024 Diabetes Care AI
+            `;
+            
+            const blob = new Blob([plan], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `diabetes-care-plan-${diseaseInfo.name.toLowerCase().replace(/\s+/g, '-')}-${new Date().toISOString().split('T')[0]}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showNotification('Plan exported successfully!', 'success');
+        }
+
+        // Add CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
