@@ -1,3 +1,4 @@
+
 # Diabetes Care Home
 
 A comprehensive web-based platform for diabetes risk assessment, health data visualization, and AI-powered health assistance.
@@ -150,6 +151,7 @@ A simple discussion platform where users can:
 | Render | Cloud hosting platform |
 | Gunicorn | Production-grade WSGI server |
 | python-dotenv | Environment variable management |
+| Docker | Containerization |
 
 ---
 
@@ -159,11 +161,13 @@ A simple discussion platform where users can:
 
 Before you begin, ensure you have the following installed:
 
-* **Python 3.8 or higher**
-```bash
-# Check Python version
-python --version
+- **Python 3.8 or higher**
+  ```bash
+  # Check Python version
+  python --version
+
 ```
+
 * **pip package manager**
 ```bash
 # Check pip version
@@ -180,6 +184,10 @@ git --version
 ```
 
 
+* **Docker Desktop** (Optional, for containerized setup)
+* Required if you plan to run the application using Docker.
+
+
 * **Google Gemini API Key** — Required for the chatbot feature
 * Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
 * Sign in with your Google account
@@ -188,7 +196,7 @@ git --version
 
 
 
-### Installation
+### Installation (Manual Method)
 
 #### Step 1: Clone the Repository
 
@@ -335,6 +343,23 @@ http://localhost:5000
 
 You should see the Diabetes Care Home landing page.
 
+### 🐳 Installation (Docker Method)
+
+If you prefer to run the application in a consistent containerized environment, follow these steps instead of the manual installation.
+
+1. **Prerequisite:** Ensure **Docker Desktop** is installed and running on your machine.
+2. **Configure Env:** Create the `.env` file as described in **Step 4** above.
+3. **Run:** Open your terminal in the project root and run:
+```bash
+docker-compose up --build
+
+```
+
+
+4. **Access:** Open your browser to `http://localhost:5000`.
+
+To stop the container, press `Ctrl+C` in the terminal.
+
 ---
 
 ## Project Structure
@@ -355,6 +380,8 @@ diabetes-care-home/
 ├── train.ipynb                 # Jupyter notebook for model training
 │
 ├── requirements.txt            # Python package dependencies
+├── Dockerfile                  # Docker build instructions
+├── docker-compose.yml          # Container orchestration
 ├── .env                        # Environment variables (not in repo)
 ├── .gitignore                  # Git ignore rules
 │
@@ -481,5 +508,3 @@ SOFTWARE.
 <p align="center">
 <strong>Making diabetes care smarter and more accessible.</strong>
 </p>
-
-```
