@@ -20,12 +20,15 @@ import numpy as np
 import pandas as pd
 import plotly.express as px
 import seaborn as sns
-from flask import Flask, jsonify, render_template, request, make_response
+from flask import Flask, jsonify, render_template, request, make_response, session, redirect, url_for, flash
 from flask_cors import CORS
 from flask_mail import Mail, Message
 from flask_babel import Babel, gettext as _
+from werkzeug.security import generate_password_hash, check_password_hash
+
 
 app = Flask(__name__)
+app.secret_key = os.getenv("SECRET_KEY", "super-secret-key")
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.jinja_env.auto_reload = True
 CORS(app)
@@ -121,6 +124,10 @@ FORUM_TOPICS = ['General', 'Diet', 'Exercise', 'Medication', 'Lifestyle', 'Suppo
 # In-memory store for users and notifications
 users = {}  # {user_id: {email, username, preferences, subscribed_posts}}
 notifications = []  # [{id, user_id, type, message, post_id, read, timestamp}]
+auth_users = {
+    # email: {name, email, password_hash}
+}
+
 
 # Setup logging
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG,
@@ -179,6 +186,85 @@ def root():
 @app.route('/index')
 def home():
     return render_template('index.html')
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+
+        if not all([name, email, password, confirm_password]):
+            flash(_("All fields are required"), "error")
+            return redirect(url_for('signup'))
+
+        if password != confirm_password:
+            flash(_("Passwords do not match"), "error")
+            return redirect(url_for('signup'))
+
+        if email in auth_users:
+            flash(_("User already exists"), "error")
+            return redirect(url_for('signup'))
+
+        auth_users[email] = {
+            "name": name,
+            "email": email,
+            "password": generate_password_hash(password)
+        }
+
+        flash(_("Account created successfully. Please login."), "success")
+        return redirect(url_for('login'))
+
+    return render_template('signup.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+
+        user = auth_users.get(email)
+
+        if not user or not check_password_hash(user['password'], password):
+            flash(_("Invalid email or password"), "error")
+            return redirect(url_for('login'))
+
+        session['user'] = {
+            "email": user['email'],
+            "name": user['name']
+        }
+
+        flash(_("Login successful"), "success")
+        return redirect(url_for('dashboard'))
+
+    return render_template('login.html')
+
+@app.route('/free-prediction')
+def free_prediction():
+    return render_template('free-prediction.html')
+
+@app.route('/free-predict', methods=['POST'])
+def free_predict():
+    try:
+        expected_features = [
+            'Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness',
+            'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age'
+        ]
+        features = [float(request.form.get(f, 0)) for f in expected_features]
+
+        if scaler is None or model is None:
+            return render_template('free-prediction.html', prediction_text=_("Model not available."))
+
+        final_input = scaler.transform([features])
+        prediction = model.predict(final_input)
+        result = _("Diabetic") if prediction[0] == 1 else _("Not Diabetic")
+
+        return render_template('index.html', prediction_text=_("Prediction: %(result)s", result=result))
+    except Exception as e:
+        logging.error(f"Predict error: {e}")
+        return render_template('index.html', prediction_text=_("Error during prediction."))
+
 
 
 @app.route('/predict', methods=['POST'])

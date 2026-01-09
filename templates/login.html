@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login | Diabetes Chatbot</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f7ff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .auth-card {
+            background: #ffffff;
+            width: 100%;
+            max-width: 420px;
+            padding: 32px;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(37, 99, 235, 0.25);
+        }
+
+        .auth-title {
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #1e40af;
+            margin-bottom: 8px;
+        }
+
+        .auth-subtitle {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 24px;
+        }
+
+        .auth-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #2563eb;
+            border-radius: 10px;
+            font-size: 1rem;
+            outline: none;
+            margin-bottom: 16px;
+        }
+
+        .auth-input:focus {
+            border-color: #1e40af;
+            box-shadow: 0 0 6px rgba(37, 99, 235, 0.4);
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            color: white;
+            font-size: 1.05rem;
+            font-weight: 600;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+        }
+
+        .auth-btn:hover {
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.6);
+        }
+
+        .auth-link {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 0.95rem;
+        }
+
+        .auth-link a {
+            color: #2563eb;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .auth-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="auth-card">
+        <h2 class="auth-title">Welcome Back</h2>
+        <p class="auth-subtitle">Login to your Diabetes Assistant</p>
+
+        <form method="POST" action="/login">
+            <input
+                type="email"
+                name="email"
+                class="auth-input"
+                placeholder="Email Address"
+                required
+            >
+
+            <input
+                type="password"
+                name="password"
+                class="auth-input"
+                placeholder="Password"
+                required
+            >
+
+            <button type="submit" class="auth-btn">Login</button>
+        </form>
+
+        <div class="auth-link">
+            Don’t have an account?
+            <a href="/signup">Sign up</a>
+        </div>
+    </div>
+
+</body>
+</html>
