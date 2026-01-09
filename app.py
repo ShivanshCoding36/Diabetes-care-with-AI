@@ -544,13 +544,16 @@ def generate():
         if not user_input:
             return jsonify({'reply': "Please say something!"})
 
-        # --- NEW CODE START ---
+        api_key = os.getenv("GEMINI_API_KEY")
+        if not api_key:
+            return jsonify({'reply': "Error: Gemini API Key not configured."})
+
+        client = genai.Client(api_key=api_key)
         response = client.models.generate_content(
-            model='gemini-2.0-flash', # Or 'gemini-1.5-flash'
+            model='gemini-2.0-flash',
             contents=user_input
         )
         reply_text = response.text
-        # --- NEW CODE END ---
         
         return jsonify({'reply': reply_text})
     except Exception as e:
