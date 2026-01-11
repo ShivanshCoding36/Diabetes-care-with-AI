@@ -128,10 +128,10 @@
             {{ _('Your one-stop solution for prediction, lifestyle advice, AI-powered chatbot, and real-time health data insights.') }}
           </p>
           <div class="flex flex-wrap justify-center lg:justify-start gap-4">
-            <a href="/free-prediction" class="px-8 py-4 bg-white text-blue-700 font-bold rounded-xl hover:bg-blue-50 transition shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+            <a href="/index" class="px-8 py-4 bg-white text-blue-700 font-bold rounded-xl hover:bg-blue-50 transition shadow-lg hover:shadow-xl transform hover:-translate-y-1">
               {{ _('Get Started') }}
             </a>
-            <a href="#" class="px-8 py-4 bg-transparent border-2 border-white text-white font-bold rounded-xl hover:bg-white/10 transition">
+            <a href="/explore" class="px-8 py-4 bg-transparent border-2 border-white text-white font-bold rounded-xl hover:bg-white/10 transition">
               {{ _('Explore Data') }}
             </a>
           </div>
@@ -251,7 +251,7 @@
     <div class="max-w-4xl mx-auto px-6 text-center">
       <h2 class="text-3xl md:text-4xl font-extrabold mb-6">{{ _('Ready to Take Control of Your Health?') }}</h2>
       <p class="text-blue-100 text-lg mb-8">{{ _('Start your journey towards better diabetes management today with our AI-powered tools.') }}</p>
-      <a href="/free-prediction" class="inline-block px-10 py-4 bg-white text-blue-700 font-bold rounded-xl hover:bg-blue-50 transition shadow-lg hover:shadow-xl transform hover:-translate-y-1 pulse-glow">
+      <a href="/index" class="inline-block px-10 py-4 bg-white text-blue-700 font-bold rounded-xl hover:bg-blue-50 transition shadow-lg hover:shadow-xl transform hover:-translate-y-1 pulse-glow">
         {{ _('Start Free Prediction') }}
       </a>
     </div>
@@ -338,8 +338,8 @@ function toggleMobileMenu() {
 
       // Attach click event
       getStartedBtn.addEventListener("click", function () {
-        // Redirect to another page
-        window.location.href = "getStarted.html";
+        // Redirect to prediction page
+        window.location.href = "/index";
       });
     });
   </script>
