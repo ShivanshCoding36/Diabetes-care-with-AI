@@ -23,7 +23,9 @@ from dotenv import load_dotenv
 
 # --- Database & New AI SDK Imports ---
 from models import db, Post  # Feature #113: Database Model
-from google import genai     # Fix #112: New Google GenAI SDK
+# from google import genai     # Fix #112: New Google GenAI SDK
+import google.generativeai as genai
+
 
 # Load environment variables
 load_dotenv()
