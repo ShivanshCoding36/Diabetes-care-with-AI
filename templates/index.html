@@ -24,6 +24,22 @@
       #printableReport { position: absolute; left: 0; top: 0; width: 100%; }
       .no-print { display: none !important; }
     }
+
+    
+  .risk {
+    font-weight: bold;
+    margin-top: 1rem;
+  }
+  .green {
+    color: #16a34a; /* Tailwind green-600 */
+  }
+  .orange {
+    color: #ea580c; /* orange-600 */
+  }
+  .red {
+    color: #dc2626; /* red-600 */
+  }
+
   </style>
 </head>
 
@@ -104,13 +120,19 @@
           {{ _('Predict') }}
         </button>
       </form>
+      {% if error %}
+  <p style="color: red; font-weight: bold;">{{ error }}</p>
+{% endif %}
 
-      {% if prediction_text %}
-      <div id="predictionResult"
-        class="mt-10 mx-auto max-w-xl bg-blue-100 bg-opacity-70 border border-blue-400 rounded-3xl p-8 text-blue-900 font-semibold text-center text-xl shadow-lg backdrop-blur-sm"
-        role="alert">
-        {{ prediction_text }}
-      </div>
+{% if prediction_text %}
+  <h2>{{ prediction_text }}</h2>
+{% endif %}
+
+{% if severity %}
+    <p class="risk {{ color }}">
+        Risk Level: {{ severity }}
+    </p>
+{% endif %}
       
       <!-- Print and Download Buttons -->
       <div class="mt-4 flex justify-center gap-4 no-print">
@@ -153,7 +175,6 @@
           </div>
         </div>
       </div>
-      {% endif %}
 
         <a href="/explore"
         class="mt-8 block mx-auto max-w-xl text-center bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-2xl py-4 shadow-md transition-transform duration-300 hover:scale-105 select-none">

@@ -178,30 +178,64 @@ def root():
 
 @app.route('/index')
 def home():
-    return render_template('index.html')
-
+    return render_template(
+        'index.html',
+        prediction_text=None,
+        severity=None,
+        severity_color=None,
+        error=None
+    )
 
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
-        expected_features = [
-            'Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness',
-            'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age'
+        # Expected input order (must match training)
+        features = [
+            float(request.form.get("Pregnancies")),
+            float(request.form.get("Glucose")),
+            float(request.form.get("BloodPressure")),
+            float(request.form.get("SkinThickness")),
+            float(request.form.get("Insulin")),
+            float(request.form.get("BMI")),
+            float(request.form.get("DiabetesPedigreeFunction")),
+            float(request.form.get("Age")),
         ]
-        features = [float(request.form.get(f, 0)) for f in expected_features]
-
-        if scaler is None or model is None:
-            return render_template('index.html', prediction_text=_("Model not available."))
 
         final_input = scaler.transform([features])
-        prediction = model.predict(final_input)
-        result = _("Diabetic") if prediction[0] == 1 else _("Not Diabetic")
+        prediction = model.predict(final_input)[0]
 
-        return render_template('index.html', prediction_text=_("Prediction: %(result)s", result=result))
+        # Prediction text
+        result = "Diabetic" if prediction == 1 else "Not Diabetic"
+
+        # Severity logic (simple + safe)
+        glucose = features[1]
+        bmi = features[5]
+
+        if prediction == 1 or glucose >= 200 or bmi >= 30:
+            severity = "High Risk"
+            color = "red"
+        elif glucose >= 140 or bmi >= 25:
+            severity = "Moderate Risk"
+            color = "orange"
+        else:
+            severity = "Low Risk"
+            color = "green"
+
+        return render_template(
+            "index.html",
+            prediction_text=f"Prediction: {result}",
+            severity=severity,
+            color=color
+        )
+
     except Exception as e:
-        logging.error(f"Predict error: {e}")
-        return render_template('index.html', prediction_text=_("Error during prediction."))
-
+        logging.error(f"Prediction error: {e}")
+        return render_template(
+            "index.html",
+            error="Error during prediction.",
+            severity=None,
+            color=None
+        )
 
 @app.route('/explore')
 def explore():
@@ -911,4 +945,4 @@ def mark_notifications_read(user_id):
 # --- Run App ---
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=port, debug=True)
