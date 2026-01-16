@@ -79,6 +79,34 @@
           overflow: visible !important;
         }
       }
+       .scroll-to-top {
+            position: fixed;
+             bottom: 30px;
+                right: 30px;
+                width: 50px;
+                height: 50px;
+                background: #8b5cf6;
+                color: #fff;
+                border: none;
+                border-radius: 50%;
+                cursor: pointer;
+                display: none;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.2rem;
+                box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4);
+                transition: all 0.3s ease;
+                z-index: 1000;
+            }
+
+            .scroll-to-top:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 6px 20px rgba(56, 189, 248, 0.6);
+            }
+
+            .scroll-to-top.show {
+                display: flex;
+            }
     </style>
   </head>
 
@@ -513,6 +541,27 @@
       </div>
     </div>
   </footer>
+<!--Back to Top button with functionality-->
+         <button class="scroll-to-top" id="scrollToTop" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+        <script>
+             function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        window.addEventListener('scroll', () => {
+            const scrollBtn = document.getElementById('scrollToTop');
+            if (window.pageYOffset > 300) {
+                scrollBtn.classList.add('show');
+            } else {
+                scrollBtn.classList.remove('show');
+            }
+        });
+        </script>
 
     <script>
       // Dark mode
