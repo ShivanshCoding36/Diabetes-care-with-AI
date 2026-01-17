@@ -33,7 +33,12 @@
           <li><a href="/chatbot" class="hover:text-blue-300 transition">{{ _('Chatbot') }}</a></li>
           <li><a href="/explore" class="hover:text-blue-300 transition">{{ _('Explore') }}</a></li>
           <li><a href="/forum" class="hover:text-blue-300 transition">{{ _('Forum') }}</a></li>
-          <li><a href="/">Logout</a></li>
+          {% if session.get('user_id') %}
+          <li><a href="/dashboard" class="hover:text-blue-300 transition"><i class="fas fa-tachometer-alt mr-1"></i>{{ _('Dashboard') }}</a></li>
+          <li><a href="/logout" class="hover:text-blue-300 transition"><i class="fas fa-sign-out-alt mr-1"></i>{{ _('Logout') }}</a></li>
+          {% else %}
+          <li><a href="/login" class="hover:text-blue-300 transition"><i class="fas fa-sign-in-alt mr-1"></i>{{ _('Login') }}</a></li>
+          {% endif %}
         </ul>
       </nav>
       
@@ -88,6 +93,12 @@
       <li><a href="/chatbot" class="block py-3 px-4 hover:bg-blue-700 dark:hover:bg-slate-800 rounded-lg transition">{{ _('Chatbot') }}</a></li>
       <li><a href="/explore" class="block py-3 px-4 hover:bg-blue-700 dark:hover:bg-slate-800 rounded-lg transition">{{ _('Explore') }}</a></li>
       <li><a href="/forum" class="block py-3 px-4 hover:bg-blue-700 dark:hover:bg-slate-800 rounded-lg transition">{{ _('Forum') }}</a></li>
+      {% if session.get('user_id') %}
+      <li><a href="/dashboard" class="block py-3 px-4 hover:bg-blue-700 dark:hover:bg-slate-800 rounded-lg transition"><i class="fas fa-tachometer-alt mr-2"></i>{{ _('Dashboard') }}</a></li>
+      <li><a href="/logout" class="block py-3 px-4 hover:bg-blue-700 dark:hover:bg-slate-800 rounded-lg transition"><i class="fas fa-sign-out-alt mr-2"></i>{{ _('Logout') }}</a></li>
+      {% else %}
+      <li><a href="/login" class="block py-3 px-4 hover:bg-blue-700 dark:hover:bg-slate-800 rounded-lg transition"><i class="fas fa-sign-in-alt mr-2"></i>{{ _('Login') }}</a></li>
+      {% endif %}
     </ul>
     <!-- Mobile Theme Toggle -->
     <div class="px-4 pb-2 border-t border-blue-700 dark:border-slate-700 pt-2">

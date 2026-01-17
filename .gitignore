@@ -10,3 +10,7 @@ __pycache__/
 .hypothesis/
 .vscode/
 .venv/ 
+
+# Tailwind CSS
+tailwindcss.exe
+node_modules/
