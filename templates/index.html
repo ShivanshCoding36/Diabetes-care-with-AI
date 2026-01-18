@@ -370,39 +370,6 @@
     .dark .glass-card {
       background: rgba(30, 41, 59, 0.95);
     }
-
-    .glass-card:hover {
-      transform: translateY(-4px);
-      border-color: #facc15;
-      box-shadow:
-        0 0 0 1px #facc15 inset,
-        0 0 25px rgba(250, 204, 21, 0.45),
-        0 12px 35px rgba(250, 204, 21, 0.35);
-    }
-
-    .dark .glass-card:hover {
-      border-color: #fbbf24;
-      box-shadow:
-        0 0 0 1px #fbbf24 inset,
-        0 0 30px rgba(251, 191, 36, 0.55),
-        0 16px 45px rgba(251, 191, 36, 0.4);
-    }
-
-    
-  .risk {
-    font-weight: bold;
-    margin-top: 1rem;
-  }
-  .green {
-    color: #16a34a; /* Tailwind green-600 */
-  }
-  .orange {
-    color: #ea580c; /* orange-600 */
-  }
-  .red {
-    color: #dc2626; /* red-600 */
-  }
-
   </style>
 </head>
 <body class="min-h-screen bg-gray-50 dark:bg-slate-950">
@@ -421,123 +388,46 @@
         <a href="/forum" class="hover:text-cyan-300">{{ _('Forum') }}</a>
       </div>
     </div>
-  </div>
-</nav>
+  </nav>
 
-<!-- HERO -->
-<section class="bg-gradient-to-br from-blue-600 via-indigo-600 to-cyan-500 dark:from-slate-800 dark:to-slate-900 py-12 text-center text-white">
-  <h1 class="text-4xl font-bold mb-3">{{ _('Diabetes Prediction') }}</h1>
-  <p class="text-blue-100">
-    {{ _('Enter your health metrics to get an AI-powered assessment') }}
-  </p>
-</section>
+  <!-- Hero -->
+  <section class="bg-gradient-to-br from-blue-600 via-indigo-600 to-cyan-500 dark:from-slate-800 dark:to-slate-900 py-12 text-center text-white">
+    <h1 class="text-4xl font-bold mb-3">{{ _('Diabetes Prediction') }}</h1>
+    <p class="text-blue-100">{{ _('Enter your health metrics to get an AI-powered assessment') }}</p>
+  </section>
 
-<!-- MAIN -->
-<main class="max-w-6xl mx-auto px-4 py-10">
-  <div class="grid lg:grid-cols-3 gap-8">
+  <!-- Main -->
+  <main class="max-w-6xl mx-auto px-4 py-10">
+    <div class="grid lg:grid-cols-3 gap-8">
 
-    <!-- FORM -->
-    <div class="lg:col-span-2 glass-card rounded-2xl shadow-xl">
-      <form action="/predict" method="post" class="p-6 grid md:grid-cols-2 gap-5">
+      <!-- Form -->
+      <div class="lg:col-span-2 glass-card rounded-2xl shadow-xl p-6">
+        <form id="predictionForm" action="/predict" method="post" class="grid md:grid-cols-2 gap-5">
 
-        {% for f,l,p in [
-          ('Pregnancies','Pregnancies','2'),
-          ('Glucose','Glucose Level','130'),
-          ('BloodPressure','Blood Pressure','70'),
-          ('SkinThickness','Skin Thickness','32'),
-          ('Insulin','Insulin Level','85'),
-          ('BMI','BMI','28.5'),
-          ('DiabetesPedigreeFunction','Diabetes Pedigree','0.45'),
-          ('Age','Age','35')
-        ] %}
-
-        <div>
-          <label class="block mb-2 font-semibold">{{ _(l) }}</label>
-          <input
-            name="{{ f }}"
-            required
-            placeholder="e.g. {{ p }}"
-            class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-800 border-2 rounded-xl text-gray-800 dark:text-white"
-          />
-        </div>
-
-        {% endfor %}
-
-        <button
-          type="submit"
-          class="md:col-span-2 mt-4 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-xl"
-        >
-          {{ _('Get Prediction') }}
-        </button>
-
-      </form>
-      {% if error %}
-  <p style="color: red; font-weight: bold;">{{ error }}</p>
-{% endif %}
-
-{% if prediction_text %}
-  <h2>{{ prediction_text }}</h2>
-{% endif %}
-
-{% if severity %}
-    <p class="risk {{ color }}">
-        Risk Level: {{ severity }}
-    </p>
-{% endif %}
-      
-      <!-- Print and Download Buttons -->
-      <div class="mt-4 flex justify-center gap-4 no-print">
-        <button onclick="printReport()" 
-          class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl shadow-md transition-transform duration-300 hover:scale-105">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-          </svg>
-          {{ _('Print Report') }}
-        </button>
-        <button onclick="downloadPDF()" 
-          class="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-xl shadow-md transition-transform duration-300 hover:scale-105">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg>
-          {{ _('Download PDF') }}
-        </button>
-      </div>
-
-      <!-- Hidden Printable Report -->
-      <div id="printableReport" class="hidden print:block absolute left-0 top-0 w-full bg-white p-8">
-        <div class="max-w-2xl mx-auto">
-          <h1 class="text-3xl font-bold text-blue-900 text-center mb-6">DIABETES PREDICTION REPORT</h1>
-          <p class="text-gray-600 text-center mb-8" id="reportDate"></p>
-          
-          <div class="bg-blue-50 border-2 border-blue-400 rounded-xl p-6 mb-6">
-            <h2 class="text-xl font-bold text-blue-800 mb-2">RESULT</h2>
-            <p class="text-2xl font-bold" id="reportResult">{{ prediction_text }}</p>
+          {% for f,l,p in [
+            ('Pregnancies','Pregnancies','2'),
+            ('Glucose','Glucose Level','130'),
+            ('BloodPressure','Blood Pressure','70'),
+            ('SkinThickness','Skin Thickness','32'),
+            ('Insulin','Insulin Level','85'),
+            ('BMI','BMI','28.5'),
+            ('DiabetesPedigreeFunction','Diabetes Pedigree','0.45'),
+            ('Age','Age','35')
+          ] %}
+          <div>
+            <label class="block mb-2 font-semibold text-gray-700 dark:text-gray-300">{{ _(l) }}</label>
+            <input
+              type="number"
+              step="any"
+              name="{{ f }}"
+              id="{{ f }}"
+              required
+              min="0"
+              placeholder="e.g. {{ p }}"
+              class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-800 border-2 border-gray-200 dark:border-slate-700 rounded-xl text-gray-800 dark:text-white focus:border-blue-500 outline-none"
+            />
           </div>
-          
-          <div class="bg-gray-50 border border-gray-300 rounded-xl p-6 mb-6">
-            <h2 class="text-xl font-bold text-gray-800 mb-4">INPUT VALUES</h2>
-            <ul class="space-y-2 text-gray-700" id="reportInputValues"></ul>
-          </div>
-          
-          <div class="bg-yellow-50 border border-yellow-400 rounded-xl p-4 mt-6">
-            <p class="text-sm text-yellow-800">
-              <strong>DISCLAIMER:</strong> This prediction is for informational purposes only and should not be considered medical advice. Please consult a healthcare professional for proper diagnosis.
-            </p>
-          </div>
-        </div>
-      </div>
-
-
-        <a href="/explore"
-        class="mt-8 block mx-auto max-w-xl text-center bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-2xl py-4 shadow-md transition-transform duration-300 hover:scale-105 select-none">
-        📊 {{ _('Explore Dataset') }}
-      </a>
-      <a href="/life"
-        class="mt-8 block mx-auto max-w-xl text-center bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-2xl py-4 shadow-md transition-transform duration-300 hover:scale-105 select-none">
-        📊 {{ _('CHECK YOUR LIFESTYLE') }}
-      </a>
-    </section>
-  </main>
+          {% endfor %}
 
           <button type="submit" class="md:col-span-2 mt-4 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-xl transition">
             {{ _('Get Prediction') }}

@@ -224,13 +224,6 @@ def root():
 
 @app.route('/index')
 def home():
-    return render_template(
-        'index.html',
-        prediction_text=None,
-        severity=None,
-        severity_color=None,
-        error=None
-    )
     return render_template('index.html')
 
 # --- Authentication Routes ---
@@ -376,18 +369,10 @@ def dashboard_trend_data():
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
-        # Expected input order (must match training)
-        features = [
-            float(request.form.get("Pregnancies")),
-            float(request.form.get("Glucose")),
-            float(request.form.get("BloodPressure")),
-            float(request.form.get("SkinThickness")),
-            float(request.form.get("Insulin")),
-            float(request.form.get("BMI")),
-            float(request.form.get("DiabetesPedigreeFunction")),
-            float(request.form.get("Age")),
+        expected_features = [
+            'Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness',
+            'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age'
         ]
-
         features = [float(request.form.get(f, 0)) for f in expected_features]
 
         # --- Fix #115: Negative Validation ---
@@ -400,40 +385,58 @@ def predict():
             return render_template('index.html', prediction_text=_("Model not available."))
 
         final_input = scaler.transform([features])
-        prediction = model.predict(final_input)[0]
+        prediction = model.predict(final_input)
+        
+        # Get probability score if available
+        risk_score = None
+        if hasattr(model, 'predict_proba'):
+            try:
+                proba = model.predict_proba(final_input)
+                risk_score = float(proba[0][1])  # Probability of being diabetic
+            except:
+                pass
+        
+        result = _("Diabetic") if prediction[0] == 1 else _("Not Diabetic")
+        
+        # Save prediction history for logged-in users
+        if 'user_id' in session:
+            try:
+                prediction_record = PredictionHistory(
+                    user_id=session['user_id'],
+                    pregnancies=int(features[0]),
+                    glucose=features[1],
+                    blood_pressure=features[2],
+                    skin_thickness=features[3],
+                    insulin=features[4],
+                    bmi=features[5],
+                    dpf=features[6],
+                    age=int(features[7]),
+                    prediction=int(prediction[0]),
+                    risk_score=risk_score
+                )
+                db.session.add(prediction_record)
+                db.session.commit()
+            except Exception as e:
+                logging.error(f"Error saving prediction history: {e}")
+                db.session.rollback()
 
-        # Prediction text
-        result = "Diabetic" if prediction == 1 else "Not Diabetic"
+        # --- SAVE HISTORY IF LOGGED IN (New) ---
+        if current_user.is_authenticated:
+            new_pred = Prediction(
+                glucose=int(features[1]),
+                bmi=float(features[5]),
+                age=int(features[7]),
+                result=result,
+                author=current_user
+            )
+            db.session.add(new_pred)
+            db.session.commit()
 
-        # Severity logic (simple + safe)
-        glucose = features[1]
-        bmi = features[5]
-
-        if prediction == 1 or glucose >= 200 or bmi >= 30:
-            severity = "High Risk"
-            color = "red"
-        elif glucose >= 140 or bmi >= 25:
-            severity = "Moderate Risk"
-            color = "orange"
-        else:
-            severity = "Low Risk"
-            color = "green"
-
-        return render_template(
-            "index.html",
-            prediction_text=f"Prediction: {result}",
-            severity=severity,
-            color=color
-        )
-
+        return render_template('index.html', prediction_text=_("Prediction: %(result)s", result=result))
     except Exception as e:
-        logging.error(f"Prediction error: {e}")
-        return render_template(
-            "index.html",
-            error="Error during prediction.",
-            severity=None,
-            color=None
-        )
+        logging.error(f"Predict error: {e}")
+        return render_template('index.html', prediction_text=_("Error during prediction."))
+
 # Rate limiting for email - simple in-memory store
 email_rate_limit = {}  # {ip: [timestamps]}
 EMAIL_RATE_LIMIT = 5  # max emails per hour
@@ -589,7 +592,6 @@ Sent from Diabetes Care Platform
     except Exception as e:
         logging.error(f"Email send error: {e}")
         return jsonify({'error': 'Failed to send email. Please try again later.'}), 500
-
 
 
 @app.route('/explore')
