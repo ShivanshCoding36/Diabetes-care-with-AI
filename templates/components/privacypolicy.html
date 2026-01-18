@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Privacy Policy - Diabetes Care</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .fade-in {
+      animation: fadeIn 0.6s ease-out forwards;
+    }
+  </style>
+</head>
+
+<body class="bg-gradient-to-br from-blue-50 to-white text-gray-800 min-h-screen flex flex-col font-sans">
+  <!-- Navigation Bar -->
+  <header class="bg-blue-700 text-white shadow-lg sticky top-0 z-50">
+    <div class="container mx-auto flex justify-between items-center py-5 px-6">
+      <h1 class="text-3xl md:text-4xl font-extrabold tracking-wide">🩺 Diabetes Care</h1>
+
+      <div class="flex items-center gap-4">
+        <!-- Desktop Nav -->
+        <nav class="hidden md:block">
+          <ul class="flex space-x-4 md:space-x-6 text-lg font-semibold">
+            <li><a href="index.html" class="hover:text-blue-300 transition">Prediction</a></li>
+            <li><a href="life.html" class="hover:text-blue-300 transition">Lifestyle Check</a></li>
+            <li><a href="chatbot.html" class="hover:text-blue-300 transition">Chatbot</a></li>
+            <li><a href="explore.html" class="hover:text-blue-300 transition">Explore Data</a></li>
+            <li><a href="forum.html" class="hover:text-blue-300 transition">Forum</a></li>
+            <li><a href="privacy-policy.html" class="hover:text-blue-300 transition font-bold">Privacy</a></li>
+          </ul>
+        </nav>
+
+        <!-- Mobile Hamburger Button -->
+        <button id="mobile-menu-btn" class="md:hidden text-white focus:outline-none">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu Drawer -->
+    <div id="mobile-menu" class="hidden md:hidden bg-blue-800 border-t border-blue-600">
+      <ul class="flex flex-col space-y-2 p-4 text-lg font-semibold">
+        <li><a href="/index" class="block py-2 px-4 hover:bg-blue-700 rounded transition">Prediction</a></li>
+        <li><a href="/life" class="block py-2 px-4 hover:bg-blue-700 rounded transition">Lifestyle Check</a></li>
+        <li><a href="/chatbot" class="block py-2 px-4 hover:bg-blue-700 rounded transition">Chatbot</a></li>
+        <li><a href="/explore" class="block py-2 px-4 hover:bg-blue-700 rounded transition">Explore Data</a></li>
+        <li><a href="/forum" class="block py-2 px-4 hover:bg-blue-700 rounded transition">Forum</a></li>
+        <li><a href="/privacy-policy" class="block py-2 px-4 hover:bg-blue-700 rounded transition font-bold">Privacy</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Blue Header Section -->
+  <section class="bg-blue-700 text-white py-12">
+    <div class="container mx-auto text-center">
+      <h1 class="text-3xl md:text-4xl font-extrabold tracking-wide">Privacy Policy</h1>
+      <p class="text-blue-100 text-base mt-2">Your privacy is important to us. Learn how we protect your data.</p>
+    </div>
+  </section>
+
+  <main class="flex-grow container mx-auto px-6 py-10 max-w-4xl">
+    <div class="bg-white p-8 rounded-2xl shadow-xl border border-blue-100 fade-in">
+      
+      <!-- Last Updated -->
+      <div class="text-center mb-8">
+        <p class="text-blue-600 font-medium">Last Updated: December 5, 2023</p>
+      </div>
+
+      <!-- Introduction -->
+      <div class="mb-8">
+        <h2 class="text-2xl font-bold text-blue-700 mb-4">1. Introduction</h2>
+        <p class="text-gray-700 leading-relaxed mb-3">
+          Welcome to Diabetes Care. We are committed to protecting your personal information and your right to privacy. 
+          If you have any questions or concerns about this privacy notice or our practices with regards to your personal 
+          information, please contact us.
+        </p>
+      </div>
+
+      <!-- Information We Collect -->
+      <div class="mb-8">
+        <h2 class="text-2xl font-bold text-blue-700 mb-4">2. Information We Collect</h2>
+        
+        <div class="mb-4">
+          <h3 class="text-xl font-semibold text-blue-600 mb-2">Personal Information</h3>
+          <p class="text-gray-700 mb-2">When you register for an account, we collect:</p>
+          <ul class="list-disc pl-6 space-y-1 text-gray-700">
+            <li>Email address</li>
+            <li>Username</li>
+            <li>Account preferences and settings</li>
+            <li>Forum posts and interactions</li>
+          </ul>
+        </div>
+        
+        <div class="mb-4">
+          <h3 class="text-xl font-semibold text-blue-600 mb-2">Health Information (Optional)</h3>
+          <p class="text-gray-700 mb-2">For prediction services, you may provide:</p>
+          <ul class="list-disc pl-6 space-y-1 text-gray-700">
+            <li>Glucose levels</li>
+            <li>Blood pressure readings</li>
+            <li>BMI data</li>
+            <li>Age and other health metrics</li>
+            <li>Prediction results and history</li>
+          </ul>
+        </div>
+        
+        <div class="bg-blue-50 p-4 rounded-xl border border-blue-200">
+          <p class="text-blue-700 font-medium mb-1">📝 Note:</p>
+          <p class="text-blue-600 text-sm">
+            Health information is processed locally whenever possible and not stored on our servers unless you choose to save it in your account.
+          </p>
+        </div>
+      </div>
+
+      <!-- How We Use Information -->
+      <div class="mb-8">
+        <h2 class="text-2xl font-bold text-blue-700 mb-4">3. How We Use Your Information</h2>
+        <p class="text-gray-700 mb-3">We use the information we collect in the following ways:</p>
+        <ul class="list-disc pl-6 space-y-2 text-gray-700">
+          <li>To provide diabetes prediction services</li>
+          <li>To facilitate forum discussions and community support</li>
+          <li>To personalize your experience</li>
+          <li>To send important service updates</li>
+          <li>To improve our prediction algorithms (anonymous data only)</li>
+          <li>To maintain and improve our services</li>
+        </ul>
+      </div>
+
+      <!-- Data Security -->
+      <div class="mb-8">
+        <h2 class="text-2xl font-bold text-blue-700 mb-4">4. Data Security</h2>
+        <p class="text-gray-700 leading-relaxed">
+          We implement appropriate technical and organizational security measures designed to protect the security of any personal information we process. However, please also remember that we cannot guarantee that the internet itself is 100% secure.
+        </p>
+        <div class="mt-4 p-4 bg-green-50 rounded-xl border border-green-200">
+          <p class="text-green-700 font-medium mb-1">🔒 Security Features:</p>
+          <ul class="list-disc pl-6 text-green-600 text-sm">
+            <li>Encrypted data transmission (SSL/TLS)</li>
+            <li>Regular security audits</li>
+            <li>Limited data retention periods</li>
+            <li>Access controls and authentication</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Data Sharing -->
+      <div class="mb-8">
+        <h2 class="text-2xl font-bold text-blue-700 mb-4">5. Data Sharing</h2>
+        <p class="text-gray-700 leading-relaxed">
+          We do not share, sell, rent, or trade your personal information with third parties for their commercial purposes. We only share information with your consent, to comply with laws, or to protect your rights.
+        </p>
+        <div class="mt-4 p-4 bg-yellow-50 rounded-xl border border-yellow-200">
+          <p class="text-yellow-700 font-medium mb-1">⚠️ Exceptions:</p>
+          <ul class="list-disc pl-6 text-yellow-600 text-sm">
+            <li>Legal requirements or court orders</li>
+            <li>Protection of rights and safety</li>
+            <li>Service providers (under strict confidentiality)</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Your Rights -->
+      <div class="mb-8">
+        <h2 class="text-2xl font-bold text-blue-700 mb-4">6. Your Privacy Rights</h2>
+        <p class="text-gray-700 mb-3">You have the right to:</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-blue-50 p-4 rounded-xl">
+            <h4 class="font-semibold text-blue-700 mb-2">📋 Access & Control</h4>
+            <ul class="list-disc pl-4 text-sm text-blue-600 space-y-1">
+              <li>Access your personal data</li>
+              <li>Correct inaccurate data</li>
+              <li>Request deletion of your data</li>
+            </ul>
+          </div>
+          <div class="bg-blue-50 p-4 rounded-xl">
+            <h4 class="font-semibold text-blue-700 mb-2">⚙️ Preferences</h4>
+            <ul class="list-disc pl-4 text-sm text-blue-600 space-y-1">
+              <li>Object to processing of your data</li>
+              <li>Data portability</li>
+              <li>Withdraw consent at any time</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Data Retention -->
+      <div class="mb-8">
+        <h2 class="text-2xl font-bold text-blue-700 mb-4">7. Data Retention</h2>
+        <p class="text-gray-700 leading-relaxed">
+          We keep your information for as long as necessary to fulfill the purposes outlined in this privacy policy unless otherwise required by law.
+        </p>
+        <div class="mt-4">
+          <table class="w-full border-collapse border border-gray-300 rounded-lg overflow-hidden">
+            <thead class="bg-blue-100">
+              <tr>
+                <th class="border border-gray-300 p-3 text-left text-blue-700">Data Type</th>
+                <th class="border border-gray-300 p-3 text-left text-blue-700">Retention Period</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="bg-white even:bg-gray-50">
+                <td class="border border-gray-300 p-3">Account Information</td>
+                <td class="border border-gray-300 p-3">Until account deletion</td>
+              </tr>
+              <tr class="bg-white even:bg-gray-50">
+                <td class="border border-gray-300 p-3">Forum Posts</td>
+                <td class="border border-gray-300 p-3">Until account deletion or post removal</td>
+              </tr>
+              <tr class="bg-white even:bg-gray-50">
+                <td class="border border-gray-300 p-3">Prediction History</td>
+                <td class="border border-gray-300 p-3">30 days or until account deletion</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Cookies -->
+      <div class="mb-8">
+        <h2 class="text-2xl font-bold text-blue-700 mb-4">8. Cookies</h2>
+        <p class="text-gray-700 leading-relaxed">
+          We use cookies and similar tracking technologies to access or store information. Most web browsers are set to accept cookies by default. You can control cookies through your browser settings.
+        </p>
+      </div>
+
+      <!-- Policy Updates -->
+      <div class="mb-8">
+        <h2 class="text-2xl font-bold text-blue-700 mb-4">9. Policy Updates</h2>
+        <p class="text-gray-700 leading-relaxed">
+          We may update this privacy policy from time to time. The updated version will be indicated by an updated "Last Updated" date and the updated version will be effective as soon as it is accessible. We encourage you to review this privacy policy frequently.
+        </p>
+      </div>
+
+      <!-- Contact -->
+      <div class="mb-8">
+        <h2 class="text-2xl font-bold text-blue-700 mb-4">10. Contact Us</h2>
+        <p class="text-gray-700 mb-4">
+          If you have questions or comments about this policy, you may contact us at:
+        </p>
+        <div class="bg-blue-50 rounded-xl p-6 border border-blue-200">
+          <p class="text-blue-900 font-medium mb-1">📧 Email:</p>
+          <p class="text-blue-700 mb-3">privacy@diabetescare.com</p>
+          
+          <p class="text-blue-900 font-medium mb-1">📍 Address:</p>
+          <p class="text-blue-700">123 Health Street, Medical City, HC 12345</p>
+        </div>
+      </div>
+
+      <!-- Medical Disclaimer -->
+      <div class="mt-10 p-6 bg-red-50 rounded-2xl border border-red-300">
+        <h3 class="text-lg font-bold text-red-800 mb-3 flex items-center gap-2">
+          ⚕️ Important Medical Disclaimer
+        </h3>
+        <p class="text-red-700 leading-relaxed">
+          This diabetes prediction tool is for informational purposes only and is not a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition. Never disregard professional medical advice or delay in seeking it because of something you have read on this website.
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-blue-50 text-center text-gray-500 text-sm py-4 border-t mt-8">
+    © 2023 Diabetes Care Forum. Empowering lives, one post at a time.
+  </footer>
+
+  <script>
+    // Mobile menu toggle
+    const mobileBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    if (mobileBtn && mobileMenu) {
+      mobileBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+      });
+      
+      // Close mobile menu when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!mobileBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
+          mobileMenu.classList.add('hidden');
+        }
+      });
+    }
+
+    // Update copyright year dynamically
+    document.addEventListener('DOMContentLoaded', function() {
+      const yearElement = document.querySelector('footer');
+      if (yearElement) {
+        const currentYear = new Date().getFullYear();
+        yearElement.innerHTML = yearElement.innerHTML.replace('2023', currentYear);
+      }
+    });
+  </script>
+</body>
+</html>
