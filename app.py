@@ -8,9 +8,17 @@ import sys
 import threading
 import joblib
 import json
+import warnings
 from datetime import datetime, timezone
 from config import Config
+
+# Suppress scikit-learn version warnings
+warnings.filterwarnings('ignore', category=UserWarning, module='sklearn')
 # --- External Libraries ---
+
+import os
+from dotenv import load_dotenv
+load_dotenv()
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -22,8 +30,12 @@ from flask_mail import Mail, Message
 from flask_babel import Babel, gettext as _
 from dotenv import load_dotenv
 
+# --- New Auth Imports ---
+from flask_login import LoginManager, login_user, current_user, logout_user, login_required
+from flask_bcrypt import Bcrypt
+
 # --- Database & New AI SDK Imports ---
-from models import db, Post  # Feature #113: Database Model
+from models import db, Post, User, PredictionHistory  # Feature #113: Database Model
 # from google import genai     # Fix #112: New Google GenAI SDK
 import google.generativeai as genai
 
@@ -44,6 +56,15 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 with app.app_context():
     db.create_all()
+
+# --- Auth Configuration (New) ---
+bcrypt = Bcrypt(app)
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 # --- App Configuration ---
 app.config["TEMPLATES_AUTO_RELOAD"] = True
@@ -88,6 +109,7 @@ def inject_i18n_context():
         'languages': SUPPORTED_LANGUAGES,
         'current_language': get_locale(),
         'current_year': datetime.now().year,
+        'current_user': current_user # Make user available in all templates
     }
 
 @app.route('/api/set-language', methods=['POST'])
@@ -169,11 +191,14 @@ except Exception as e:
 
 # --- Gemini AI Client Initialization (Fix #112) ---
 try:
-    if not app.config["GEMINI_API_KEY"]:
-          raise RuntimeError("GEMINI_API_KEY not set")
-    client = genai.Client(api_key = app.config["GEMINI_API_KEY"])
+    if app.config.get("GEMINI_API_KEY") and app.config["GEMINI_API_KEY"] != "your_gemini_api_key_here":
+        client = genai.Client(api_key = app.config["GEMINI_API_KEY"])
+        logging.info("Gemini Client initialized successfully.")
+    else:
+        client = None
+        logging.warning("Gemini API Key not configured. Chatbot features will be limited.")
 except Exception as e:
-    logging.error(f"Failed to initialize Gemini Client: {e}")
+    logging.warning(f"Gemini Client initialization skipped: {e}")
     client = None
 
 def get_gemini_response(user_message):
@@ -207,6 +232,146 @@ def home():
         error=None
     )
     return render_template('index.html')
+
+# --- Authentication Routes ---
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        data = request.get_json() if request.is_json else request.form
+        username = data.get('username')
+        password = data.get('password')
+        
+        user = User.query.filter_by(username=username).first()
+        
+        if user and user.check_password(password):
+            session['user_id'] = user.id
+            session['username'] = user.username
+            if request.is_json:
+                return jsonify({"success": True, "message": "Login successful", "username": user.username})
+            flash(_('Login successful!'), 'success')
+            return redirect(url_for('dashboard'))
+        else:
+            if request.is_json:
+                return jsonify({"success": False, "message": "Invalid username or password"}), 401
+            flash(_('Invalid username or password'), 'error')
+    
+    return render_template('login.html')
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        data = request.get_json() if request.is_json else request.form
+        username = data.get('username')
+        email = data.get('email')
+        password = data.get('password')
+        
+        # Validate input
+        if not username or not email or not password:
+            if request.is_json:
+                return jsonify({"success": False, "message": "All fields are required"}), 400
+            flash(_('All fields are required'), 'error')
+            return render_template('signup.html')
+        
+        # Check if user already exists
+        if User.query.filter_by(username=username).first():
+            if request.is_json:
+                return jsonify({"success": False, "message": "Username already exists"}), 400
+            flash(_('Username already exists'), 'error')
+            return render_template('signup.html')
+        
+        if User.query.filter_by(email=email).first():
+            if request.is_json:
+                return jsonify({"success": False, "message": "Email already registered"}), 400
+            flash(_('Email already registered'), 'error')
+            return render_template('signup.html')
+        
+        # Create new user
+        new_user = User(username=username, email=email)
+        new_user.set_password(password)
+        
+        try:
+            db.session.add(new_user)
+            db.session.commit()
+            
+            # Log in the user
+            session['user_id'] = new_user.id
+            session['username'] = new_user.username
+            
+            if request.is_json:
+                return jsonify({"success": True, "message": "Account created successfully", "username": new_user.username})
+            flash(_('Account created successfully!'), 'success')
+            return redirect(url_for('dashboard'))
+        except Exception as e:
+            db.session.rollback()
+            logging.error(f"Signup error: {e}")
+            if request.is_json:
+                return jsonify({"success": False, "message": "An error occurred"}), 500
+            flash(_('An error occurred. Please try again.'), 'error')
+    
+    return render_template('signup.html')
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    flash(_('Logged out successfully'), 'success')
+    return redirect(url_for('root'))
+
+@app.route('/dashboard')
+def dashboard():
+    if 'user_id' not in session:
+        flash(_('Please login to access dashboard'), 'error')
+        return redirect(url_for('login'))
+    
+    user = User.query.get(session['user_id'])
+    if not user:
+        session.clear()
+        return redirect(url_for('login'))
+    
+    # Get user's prediction history
+    predictions = PredictionHistory.query.filter_by(user_id=user.id).order_by(PredictionHistory.timestamp.desc()).all()
+    
+    return render_template('dashboard.html', user=user, predictions=predictions)
+
+@app.route('/api/dashboard/trend-data')
+def dashboard_trend_data():
+    """API endpoint to get trend data for charts"""
+    if 'user_id' not in session:
+        return jsonify({"error": "Unauthorized"}), 401
+    
+    user_id = session['user_id']
+    predictions = PredictionHistory.query.filter_by(user_id=user_id).order_by(PredictionHistory.timestamp.asc()).all()
+    
+    # Prepare data for charts
+    trend_data = {
+        "dates": [],
+        "glucose": [],
+        "bmi": [],
+        "blood_pressure": [],
+        "predictions": [],
+        "risk_scores": []
+    }
+    
+    for pred in predictions:
+        trend_data["dates"].append(pred.timestamp.strftime('%Y-%m-%d %H:%M'))
+        trend_data["glucose"].append(pred.glucose)
+        trend_data["bmi"].append(pred.bmi)
+        trend_data["blood_pressure"].append(pred.blood_pressure)
+        trend_data["predictions"].append(pred.prediction)
+        trend_data["risk_scores"].append(pred.risk_score if pred.risk_score else 0)
+    
+    # Calculate statistics
+    stats = {
+        "total_predictions": len(predictions),
+        "diabetic_count": sum(1 for p in predictions if p.prediction == 1),
+        "average_glucose": sum(p.glucose for p in predictions) / len(predictions) if predictions else 0,
+        "average_bmi": sum(p.bmi for p in predictions) / len(predictions) if predictions else 0,
+    }
+    
+    return jsonify({
+        "trend_data": trend_data,
+        "stats": stats
+    })
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -1089,6 +1254,45 @@ def mark_notifications_read(user_id):
                         count += 1
     
     return jsonify({"message": f"Processed {count} notifications"})
+
+# --- NEW AUTH ROUTES (Register, Login, Logout, Dashboard) ---
+
+@app.route("/register", methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    if request.method == 'POST':
+        hashed_password = bcrypt.generate_password_hash(request.form.get('password')).decode('utf-8')
+        user = User(username=request.form.get('username'), email=request.form.get('email'), password=hashed_password)
+        db.session.add(user)
+        db.session.commit()
+        flash('Account created! You can now login', 'success')
+        return redirect(url_for('login'))
+    return render_template('register.html')
+
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    if request.method == 'POST':
+        user = User.query.filter_by(email=request.form.get('email')).first()
+        if user and bcrypt.check_password_hash(user.password, request.form.get('password')):
+            login_user(user)
+            return redirect(url_for('home'))
+        else:
+            flash('Login Unsuccessful. Check email and password', 'danger')
+    return render_template('login.html')
+
+@app.route("/logout")
+def logout():
+    logout_user()
+    return redirect(url_for('home'))
+
+@app.route("/dashboard")
+@login_required
+def dashboard():
+    user_predictions = Prediction.query.filter_by(author=current_user).order_by(Prediction.date_posted.desc()).all()
+    return render_template('dashboard.html', predictions=user_predictions)
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ _('Risk History Dashboard') }} | {{ _('Diabetes Care') }}</title>
+  <link rel="icon" href="{{ url_for('static', filename='stethoscope.png') }}" type="image/png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>tailwind.config = { darkMode: "class" };</script>
+  <script>
+    (function() {
+      var t = localStorage.getItem("theme");
+      if (t === "dark" || (!t && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        document.documentElement.classList.add("dark");
+      }
+    })();
+  </script>
+  <style>
+    .glass-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+    }
+    .dark .glass-card {
+      background: rgba(30, 41, 59, 0.95);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gray-50 dark:bg-slate-950">
+  
+  <!-- Navbar -->
+  <nav class="bg-gradient-to-r from-blue-600 to-indigo-700 dark:from-slate-800 dark:to-slate-900 text-white shadow-lg sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="/" class="flex items-center gap-2">
+          <span class="text-2xl">⚕️</span>
+          <span class="text-xl font-bold">Diabetes<span class="text-cyan-300">Care</span></span>
+        </a>
+        <div class="hidden md:flex items-center gap-6">
+          <a href="/" class="hover:text-cyan-300 transition font-medium">{{ _('Home') }}</a>
+          <a href="/index" class="hover:text-cyan-300 transition font-medium">{{ _('Prediction') }}</a>
+          <a href="/dashboard" class="text-cyan-300 font-bold">{{ _('Dashboard') }}</a>
+          <a href="/life" class="hover:text-cyan-300 transition font-medium">{{ _('Lifestyle') }}</a>
+          <a href="/chatbot" class="hover:text-cyan-300 transition font-medium">{{ _('Chatbot') }}</a>
+          <a href="/explore" class="hover:text-cyan-300 transition font-medium">{{ _('Explore') }}</a>
+          <a href="/forum" class="hover:text-cyan-300 transition font-medium">{{ _('Forum') }}</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="bg-gradient-to-br from-blue-600 via-indigo-600 to-cyan-500 dark:from-slate-800 dark:via-slate-900 dark:to-slate-800 py-12">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+      <div class="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-2xl mb-4">
+        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+        </svg>
+      </div>
+      <h1 class="text-3xl md:text-4xl font-bold text-white mb-3">{{ _('Risk History Dashboard') }}</h1>
+      <p class="text-blue-100 text-lg max-w-2xl mx-auto">{{ _('Track your diabetes risk predictions over time') }}</p>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 py-10">
+    
+    <!-- Empty State -->
+    <div id="emptyState" class="hidden text-center py-20">
+      <div class="inline-flex items-center justify-center w-20 h-20 bg-gray-200 dark:bg-slate-800 rounded-full mb-4">
+        <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+      </div>
+      <h2 class="text-2xl font-bold text-gray-700 dark:text-gray-300 mb-2">{{ _('No Predictions Yet') }}</h2>
+      <p class="text-gray-500 dark:text-gray-400 mb-6">{{ _('Start by making your first diabetes risk prediction') }}</p>
+      <a href="/index" class="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition">
+        {{ _('Make Prediction') }}
+      </a>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div id="dashboardContent" class="hidden">
+      
+      <!-- Stats Cards -->
+      <div class="grid md:grid-cols-3 gap-6 mb-8">
+        <div class="glass-card rounded-xl p-6 shadow-lg">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-gray-500 dark:text-gray-400">{{ _('Total Predictions') }}</p>
+              <p id="totalCount" class="text-3xl font-bold text-gray-800 dark:text-white">0</p>
+            </div>
+            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card rounded-xl p-6 shadow-lg">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-gray-500 dark:text-gray-400">{{ _('High Risk') }}</p>
+              <p id="highRiskCount" class="text-3xl font-bold text-red-600 dark:text-red-400">0</p>
+            </div>
+            <div class="w-12 h-12 bg-red-100 dark:bg-red-900 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card rounded-xl p-6 shadow-lg">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-gray-500 dark:text-gray-400">{{ _('Low Risk') }}</p>
+              <p id="lowRiskCount" class="text-3xl font-bold text-green-600 dark:text-green-400">0</p>
+            </div>
+            <div class="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trend Chart -->
+      <div class="glass-card rounded-xl p-6 shadow-lg mb-8">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-bold text-gray-800 dark:text-white">{{ _('Risk Trend Over Time') }}</h2>
+          <button onclick="clearHistory()" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm rounded-lg transition">
+            {{ _('Clear History') }}
+          </button>
+        </div>
+        <canvas id="trendChart" class="w-full" style="max-height: 300px;"></canvas>
+      </div>
+
+      <!-- History Table -->
+      <div class="glass-card rounded-xl p-6 shadow-lg">
+        <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-4">{{ _('Prediction History') }}</h2>
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead class="bg-gray-100 dark:bg-slate-800">
+              <tr>
+                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">{{ _('Date') }}</th>
+                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">{{ _('Result') }}</th>
+                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">{{ _('Glucose') }}</th>
+                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">{{ _('BMI') }}</th>
+                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">{{ _('Age') }}</th>
+              </tr>
+            </thead>
+            <tbody id="historyTable" class="divide-y divide-gray-200 dark:divide-slate-700">
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    let chart = null;
+
+    function loadHistory() {
+      const history = JSON.parse(localStorage.getItem('predictionHistory') || '[]');
+      
+      if (history.length === 0) {
+        document.getElementById('emptyState').classList.remove('hidden');
+        document.getElementById('dashboardContent').classList.add('hidden');
+        return;
+      }
+
+      document.getElementById('emptyState').classList.add('hidden');
+      document.getElementById('dashboardContent').classList.remove('hidden');
+
+      // Calculate stats
+      const total = history.length;
+      const highRisk = history.filter(h => h.result === 'Diabetic').length;
+      const lowRisk = total - highRisk;
+
+      document.getElementById('totalCount').textContent = total;
+      document.getElementById('highRiskCount').textContent = highRisk;
+      document.getElementById('lowRiskCount').textContent = lowRisk;
+
+      // Render table
+      const tbody = document.getElementById('historyTable');
+      tbody.innerHTML = history.slice().reverse().map(h => `
+        <tr class="hover:bg-gray-50 dark:hover:bg-slate-800">
+          <td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">${new Date(h.date).toLocaleString()}</td>
+          <td class="px-4 py-3">
+            <span class="px-3 py-1 rounded-full text-xs font-semibold ${h.result === 'Diabetic' ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300' : 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'}">
+              ${h.result}
+            </span>
+          </td>
+          <td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">${h.inputs.Glucose}</td>
+          <td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">${h.inputs.BMI}</td>
+          <td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">${h.inputs.Age}</td>
+        </tr>
+      `).join('');
+
+      // Render chart
+      renderChart(history);
+    }
+
+    function renderChart(history) {
+      const ctx = document.getElementById('trendChart').getContext('2d');
+      
+      if (chart) chart.destroy();
+
+      const labels = history.map(h => new Date(h.date).toLocaleDateString());
+      const data = history.map(h => h.result === 'Diabetic' ? 1 : 0);
+
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Risk Level',
+            data: data,
+            borderColor: 'rgb(59, 130, 246)',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            tension: 0.3,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 1,
+              ticks: {
+                stepSize: 1,
+                callback: function(value) {
+                  return value === 1 ? 'High Risk' : 'Low Risk';
+                }
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            }
+          }
+        }
+      });
+    }
+
+    function clearHistory() {
+      if (confirm('Are you sure you want to clear all prediction history?')) {
+        localStorage.removeItem('predictionHistory');
+        location.reload();
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadHistory);
+  </script>
+
+</body>
+</html>

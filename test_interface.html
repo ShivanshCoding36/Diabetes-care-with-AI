@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Testing Interface</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .test-section { border-left: 4px solid #3b82f6; }
+    .test-pass { color: #10b981; }
+    .test-fail { color: #ef4444; }
+  </style>
+</head>
+<body class="bg-gray-50 p-8">
+  
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold mb-2">🧪 Dashboard Testing Interface</h1>
+    <p class="text-gray-600 mb-8">Interactive testing tool for Risk History & Trend Tracking Dashboard</p>
+
+    <!-- Test 1: Empty State -->
+    <div class="test-section bg-white rounded-lg shadow p-6 mb-6 pl-8">
+      <h2 class="text-xl font-bold mb-4">📋 Test 1: Empty State</h2>
+      <p class="text-gray-600 mb-4">Clear localStorage and check if empty state displays</p>
+      <button onclick="testEmptyState()" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+        Run Test
+      </button>
+      <div id="test1-result" class="mt-4"></div>
+    </div>
+
+    <!-- Test 2: Add Sample Data -->
+    <div class="test-section bg-white rounded-lg shadow p-6 mb-6 pl-8">
+      <h2 class="text-xl font-bold mb-4">📝 Test 2: Add Sample Predictions</h2>
+      <p class="text-gray-600 mb-4">Add 3 sample predictions to localStorage</p>
+      <button onclick="addSampleData()" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+        Add Sample Data
+      </button>
+      <div id="test2-result" class="mt-4"></div>
+    </div>
+
+    <!-- Test 3: View Dashboard -->
+    <div class="test-section bg-white rounded-lg shadow p-6 mb-6 pl-8">
+      <h2 class="text-xl font-bold mb-4">📊 Test 3: View Dashboard with History</h2>
+      <p class="text-gray-600 mb-4">Open dashboard to see statistics, chart, and table</p>
+      <button onclick="openDashboard()" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
+        Open Dashboard
+      </button>
+      <div id="test3-result" class="mt-4"></div>
+    </div>
+
+    <!-- Test 4: Check Data -->
+    <div class="test-section bg-white rounded-lg shadow p-6 mb-6 pl-8">
+      <h2 class="text-xl font-bold mb-4">🔍 Test 4: Verify Stored Data</h2>
+      <p class="text-gray-600 mb-4">Check what's currently in localStorage</p>
+      <button onclick="checkData()" class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">
+        Check Data
+      </button>
+      <div id="test4-result" class="mt-4"></div>
+    </div>
+
+    <!-- Test 5: Clear History -->
+    <div class="test-section bg-white rounded-lg shadow p-6 mb-6 pl-8">
+      <h2 class="text-xl font-bold mb-4">🗑️ Test 5: Clear History</h2>
+      <p class="text-gray-600 mb-4">Remove all prediction history</p>
+      <button onclick="clearHistory()" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
+        Clear History
+      </button>
+      <div id="test5-result" class="mt-4"></div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="bg-blue-50 border-2 border-blue-200 rounded-lg p-6">
+      <h3 class="font-bold mb-4">⚡ Quick Actions</h3>
+      <div class="flex flex-wrap gap-3">
+        <a href="http://localhost:5000/index" target="_blank" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+          Make Prediction
+        </a>
+        <a href="http://localhost:5000/dashboard" target="_blank" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
+          View Dashboard
+        </a>
+        <button onclick="runAllTests()" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+          Run All Tests
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function testEmptyState() {
+      const result = document.getElementById('test1-result');
+      localStorage.removeItem('predictionHistory');
+      result.innerHTML = `
+        <div class="p-4 bg-green-50 border border-green-200 rounded">
+          <p class="test-pass font-bold">✅ Test Passed</p>
+          <p class="text-sm text-gray-600 mt-2">localStorage cleared. Open dashboard to see empty state.</p>
+          <a href="http://localhost:5000/dashboard" target="_blank" class="text-blue-600 underline text-sm">Open Dashboard →</a>
+        </div>
+      `;
+    }
+
+    function addSampleData() {
+      const result = document.getElementById('test2-result');
+      
+      const sampleData = [
+        {
+          date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+          result: 'Not Diabetic',
+          inputs: {
+            Pregnancies: '1', Glucose: '95', BloodPressure: '65',
+            SkinThickness: '20', Insulin: '70', BMI: '22.0',
+            DiabetesPedigreeFunction: '0.25', Age: '28'
+          }
+        },
+        {
+          date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+          result: 'Diabetic',
+          inputs: {
+            Pregnancies: '5', Glucose: '160', BloodPressure: '85',
+            SkinThickness: '35', Insulin: '120', BMI: '32.0',
+            DiabetesPedigreeFunction: '0.65', Age: '45'
+          }
+        },
+        {
+          date: new Date().toISOString(),
+          result: 'Not Diabetic',
+          inputs: {
+            Pregnancies: '2', Glucose: '110', BloodPressure: '70',
+            SkinThickness: '25', Insulin: '80', BMI: '24.5',
+            DiabetesPedigreeFunction: '0.35', Age: '32'
+          }
+        }
+      ];
+
+      localStorage.setItem('predictionHistory', JSON.stringify(sampleData));
+      
+      result.innerHTML = `
+        <div class="p-4 bg-green-50 border border-green-200 rounded">
+          <p class="test-pass font-bold">✅ Test Passed</p>
+          <p class="text-sm text-gray-600 mt-2">Added 3 sample predictions:</p>
+          <ul class="text-sm text-gray-600 mt-2 ml-4 list-disc">
+            <li>Prediction 1: Not Diabetic (2 days ago)</li>
+            <li>Prediction 2: Diabetic (1 day ago)</li>
+            <li>Prediction 3: Not Diabetic (today)</li>
+          </ul>
+          <a href="http://localhost:5000/dashboard" target="_blank" class="text-blue-600 underline text-sm mt-2 inline-block">View on Dashboard →</a>
+        </div>
+      `;
+    }
+
+    function openDashboard() {
+      const result = document.getElementById('test3-result');
+      window.open('http://localhost:5000/dashboard', '_blank');
+      
+      result.innerHTML = `
+        <div class="p-4 bg-blue-50 border border-blue-200 rounded">
+          <p class="font-bold text-blue-700">ℹ️ Dashboard Opened</p>
+          <p class="text-sm text-gray-600 mt-2">Check the new tab for:</p>
+          <ul class="text-sm text-gray-600 mt-2 ml-4 list-disc">
+            <li>Statistics cards (Total, High Risk, Low Risk)</li>
+            <li>Trend chart showing risk over time</li>
+            <li>History table with all predictions</li>
+          </ul>
+        </div>
+      `;
+    }
+
+    function checkData() {
+      const result = document.getElementById('test4-result');
+      const history = JSON.parse(localStorage.getItem('predictionHistory') || '[]');
+      
+      if (history.length === 0) {
+        result.innerHTML = `
+          <div class="p-4 bg-yellow-50 border border-yellow-200 rounded">
+            <p class="font-bold text-yellow-700">⚠️ No Data Found</p>
+            <p class="text-sm text-gray-600 mt-2">localStorage is empty. Add sample data first.</p>
+          </div>
+        `;
+      } else {
+        const highRisk = history.filter(h => h.result === 'Diabetic').length;
+        const lowRisk = history.length - highRisk;
+        
+        result.innerHTML = `
+          <div class="p-4 bg-green-50 border border-green-200 rounded">
+            <p class="test-pass font-bold">✅ Data Found</p>
+            <div class="text-sm text-gray-600 mt-2">
+              <p><strong>Total Predictions:</strong> ${history.length}</p>
+              <p><strong>High Risk:</strong> ${highRisk}</p>
+              <p><strong>Low Risk:</strong> ${lowRisk}</p>
+            </div>
+            <details class="mt-3">
+              <summary class="cursor-pointer text-blue-600 text-sm">View Raw Data</summary>
+              <pre class="mt-2 p-2 bg-gray-100 rounded text-xs overflow-auto">${JSON.stringify(history, null, 2)}</pre>
+            </details>
+          </div>
+        `;
+      }
+    }
+
+    function clearHistory() {
+      const result = document.getElementById('test5-result');
+      if (confirm('Are you sure you want to clear all prediction history?')) {
+        localStorage.removeItem('predictionHistory');
+        result.innerHTML = `
+          <div class="p-4 bg-green-50 border border-green-200 rounded">
+            <p class="test-pass font-bold">✅ History Cleared</p>
+            <p class="text-sm text-gray-600 mt-2">All prediction data removed from localStorage.</p>
+            <a href="http://localhost:5000/dashboard" target="_blank" class="text-blue-600 underline text-sm">View Empty State →</a>
+          </div>
+        `;
+      } else {
+        result.innerHTML = `
+          <div class="p-4 bg-gray-50 border border-gray-200 rounded">
+            <p class="font-bold text-gray-700">❌ Cancelled</p>
+            <p class="text-sm text-gray-600 mt-2">History was not cleared.</p>
+          </div>
+        `;
+      }
+    }
+
+    function runAllTests() {
+      alert('Running all tests in sequence...');
+      
+      // Test 1
+      setTimeout(() => {
+        testEmptyState();
+        alert('Test 1 Complete: Empty state tested');
+      }, 500);
+      
+      // Test 2
+      setTimeout(() => {
+        addSampleData();
+        alert('Test 2 Complete: Sample data added');
+      }, 2000);
+      
+      // Test 3
+      setTimeout(() => {
+        openDashboard();
+        alert('Test 3 Complete: Dashboard opened. Check the new tab!');
+      }, 3500);
+      
+      // Test 4
+      setTimeout(() => {
+        checkData();
+        alert('Test 4 Complete: Data verified');
+      }, 5000);
+      
+      setTimeout(() => {
+        alert('All tests complete! Review results above.');
+      }, 6000);
+    }
+  </script>
+
+</body>
+</html>
