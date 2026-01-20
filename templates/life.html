@@ -1,327 +1,491 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" class="scroll-smooth">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{{ _('Personalized Lifestyle Plan') }}</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>tailwind.config = { darkMode: 'class' }</script>
-  <script>
-    // Apply dark mode before page renders to prevent flash
-    (function() {
-      var savedTheme = localStorage.getItem('theme');
-      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-        document.documentElement.classList.add('dark');
-      }
-    })();
-  </script>
-  <style>
-    .glass-card {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-    }
-    .dark .glass-card {
-      background: rgba(30, 41, 59, 0.95);
-    }
-
-    .navbar-title {
-      font-size: 1.5rem;
-      font-weight: 800;
-      color: #fff;
-      text-shadow: 1px 1px 0 rgba(0,0,0,0.15), 2px 2px 0 rgba(0,0,0,0.08); 
-    }
-
-    .navbar-links {
-      display: flex !important; 
-      list-style: none;
-      gap: 1.5rem;
-      margin: 0;
-      padding: 0;
-    }
-
-    .navbar-links li a {
-      color: white;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 1rem;
-      transition: color 0.2s ease;
-    }
-
-    .navbar-links li a:hover {
-      color: #bfdbfe; 
-    }
-
-    body {
-      padding-top: 80px; 
-      background-image: radial-gradient(#dbeafe 1px, transparent 1px);
-      background-size: 20px 20px;
-    }
-    #result.show {
-      animation: fadeIn 0.7s ease forwards;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .category-card {
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    .category-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-    }
-    .loading-spinner {
-      border: 3px solid #f3f3f3;
-      border-top: 3px solid #3b82f6;
-      border-radius: 50%;
-      width: 24px;
-      height: 24px;
-      animation: spin 1s linear infinite;
-      display: inline-block;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-      .scroll-to-top {
-            position: fixed;
-             bottom: 30px;
-                right: 30px;
-                width: 50px;
-                height: 50px;
-                background: #8b5cf6;
-                color: #fff;
-                border: none;
-                border-radius: 50%;
-                cursor: pointer;
-                display: none;
-                align-items: center;
-                justify-content: center;
-                font-size: 1.2rem;
-                box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4);
-                transition: all 0.3s ease;
-                z-index: 1000;
-            }
-
-            .scroll-to-top:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 6px 20px rgba(56, 189, 248, 0.6);
-            }
-
-            .scroll-to-top.show {
-                display: flex;
-            }
-  </style>
-</head>
-
-<body class="bg-gradient-to-br from-blue-100 to-purple-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 min-h-screen flex flex-col transition-colors duration-300">
-
-  {% include 'navbar.html' %}
-
-  <main class="flex-grow flex items-center justify-center p-6">
-    <div class="max-w-2xl w-full bg-white/30 dark:bg-slate-800/50 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-white/20 dark:border-slate-700">
-      <h2 class="text-3xl font-extrabold mb-6 text-center text-blue-800 dark:text-blue-400 tracking-wide">🌿 {{ _('Personalized Lifestyle Plan') }}
-      </h2>
-
-      <form id="planForm" class="space-y-5">
-        <div>
-          <label for="age" class="block font-semibold mb-1 text-gray-700 dark:text-gray-300">{{ _('Age') }}</label>
-          <input type="number" id="age" name="age" min="1" max="120" placeholder="{{ _('Enter your age') }}"
-            inputmode="numeric" autocomplete="age"
-            class="w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
-            required />
-        </div>
-
-        <div>
-          <label for="weight" class="block font-semibold mb-1 text-gray-700 dark:text-gray-300">{{ _('Weight (kg)') }}</label>
-          <input type="number" id="weight" name="weight" min="1" max="500" step="0.1" placeholder="{{ _('Enter your weight in kg') }}"
-            inputmode="decimal" autocomplete="weight"
-            class="w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
-            required />
-        </div>
-
-        <div>
-          <label for="height" class="block font-semibold mb-1 text-gray-700 dark:text-gray-300">{{ _('Height (cm)') }}</label>
-          <input type="number" id="height" name="height" min="30" max="300" step="0.1" placeholder="{{ _('Enter your height in cm') }}"
-            inputmode="decimal" autocomplete="height"
-            class="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
-            required />
-        </div>
-
-        <div>
-          <label for="bmi" class="block font-semibold mb-1 text-gray-700">{{ _('BMI (Body Mass Index)') }}</label>
-          <input type="number" step="0.1" id="bmi" name="bmi" min="10" max="50" placeholder="{{ _('Enter your BMI') }}"
-            inputmode="decimal" aria-describedby="bmi-hint"
-            class="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
-            required />
-          <p id="bmi-hint" class="text-xs text-gray-500 mt-1">{{ _('Not sure? BMI = weight(kg) / height(m)²') }}</p>
-        </div>
-
-        <div>
-          <label for="activity" class="block font-semibold mb-1 text-gray-700">{{ _('Physical Activity Level') }}</label>
-          <select id="activity" name="activity"
-            class="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
-            required>
-            <option value="" disabled selected>{{ _('Select activity level') }}</option>
-            <option value="low">{{ _('Low (Sedentary)') }}</option>
-            <option value="moderate">{{ _('Moderate (3-5 days/week)') }}</option>
-            <option value="high">{{ _('High (Daily or intense exercise)') }}</option>
-          </select>
-        </div>
-
-        <button type="submit" id="submitBtn"
-          class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold py-2.5 rounded-xl shadow-lg hover:scale-105 transition-transform duration-200 flex items-center justify-center gap-2">
-          <span id="btnText">🔍 {{ _('Generate Plan') }}</span>
-          <span id="btnSpinner" class="loading-spinner hidden"></span>
-        </button>
-      </form>
-
-      <div id="result" class="mt-8 hidden" role="status" aria-live="polite"></div>
-    </div>
-  </main>
-  <!-- Footer -->
-  <footer class="bg-slate-900 dark:bg-slate-950 text-white py-16">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="grid md:grid-cols-4 gap-12">
-        <div>
-          <h2 class="text-2xl font-bold mb-4">⚕️ Diabetes<span class="text-cyan-400">Care</span></h2>
-          <p class="text-slate-400">{{ _('Your AI-powered companion for smarter diabetes management.') }}</p>
-        </div>
-        <div>
-          <h4 class="font-bold mb-4 text-slate-200">{{ _('Quick Links') }}</h4>
-          <div class="space-y-2">
-            <a href="/" class="block text-slate-400 hover:text-cyan-400 transition">{{ _('Home') }}</a>
-            <a href="/index" class="block text-slate-400 hover:text-cyan-400 transition">{{ _('Prediction') }}</a>
-            <a href="/life" class="block text-slate-400 hover:text-cyan-400 transition">{{ _('Lifestyle Check') }}</a>
-            <a href="/chatbot" class="block text-slate-400 hover:text-cyan-400 transition">{{ _('Chatbot') }}</a>
-            <a href="/forum" class="block text-slate-400 hover:text-cyan-400 transition">{{ _('Forum') }}</a>
-          </div>
-        </div>
-        <div>
-          <h4 class="font-bold mb-4 text-slate-200">{{ _('Resources') }}</h4>
-          <div class="space-y-2">
-            <a href="#" class="block text-slate-400 hover:text-cyan-400 transition">{{ _('About Us') }}</a>
-            <a href="#" class="block text-slate-400 hover:text-cyan-400 transition">{{ _('Contact') }}</a>
-            <a href="#" class="block text-slate-400 hover:text-cyan-400 transition">{{ _('Privacy Policy') }}</a>
-            <a href="#" class="block text-slate-400 hover:text-cyan-400 transition">{{ _('Terms & Conditions') }}</a>
-          </div>
-        </div>
-        <div>
-          <h4 class="font-bold mb-4 text-slate-200">{{ _('Connect') }}</h4>
-          <div class="flex gap-4">
-            <a href="#" class="w-10 h-10 bg-slate-800 hover:bg-cyan-500 rounded-lg flex items-center justify-center transition">
-              <i class="fab fa-github"></i>
-            </a>
-            <a href="#" class="w-10 h-10 bg-slate-800 hover:bg-cyan-500 rounded-lg flex items-center justify-center transition">
-              <i class="fab fa-twitter"></i>
-            </a>
-            <a href="#" class="w-10 h-10 bg-slate-800 hover:bg-cyan-500 rounded-lg flex items-center justify-center transition">
-              <i class="fab fa-linkedin"></i>
-            </a>
-          </div>
-        </div>
-      </div>
-      <div class="border-t border-slate-800 mt-12 pt-8 text-center text-slate-500">
-        © {{ current_year }} {{ _('Diabetes Care Platform. All rights reserved.') }}
-      </div>
-    </div>
-  </footer>
-  <!--Back to Top button with functionality-->
-         <button class="scroll-to-top" id="scrollToTop" onclick="scrollToTop()">
-        <i class="fas fa-arrow-up"></i>
-    </button>
-        <script>
-             function scrollToTop() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ _('Personalized Lifestyle Plan') }}</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = { darkMode: "class" };
+    </script>
+    <script>
+      // Apply dark mode before page renders to prevent flash
+      (function () {
+        var savedTheme = localStorage.getItem("theme");
+        var prefersDark = window.matchMedia(
+          "(prefers-color-scheme: dark)",
+        ).matches;
+        if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
+          document.documentElement.classList.add("dark");
         }
-
-        window.addEventListener('scroll', () => {
-            const scrollBtn = document.getElementById('scrollToTop');
-            if (window.pageYOffset > 300) {
-                scrollBtn.classList.add('show');
-            } else {
-                scrollBtn.classList.remove('show');
-            }
-        });
-        </script>
-  <script>
-    const form = document.getElementById('planForm');
-    const resultDiv = document.getElementById('result');
-    const submitBtn = document.getElementById('submitBtn');
-    const btnText = document.getElementById('btnText');
-    const btnSpinner = document.getElementById('btnSpinner');
-    
-    const weightInput = document.getElementById('weight');
-    const heightInput = document.getElementById('height');
-    const bmiInput = document.getElementById('bmi');
-
-    function calculateBMI() {
-      const weight = parseFloat(weightInput.value);
-      const heightCm = parseFloat(heightInput.value);
-
-      if (weight > 0 && heightCm > 0) {
-        const heightM = heightCm / 100;
-        const bmi = weight / (heightM * heightM);
-        bmiInput.value = bmi.toFixed(1);
-      } else {
-        bmiInput.value = '';
+      })();
+    </script>
+    <style>
+      .glass-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
       }
-    }
+      .dark .glass-card {
+        background: rgba(30, 41, 59, 0.95);
+      }
 
-    weightInput.addEventListener('input', calculateBMI);
-    heightInput.addEventListener('input', calculateBMI);
+      .navbar-title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #fff;
+        text-shadow:
+          1px 1px 0 rgba(0, 0, 0, 0.15),
+          2px 2px 0 rgba(0, 0, 0, 0.08);
+      }
 
-    const GENERATE_TEXT = btnText.textContent;
-    const GENERATING_TEXT = `⏳ {{ _('Generating...') }}`;
+      .navbar-links {
+        display: flex !important;
+        list-style: none;
+        gap: 1.5rem;
+        margin: 0;
+        padding: 0;
+      }
 
-    const categoryIcons = {
-      diet: '🍽️',
-      exercise: '🏃',
-      stress: '🧘',
-      sleep: '😴',
-      monitoring: '📊'
-    };
-    const categoryTitles = {
-      diet: 'Diet & Nutrition', exercise: 'Exercise & Activity', stress: 'Stress Management', sleep: 'Sleep & Recovery', monitoring: 'Health Monitoring'
-    };
+      .navbar-links li a {
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: color 0.2s ease;
+      }
 
-    function setLoading(loading) {
-      submitBtn.disabled = loading;
-      btnText.textContent = loading ? GENERATING_TEXT : GENERATE_TEXT;
-      btnSpinner.classList.toggle('hidden', !loading);
-      submitBtn.classList.toggle('opacity-75', loading);
-    }
+      .navbar-links li a:hover {
+        color: #bfdbfe;
+      }
 
-    function showResultMessage(message, variant = 'info') {
-      const variantClasses = {
-        info: 'bg-blue-50 border-blue-200 text-blue-800',
-        error: 'bg-red-50 border-red-200 text-red-700',
+      body {
+        padding-top: 80px;
+        background-image: radial-gradient(#dbeafe 1px, transparent 1px);
+        background-size: 20px 20px;
+      }
+      #result.show {
+        animation: fadeIn 0.7s ease forwards;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .category-card {
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+      .category-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      }
+      .loading-spinner {
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #3b82f6;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        animation: spin 1s linear infinite;
+        display: inline-block;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      .scroll-to-top {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 50px;
+        height: 50px;
+        background: #8b5cf6;
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4);
+        transition: all 0.3s ease;
+        z-index: 1000;
+      }
+
+      .scroll-to-top:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 20px rgba(56, 189, 248, 0.6);
+      }
+
+      .scroll-to-top.show {
+        display: flex;
+      }
+    </style>
+  </head>
+
+  <body
+    class="bg-gradient-to-br from-blue-100 to-purple-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 min-h-screen flex flex-col transition-colors duration-300"
+  >
+    {% include 'navbar.html' %}
+
+    <main class="flex-grow flex items-center justify-center p-6">
+      <div
+        class="max-w-2xl w-full bg-white/30 dark:bg-slate-800/50 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-white/20 dark:border-slate-700"
+      >
+        <h2
+          class="text-3xl font-extrabold mb-6 text-center text-blue-800 dark:text-blue-400 tracking-wide"
+        >
+          🌿 {{ _('Personalized Lifestyle Plan') }}
+        </h2>
+
+        <form id="planForm" class="space-y-5">
+          <div>
+            <label
+              for="age"
+              class="block font-semibold mb-1 text-gray-700 dark:text-gray-300"
+              >{{ _('Age') }}</label
+            >
+            <input
+              type="number"
+              id="age"
+              name="age"
+              min="1"
+              max="120"
+              placeholder="{{ _('Enter your age') }}"
+              inputmode="numeric"
+              autocomplete="age"
+              class="w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+              required
+            />
+          </div>
+
+          <div>
+            <label
+              for="weight"
+              class="block font-semibold mb-1 text-gray-700 dark:text-gray-300"
+              >{{ _('Weight (kg)') }}</label
+            >
+            <input
+              type="number"
+              id="weight"
+              name="weight"
+              min="1"
+              max="500"
+              step="0.1"
+              placeholder="{{ _('Enter your weight in kg') }}"
+              inputmode="decimal"
+              autocomplete="weight"
+              class="w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+              required
+            />
+          </div>
+
+          <div>
+            <label
+              for="height"
+              class="block font-semibold mb-1 text-gray-700 dark:text-gray-300"
+              >{{ _('Height (cm)') }}</label
+            >
+            <input
+              type="number"
+              id="height"
+              name="height"
+              min="30"
+              max="300"
+              step="0.1"
+              placeholder="{{ _('Enter your height in cm') }}"
+              inputmode="decimal"
+              autocomplete="height"
+              class="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+              required
+            />
+          </div>
+
+          <div>
+            <label for="bmi" class="block font-semibold mb-1 text-gray-700"
+              >{{ _('BMI (Body Mass Index)') }}</label
+            >
+            <input
+              type="number"
+              step="0.1"
+              id="bmi"
+              name="bmi"
+              min="10"
+              max="50"
+              placeholder="{{ _('Enter your BMI') }}"
+              inputmode="decimal"
+              aria-describedby="bmi-hint"
+              class="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+              required
+            />
+            <p id="bmi-hint" class="text-xs text-gray-500 mt-1">
+              {{ _('Not sure? BMI = weight(kg) / height(m)²') }}
+            </p>
+          </div>
+
+          <div>
+            <label for="activity" class="block font-semibold mb-1 text-gray-700"
+              >{{ _('Physical Activity Level') }}</label
+            >
+            <select
+              id="activity"
+              name="activity"
+              class="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+              required
+            >
+              <option value="" disabled selected>
+                {{ _('Select activity level') }}
+              </option>
+              <option value="low">{{ _('Low (Sedentary)') }}</option>
+              <option value="moderate">
+                {{ _('Moderate (3-5 days/week)') }}
+              </option>
+              <option value="high">
+                {{ _('High (Daily or intense exercise)') }}
+              </option>
+            </select>
+          </div>
+
+          <button
+            type="submit"
+            id="submitBtn"
+            class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold py-2.5 rounded-xl shadow-lg hover:scale-105 transition-transform duration-200 flex items-center justify-center gap-2"
+          >
+            <span id="btnText">🔍 {{ _('Generate Plan') }}</span>
+            <span id="btnSpinner" class="loading-spinner hidden"></span>
+          </button>
+        </form>
+
+        <div
+          id="result"
+          class="mt-8 hidden"
+          role="status"
+          aria-live="polite"
+        ></div>
+      </div>
+    </main>
+    <!-- Footer -->
+    <footer class="bg-slate-900 dark:bg-slate-950 text-white py-16">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="grid md:grid-cols-4 gap-12">
+          <div>
+            <h2 class="text-2xl font-bold mb-4">
+              ⚕️ Diabetes<span class="text-cyan-400">Care</span>
+            </h2>
+            <p class="text-slate-400">
+              {{ _('Your AI-powered companion for smarter diabetes management.')
+              }}
+            </p>
+          </div>
+          <div>
+            <h4 class="font-bold mb-4 text-slate-200">
+              {{ _('Quick Links') }}
+            </h4>
+            <div class="space-y-2">
+              <a
+                href="/"
+                class="block text-slate-400 hover:text-cyan-400 transition"
+                >{{ _('Home') }}</a
+              >
+              <a
+                href="/index"
+                class="block text-slate-400 hover:text-cyan-400 transition"
+                >{{ _('Prediction') }}</a
+              >
+              <a
+                href="/life"
+                class="block text-slate-400 hover:text-cyan-400 transition"
+                >{{ _('Lifestyle Check') }}</a
+              >
+              <a
+                href="/chatbot"
+                class="block text-slate-400 hover:text-cyan-400 transition"
+                >{{ _('Chatbot') }}</a
+              >
+              <a
+                href="/forum"
+                class="block text-slate-400 hover:text-cyan-400 transition"
+                >{{ _('Forum') }}</a
+              >
+            </div>
+          </div>
+          <div>
+            <h4 class="font-bold mb-4 text-slate-200">{{ _('Resources') }}</h4>
+            <div class="space-y-2">
+              <a
+                href="#"
+                class="block text-slate-400 hover:text-cyan-400 transition"
+                >{{ _('About Us') }}</a
+              >
+              <a
+                href="#"
+                class="block text-slate-400 hover:text-cyan-400 transition"
+                >{{ _('Contact') }}</a
+              >
+              <a
+                href="#"
+                class="block text-slate-400 hover:text-cyan-400 transition"
+                >{{ _('Privacy Policy') }}</a
+              >
+              <a
+                href="#"
+                class="block text-slate-400 hover:text-cyan-400 transition"
+                >{{ _('Terms & Conditions') }}</a
+              >
+            </div>
+          </div>
+          <div>
+            <h4 class="font-bold mb-4 text-slate-200">{{ _('Connect') }}</h4>
+            <div class="flex gap-4">
+              <a
+                href="https://github.com/Anshika09Singh/Diabetes-care-with-AI"
+                class="w-10 h-10 bg-slate-800 hover:bg-cyan-500 rounded-lg flex items-center justify-center transition"
+              >
+                <i class="fab fa-github"></i>
+              </a>
+              <a
+                href="#"
+                class="w-10 h-10 bg-slate-800 hover:bg-cyan-500 rounded-lg flex items-center justify-center transition"
+              >
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a
+                href="https://www.linkedin.com/in/anshika-singh-031b132a5/"
+                class="w-10 h-10 bg-slate-800 hover:bg-cyan-500 rounded-lg flex items-center justify-center transition"
+              >
+                <i class="fab fa-linkedin"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div
+          class="border-t border-slate-800 mt-12 pt-8 text-center text-slate-500"
+        >
+          © {{ current_year }} {{ _('Diabetes Care Platform. All rights
+          reserved.') }}
+        </div>
+      </div>
+    </footer>
+    <!--Back to Top button with functionality-->
+    <button class="scroll-to-top" id="scrollToTop" onclick="scrollToTop()">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+    <script>
+      function scrollToTop() {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      }
+
+      window.addEventListener("scroll", () => {
+        const scrollBtn = document.getElementById("scrollToTop");
+        if (window.pageYOffset > 300) {
+          scrollBtn.classList.add("show");
+        } else {
+          scrollBtn.classList.remove("show");
+        }
+      });
+    </script>
+    <script>
+      const form = document.getElementById("planForm");
+      const resultDiv = document.getElementById("result");
+      const submitBtn = document.getElementById("submitBtn");
+      const btnText = document.getElementById("btnText");
+      const btnSpinner = document.getElementById("btnSpinner");
+
+      const weightInput = document.getElementById("weight");
+      const heightInput = document.getElementById("height");
+      const bmiInput = document.getElementById("bmi");
+
+      function calculateBMI() {
+        const weight = parseFloat(weightInput.value);
+        const heightCm = parseFloat(heightInput.value);
+
+        if (weight > 0 && heightCm > 0) {
+          const heightM = heightCm / 100;
+          const bmi = weight / (heightM * heightM);
+          bmiInput.value = bmi.toFixed(1);
+        } else {
+          bmiInput.value = "";
+        }
+      }
+
+      weightInput.addEventListener("input", calculateBMI);
+      heightInput.addEventListener("input", calculateBMI);
+
+      const GENERATE_TEXT = btnText.textContent;
+      const GENERATING_TEXT = `⏳ {{ _('Generating...') }}`;
+
+      const categoryIcons = {
+        diet: "🍽️",
+        exercise: "🏃",
+        stress: "🧘",
+        sleep: "😴",
+        monitoring: "📊",
       };
-      const classes = variantClasses[variant] || variantClasses.info;
+      const categoryTitles = {
+        diet: "Diet & Nutrition",
+        exercise: "Exercise & Activity",
+        stress: "Stress Management",
+        sleep: "Sleep & Recovery",
+        monitoring: "Health Monitoring",
+      };
 
-      resultDiv.innerHTML = `
+      function setLoading(loading) {
+        submitBtn.disabled = loading;
+        btnText.textContent = loading ? GENERATING_TEXT : GENERATE_TEXT;
+        btnSpinner.classList.toggle("hidden", !loading);
+        submitBtn.classList.toggle("opacity-75", loading);
+      }
+
+      function showResultMessage(message, variant = "info") {
+        const variantClasses = {
+          info: "bg-blue-50 border-blue-200 text-blue-800",
+          error: "bg-red-50 border-red-200 text-red-700",
+        };
+        const classes = variantClasses[variant] || variantClasses.info;
+
+        resultDiv.innerHTML = `
         <div class="p-4 border rounded-xl ${classes}">
           ${message}
         </div>
       `;
-      resultDiv.classList.remove('hidden');
-      resultDiv.classList.add('show');
-    }
-
-    function renderPlan(data) {
-      if (!data || data.success !== true || !data.plan || typeof data.plan !== 'object' || !data.profile) {
-        showResultMessage(`{{ _('No lifestyle plan data was returned. Please try again.') }}`, 'error');
-        return;
+        resultDiv.classList.remove("hidden");
+        resultDiv.classList.add("show");
       }
 
-      const { plan, profile, source } = data;
-      let profileHtml = `
+      function renderPlan(data) {
+        if (
+          !data ||
+          data.success !== true ||
+          !data.plan ||
+          typeof data.plan !== "object" ||
+          !data.profile
+        ) {
+          showResultMessage(
+            `{{ _('No lifestyle plan data was returned. Please try again.') }}`,
+            "error",
+          );
+          return;
+        }
+
+        const { plan, profile, source } = data;
+        let profileHtml = `
         <div class="mb-6 p-4 bg-blue-50 rounded-xl border border-blue-200">
           <h3 class="text-lg font-semibold text-blue-800 mb-2">{{ _('Your Profile') }}</h3>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
@@ -332,100 +496,117 @@
         </div>
       `;
 
-      let planHtml = '<h3 class="text-2xl font-semibold mb-4 text-blue-700">{{ _("Your Custom Lifestyle Plan") }}</h3>';
-      planHtml += '<div class="grid gap-4">';
+        let planHtml =
+          '<h3 class="text-2xl font-semibold mb-4 text-blue-700">{{ _("Your Custom Lifestyle Plan") }}</h3>';
+        planHtml += '<div class="grid gap-4">';
 
-      let renderedAny = false;
-      for (const [category, tips] of Object.entries(plan)) {
-        if (tips && tips.length > 0) {
-          renderedAny = true;
-          planHtml += `
+        let renderedAny = false;
+        for (const [category, tips] of Object.entries(plan)) {
+          if (tips && tips.length > 0) {
+            renderedAny = true;
+            planHtml += `
             <div class="category-card p-4 bg-white/80 rounded-xl border border-gray-200 shadow-sm">
               <div class="flex items-center gap-2 mb-3">
-                <span class="text-2xl">${categoryIcons[category] || '📌'}</span>
+                <span class="text-2xl">${categoryIcons[category] || "📌"}</span>
                 <h4 class="font-semibold text-gray-800">${categoryTitles[category] || category}</h4>
               </div>
               <ul class="space-y-2">
-                ${tips.map(tip => `<li class="flex items-start gap-2 text-gray-700"><span class="text-green-500 mt-1">*</span><span>${tip}</span></li>`).join('')}
+                ${tips.map((tip) => `<li class="flex items-start gap-2 text-gray-700"><span class="text-green-500 mt-1">*</span><span>${tip}</span></li>`).join("")}
               </ul>
             </div>
           `;
+          }
         }
-      }
-      planHtml += '</div>';
+        planHtml += "</div>";
 
-      if (!renderedAny) {
-        showResultMessage(`{{ _('A plan was generated but it contained no recommendations. Please try again.') }}`, 'error');
-        return;
-      }
+        if (!renderedAny) {
+          showResultMessage(
+            `{{ _('A plan was generated but it contained no recommendations. Please try again.') }}`,
+            "error",
+          );
+          return;
+        }
 
-      if (source === 'ai') planHtml += '<p class="text-xs text-gray-500 mt-4 text-center">✨ Personalized with AI</p>';
+        if (source === "ai")
+          planHtml +=
+            '<p class="text-xs text-gray-500 mt-4 text-center">✨ Personalized with AI</p>';
 
-      resultDiv.innerHTML = profileHtml + planHtml;
-      resultDiv.classList.remove('hidden');
-      resultDiv.classList.add('show');
-    }
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      // Reset output area for a clean run
-      resultDiv.classList.add('hidden');
-      resultDiv.classList.remove('show');
-      resultDiv.innerHTML = '';
-      
-      // Secondary check: Ensure BMI was actually calculated
-      if (!bmiInput.value) {
-        alert("{{ _('Please enter valid weight and height (or fill BMI) to continue.') }}");
-        return;
+        resultDiv.innerHTML = profileHtml + planHtml;
+        resultDiv.classList.remove("hidden");
+        resultDiv.classList.add("show");
       }
 
-      setLoading(true);
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
 
-      const formData = { age: form.age.value, bmi: form.bmi.value, activity: form.activity.value };
+        // Reset output area for a clean run
+        resultDiv.classList.add("hidden");
+        resultDiv.classList.remove("show");
+        resultDiv.innerHTML = "";
 
-      try {
-        const response = await fetch('/api/lifestyle-plan', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData)
+        // Secondary check: Ensure BMI was actually calculated
+        if (!bmiInput.value) {
+          alert(
+            "{{ _('Please enter valid weight and height (or fill BMI) to continue.') }}",
+          );
+          return;
+        }
+
+        setLoading(true);
+
+        const formData = {
+          age: form.age.value,
+          bmi: form.bmi.value,
+          activity: form.activity.value,
+        };
+
+        try {
+          const response = await fetch("/api/lifestyle-plan", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formData),
+          });
+
+          const data = await response.json();
+          if (!response.ok)
+            throw new Error(data.error || "Failed to generate plan");
+
+          renderPlan(data);
+        } catch (error) {
+          console.error("Error:", error);
+          showResultMessage(
+            `<strong>Error:</strong> ${error.message}`,
+            "error",
+          );
+        } finally {
+          setLoading(false);
+        }
+      });
+
+      // Language selector (guarded: navbar may vary per page)
+      const langBtn = document.getElementById("lang-btn");
+      const langDropdown = document.getElementById("lang-dropdown");
+      if (langBtn && langDropdown) {
+        langBtn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          langDropdown.classList.toggle("show");
         });
-
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error || 'Failed to generate plan');
-
-        renderPlan(data);
-      } catch (error) {
-        console.error('Error:', error);
-        showResultMessage(`<strong>Error:</strong> ${error.message}`, 'error');
-      } finally {
-        setLoading(false);
+        document.addEventListener("click", function () {
+          langDropdown.classList.remove("show");
+        });
       }
-    });
-
-    // Language selector (guarded: navbar may vary per page)
-    const langBtn = document.getElementById('lang-btn');
-    const langDropdown = document.getElementById('lang-dropdown');
-    if (langBtn && langDropdown) {
-      langBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        langDropdown.classList.toggle('show');
-      });
-      document.addEventListener('click', function() {
-        langDropdown.classList.remove('show');
-      });
-    }
-    function setLanguage(langCode) {
-      fetch('/api/set-language', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ language: langCode })
-      })
-      .then(response => response.json())
-      .then(data => { if (data.success) window.location.reload(); })
-      .catch(err => console.error('Language switch failed:', err));
-    }
-  </script>
-</body>
-
+      function setLanguage(langCode) {
+        fetch("/api/set-language", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ language: langCode }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) window.location.reload();
+          })
+          .catch((err) => console.error("Language switch failed:", err));
+      }
+    </script>
+  </body>
 </html>

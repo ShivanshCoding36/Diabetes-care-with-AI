@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
@@ -17,7 +17,7 @@
       (function () {
         var savedTheme = localStorage.getItem("theme");
         var prefersDark = window.matchMedia(
-          "(prefers-color-scheme: dark)"
+          "(prefers-color-scheme: dark)",
         ).matches;
         if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
           document.documentElement.classList.add("dark");
@@ -26,7 +26,9 @@
     </script>
     <style>
       * {
-        transition: background-color 0.3s ease, border-color 0.3s ease,
+        transition:
+          background-color 0.3s ease,
+          border-color 0.3s ease,
           color 0.2s ease;
       }
 
@@ -118,16 +120,36 @@
             >
           </a>
 
-        <!-- Desktop Nav -->
-        <div class="hidden md:flex items-center gap-6">
-          <a href="/" class="hover:text-cyan-300 transition font-medium">{{ _('Home') }}</a>
-          <a href="/index" class="hover:text-cyan-300 transition font-medium">{{ _('Prediction') }}</a>
-          <a href="/dashboard" class="hover:text-cyan-300 transition font-medium">{{ _('Dashboard') }}</a>
-          <a href="/life" class="hover:text-cyan-300 transition font-medium">{{ _('Lifestyle') }}</a>
-          <a href="/chatbot" class="hover:text-cyan-300 transition font-medium">{{ _('Chatbot') }}</a>
-          <a href="/explore" class="hover:text-cyan-300 transition font-medium">{{ _('Explore') }}</a>
-          <a href="/forum" class="hover:text-cyan-300 transition font-medium">{{ _('Forum') }}</a>
-        </div>
+          <!-- Desktop Nav -->
+          <div class="hidden md:flex items-center gap-6">
+            <a href="/" class="hover:text-cyan-300 transition font-medium"
+              >{{ _('Home') }}</a
+            >
+            <a href="/index" class="hover:text-cyan-300 transition font-medium"
+              >{{ _('Prediction') }}</a
+            >
+            <a
+              href="/dashboard"
+              class="hover:text-cyan-300 transition font-medium"
+              >{{ _('Dashboard') }}</a
+            >
+            <a href="/life" class="hover:text-cyan-300 transition font-medium"
+              >{{ _('Lifestyle') }}</a
+            >
+            <a
+              href="/chatbot"
+              class="hover:text-cyan-300 transition font-medium"
+              >{{ _('Chatbot') }}</a
+            >
+            <a
+              href="/explore"
+              class="hover:text-cyan-300 transition font-medium"
+              >{{ _('Explore') }}</a
+            >
+            <a href="/forum" class="hover:text-cyan-300 transition font-medium"
+              >{{ _('Forum') }}</a
+            >
+          </div>
 
           <!-- Right Side -->
           <div class="flex items-center gap-3">
@@ -611,7 +633,7 @@
             <h4 class="font-bold mb-4 text-slate-200">{{ _('Connect') }}</h4>
             <div class="flex gap-4">
               <a
-                href="#"
+                href="https://github.com/Anshika09Singh/Diabetes-care-with-AI"
                 class="w-10 h-10 bg-slate-800 hover:bg-cyan-500 rounded-lg flex items-center justify-center transition"
               >
                 <i class="fab fa-github"></i>
@@ -623,7 +645,7 @@
                 <i class="fab fa-twitter"></i>
               </a>
               <a
-                href="#"
+                href="https://www.linkedin.com/in/anshika-singh-031b132a5/"
                 class="w-10 h-10 bg-slate-800 hover:bg-cyan-500 rounded-lg flex items-center justify-center transition"
               >
                 <i class="fab fa-linkedin"></i>
