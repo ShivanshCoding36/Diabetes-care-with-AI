@@ -20,7 +20,7 @@ Flask-Login==0.6.3
 Flask-Mail==0.10.0
 Flask-SQLAlchemy==3.1.1
 fonttools==4.61.1
-google-ai-generativelanguage
+google-ai-generativelanguage>=0.8,<1.0
 google-api-core==2.29.0
 google-api-python-client==2.187.0
 google-auth==2.47.0
@@ -83,5 +83,6 @@ uritemplate==4.2.0
 urllib3==2.6.3
 websockets==15.0.1
 Werkzeug==3.1.5
+
 
 
