@@ -1259,18 +1259,6 @@ def mark_notifications_read(user_id):
 
 # --- NEW AUTH ROUTES (Register, Login, Logout, Dashboard) ---
 
-@app.route("/register", methods=['GET', 'POST'])
-def register():
-    if current_user.is_authenticated:
-        return redirect(url_for('home'))
-    if request.method == 'POST':
-        hashed_password = bcrypt.generate_password_hash(request.form.get('password')).decode('utf-8')
-        user = User(username=request.form.get('username'), email=request.form.get('email'), password=hashed_password)
-        db.session.add(user)
-        db.session.commit()
-        flash('Account created! You can now login', 'success')
-        return redirect(url_for('login'))
-    return render_template('register.html')
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
