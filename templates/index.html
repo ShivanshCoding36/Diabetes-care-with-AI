@@ -55,20 +55,7 @@
 
 <body class="min-h-screen bg-gray-50 dark:bg-slate-950 transition-colors">
 
-  <!-- Navbar -->
-  <nav class="bg-gradient-to-r from-blue-600 to-indigo-700 dark:from-slate-800 dark:to-slate-900 text-white sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-6 h-16 flex justify-between items-center">
-      <a href="/" class="font-bold text-xl">⚕️ Diabetes<span class="text-cyan-300">Care</span></a>
-      <div class="hidden md:flex gap-6">
-        <a href="/" class="hover:text-cyan-300">{{ _('Home') }}</a>
-        <a href="/index" class="text-cyan-300 font-bold">{{ _('Prediction') }}</a>
-        <a href="/life" class="hover:text-cyan-300">{{ _('Lifestyle') }}</a>
-        <a href="/chatbot" class="hover:text-cyan-300">{{ _('Chatbot') }}</a>
-        <a href="/explore" class="hover:text-cyan-300">{{ _('Explore') }}</a>
-        <a href="/forum" class="hover:text-cyan-300">{{ _('Forum') }}</a>
-      </div>
-    </div>
-  </nav>
+  {% include 'navbar.html' %}
 
   <!-- Hero -->
   <section class="bg-gradient-to-br from-blue-600 via-indigo-600 to-cyan-500 dark:from-slate-800 dark:to-slate-900 py-12 text-center text-white">
