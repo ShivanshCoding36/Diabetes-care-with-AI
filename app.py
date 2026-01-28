@@ -1310,6 +1310,14 @@ def mark_notifications_read(user_id):
     
     return jsonify({"message": f"Processed {count} notifications"})
 
+
+@app.route('/privacy')
+def Privacy():
+    return render_template('privacy.html')
+
+@app.route('/terms')
+def Privacy():
+    return render_template('terms.html')
 # --- NEW AUTH ROUTES (Register, Login, Logout, Dashboard) ---
 
 
