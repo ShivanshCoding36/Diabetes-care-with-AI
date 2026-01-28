@@ -28,28 +28,7 @@
 </head>
 <body class="min-h-screen bg-gray-50 dark:bg-slate-950">
   
-  <!-- Navbar -->
-  <nav class="bg-gradient-to-r from-blue-600 to-indigo-700 dark:from-slate-800 dark:to-slate-900 text-white shadow-lg sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center h-16">
-        <a href="/" class="flex items-center gap-2">
-          <span class="text-2xl">⚕️</span>
-          <span class="text-xl font-bold">Diabetes<span class="text-cyan-300">Care</span></span>
-        </a>
-        <div class="hidden md:flex items-center gap-6">
-          <a href="/" class="hover:text-cyan-300 transition font-medium">{{ _('Home') }}</a>
-          <a href="/index" class="hover:text-cyan-300 transition font-medium">{{ _('Prediction') }}</a>
-          <a href="/dashboard" class="text-cyan-300 font-bold">{{ _('Dashboard') }}</a>
-          <a href="/life" class="hover:text-cyan-300 transition font-medium">{{ _('Lifestyle') }}</a>
-          <a href="/chatbot" class="hover:text-cyan-300 transition font-medium">{{ _('Chatbot') }}</a>
-          <a href="/explore" class="hover:text-cyan-300 transition font-medium">{{ _('Explore') }}</a>
-          <a href="/forum" class="hover:text-cyan-300 transition font-medium">{{ _('Forum') }}</a>
-        </div>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Hero -->
+  {% include 'navbar.html' %}
   <section class="bg-gradient-to-br from-blue-600 via-indigo-600 to-cyan-500 dark:from-slate-800 dark:via-slate-900 dark:to-slate-800 py-12">
     <div class="max-w-7xl mx-auto px-4 text-center">
       <div class="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-2xl mb-4">
