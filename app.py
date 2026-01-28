@@ -366,6 +366,37 @@ def dashboard_trend_data():
         "stats": stats
     })
 
+def generate_prediction_explanation(result, confidence_score, feature_importance, features):
+    """Generate a human-readable explanation for the prediction."""
+    if confidence_score is None:
+        return _("Prediction made, but confidence score unavailable.")
+    
+    # Risk level based on confidence
+    if confidence_score >= 70:
+        risk_level = _("High Risk")
+    elif confidence_score >= 40:
+        risk_level = _("Moderate Risk") 
+    else:
+        risk_level = _("Low Risk")
+    
+    explanation = _("Based on your health metrics, the AI predicts you are {result} with {confidence:.1f}% confidence ({risk_level}).\n\n").format(
+        result=result.lower(), confidence=confidence_score, risk_level=risk_level)
+    
+    explanation += _("Key factors influencing this prediction:\n")
+    
+    for i, (feature_name, contribution, original_value) in enumerate(feature_importance[:3]):
+        factor_type = _("increases") if contribution > 0 else _("decreases")
+        explanation += _("• {feature}: {value} ({factor_type} diabetes risk)\n").format(
+            feature=feature_name, value=original_value, factor_type=factor_type)
+    
+    # Add general advice
+    if result == _("Diabetic"):
+        explanation += _("\n⚠️ This suggests potential diabetes risk. Please consult a healthcare professional for proper diagnosis and guidance.")
+    else:
+        explanation += _("\n✅ This suggests low diabetes risk, but maintain healthy lifestyle habits.")
+    
+    return explanation
+
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
@@ -397,6 +428,24 @@ def predict():
                 pass
         
         result = _("Diabetic") if prediction[0] == 1 else _("Not Diabetic")
+        
+        # --- EXPLAINABILITY AND CONFIDENCE (Issue #53) ---
+        confidence_score = risk_score * 100 if risk_score is not None else None
+        
+        # Feature importance from model coefficients
+        feature_names = ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age']
+        coefficients = model.coef_[0]  # LogisticRegression coefficients
+        
+        # Calculate feature contributions (coefficient * scaled_feature_value)
+        scaled_features = final_input[0]  # Already scaled
+        feature_contributions = coefficients * scaled_features
+        
+        # Get top contributing features
+        feature_importance = list(zip(feature_names, feature_contributions, features))
+        feature_importance.sort(key=lambda x: abs(x[1]), reverse=True)
+        
+        # Generate explanation
+        explanation = generate_prediction_explanation(result, confidence_score, feature_importance, features)
         
         # Save prediction history for logged-in users
         if 'user_id' in session:
@@ -432,7 +481,11 @@ def predict():
             db.session.add(new_pred)
             db.session.commit()
 
-        return render_template('index.html', prediction_text=_("Prediction: %(result)s", result=result))
+        return render_template('index.html', 
+                             prediction_text=result,
+                             confidence_score=confidence_score,
+                             explanation=explanation,
+                             top_features=feature_importance[:3])
     except Exception as e:
         logging.error(f"Predict error: {e}")
         return render_template('index.html', prediction_text=_("Error during prediction."))
