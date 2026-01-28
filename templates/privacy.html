@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Privacy Policy | Diabetes Care with AI</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: "class" };
+  </script>
+  <script>
+    (function () {
+      const savedTheme = localStorage.getItem("theme");
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
+        document.documentElement.classList.add("dark");
+      }
+    })();
+  </script>
+</head>
+
+<body class="min-h-screen bg-gray-50 dark:bg-slate-950 text-gray-800 dark:text-slate-200">
+
+  {% include 'navbar.html' %}
+
+  <!-- Header -->
+  <section class="bg-gradient-to-r from-blue-600 to-indigo-700 dark:from-indigo-900 dark:to-purple-900 text-white py-20">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+      <h1 class="text-4xl md:text-5xl font-extrabold mb-4">Privacy Policy</h1>
+      <p class="text-blue-100 text-lg">
+        Your privacy and data security matter to us.
+      </p>
+    </div>
+  </section>
+
+  <!-- Content -->
+  <section class="py-16">
+    <div class="max-w-5xl mx-auto px-6">
+      <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-lg p-8 md:p-12 space-y-8">
+
+        <p class="text-sm text-gray-500 dark:text-slate-400">
+          Last updated: January 2026
+        </p>
+
+        <div>
+          <h2 class="text-2xl font-bold mb-3">1. Information We Collect</h2>
+          <p>
+            We collect information you voluntarily provide, including health-related
+            inputs such as age, glucose levels, and lifestyle details used for diabetes
+            risk prediction. We may also collect anonymous usage data for analytics.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-bold mb-3">2. How We Use Your Data</h2>
+          <ul class="list-disc pl-6 space-y-2">
+            <li>To generate AI-powered diabetes predictions</li>
+            <li>To improve platform accuracy and performance</li>
+            <li>To enhance user experience and accessibility</li>
+          </ul>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-bold mb-3">3. Cookies & Tracking</h2>
+          <p>
+            We may use cookies or similar technologies for session management
+            and analytics. You can control cookies through your browser settings.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-bold mb-3">4. Data Security</h2>
+          <p>
+            We implement industry-standard security practices, including HTTPS
+            encryption and secure servers. However, no system is 100% secure.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-bold mb-3">5. Third-Party Services</h2>
+          <p>
+            Our platform may rely on third-party AI APIs and analytics services.
+            These providers operate under their own privacy policies.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-bold mb-3">6. Medical Disclaimer</h2>
+          <p class="font-medium text-red-600 dark:text-red-400">
+            This platform does not provide medical advice. Always consult
+            a qualified healthcare professional.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-bold mb-3">7. Policy Updates</h2>
+          <p>
+            We may update this Privacy Policy from time to time. Continued use
+            of the platform indicates acceptance of the updated policy.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  {% include 'footer.html' %}
+
+</body>
+</html>
