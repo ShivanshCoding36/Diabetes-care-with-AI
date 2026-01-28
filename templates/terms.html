@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Terms & Conditions | Diabetes Care with AI</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: "class" };
+  </script>
+  <script>
+    (function () {
+      const savedTheme = localStorage.getItem("theme");
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
+        document.documentElement.classList.add("dark");
+      }
+    })();
+  </script>
+</head>
+
+<body class="min-h-screen bg-gray-50 dark:bg-slate-950 text-gray-800 dark:text-slate-200">
+
+  {% include 'navbar.html' %}
+
+  <!-- Header -->
+  <section class="bg-gradient-to-r from-blue-600 to-indigo-700 dark:from-indigo-900 dark:to-purple-900 text-white py-20">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+      <h1 class="text-4xl md:text-5xl font-extrabold mb-4">Terms & Conditions</h1>
+      <p class="text-blue-100 text-lg">
+        Please read these terms carefully before using the platform.
+      </p>
+    </div>
+  </section>
+
+  <!-- Content -->
+  <section class="py-16">
+    <div class="max-w-5xl mx-auto px-6">
+      <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-lg p-8 md:p-12 space-y-8">
+
+        <p class="text-sm text-gray-500 dark:text-slate-400">
+          Last updated: January 2026
+        </p>
+
+        <div>
+          <h2 class="text-2xl font-bold mb-3">1. Acceptance of Terms</h2>
+          <p>
+            By accessing or using Diabetes Care with AI, you agree to be bound
+            by these Terms and Conditions.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-bold mb-3">2. Purpose of the Service</h2>
+          <p>
+            This platform provides AI-based tools for diabetes risk assessment,
+            data visualization, and informational support only.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-bold mb-3">3. No Medical Advice</h2>
+          <p class="font-medium text-red-600 dark:text-red-400">
+            The platform is not a substitute for professional medical advice,
+            diagnosis, or treatment.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-bold mb-3">4. User Responsibilities</h2>
+          <ul class="list-disc pl-6 space-y-2">
+            <li>You are responsible for the accuracy of data you submit</li>
+            <li>You must not misuse or attempt to disrupt the service</li>
+          </ul>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-bold mb-3">5. Intellectual Property</h2>
+          <p>
+            All content, design, and source code belong to the project owners
+            and contributors unless stated otherwise.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-bold mb-3">6. Limitation of Liability</h2>
+          <p>
+            We are not liable for any damages arising from the use or inability
+            to use this platform.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-bold mb-3">7. Changes to Terms</h2>
+          <p>
+            We reserve the right to modify these Terms at any time. Continued
+            use indicates acceptance of the revised Terms.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  {% include 'footer.html' %}
+
+</body>
+</html>
